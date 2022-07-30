@@ -1,3 +1,5 @@
+import { primitives } from "./primitives";
+
 export const fs = (sdf) => {
   return `
   // https://thebookofshaders.com/03/?lan=es
@@ -21,6 +23,7 @@ const float EPSILON = 0.0001;
 const float MIN_DIST = 0.0;
 const float MAX_DIST = 100.0;
 
+${primitives()}
 
 struct Material
 {
@@ -30,20 +33,10 @@ struct Material
     float smoothness;
 };
 
-float sdfCube(vec3 p, vec3 dim){
-    vec3 d = abs(p) - dim;
-
-    float insideDistance = min(max(d.x, max(d.y, d.z)), 0.0);
-    float outsideDistance = length(max(d, 0.0));
-    
-    return insideDistance + outsideDistance;
-}
-
-float map( in vec3 pos )
+float map( in vec3 p )
 {
-    return  sdfCube(pos, vec3(1.0));
+    return ${sdf};
 }
-
 
 vec3 rayDirection(vec2 size, vec2 fragCoord) {
     const float fov = 45.0;

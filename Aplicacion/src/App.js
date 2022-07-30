@@ -7,12 +7,9 @@ import {
   Navbar,
   Nav,
   Icon,
-  Placeholder,
   Panel,
   Grid,
   Row, Col,
-  Divider
-
 } from "rsuite";
 
 import Graph from "./Graph";
@@ -21,8 +18,8 @@ import "rsuite/dist/styles/rsuite-default.css";
 import "./styles.css";
 import Shader from "./Shader";
 import {fs} from "./fragmentShaderMovable";
-
-const { Paragraph } = Placeholder;
+import ContextMenu from "./ContextMenu";
+import InputVector3 from "./InputVector3";
 
 const NavBarExample = () => {
   return (
@@ -44,17 +41,6 @@ const NavBarExample = () => {
   );
 };
 
-const stepsStyles = {
-  width: "200px",
-  display: "inline-table",
-  verticalAlign: "top"
-};
-
-const StepsExample = () => (
-  <div>
-    <Graph />
-  </div>
-);
 
 function MainContent(){ 
   return(
@@ -72,7 +58,9 @@ function MainContent(){
           <div style={{borderRight: "2px solid grey",  height: "100vh"}} />
         </Col>
         <Col xs={17}>
-          <Graph />
+          {/* <ContextMenu/> */}
+          
+          <Graph/>
         </Col>
       </Row>
       

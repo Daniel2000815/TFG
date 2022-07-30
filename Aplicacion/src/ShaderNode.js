@@ -1,40 +1,13 @@
-import React, { useCallback, useState } from "react";
-import {Handle} from "react-flow-renderer";
+import React, { useState } from "react";
 import { Button } from "rsuite";
 import Shader from "./Shader.js";
 import { fs } from "./fragmentShader.js";
+import InputVector3 from "./InputVector3.js";
+import {InputHandle, OutputHandle} from "./Handles.js";
 
-function InputHandle(){
-   return ( 
-    <Handle
-        type="target"
-        position="left"
-        id="a"
-        className="custom-handle"
-        isConnectable={true}
-        onConnect={(params) => console.log('handle onConnect', params)}
-    />
-   );
-}
-
-function OutputHandle(){
-    return ( 
-     <Handle
-         type="source"
-         position="right"
-         id="a"
-         className="custom-handle"
-         isConnectable={true}
-     />
-    );
-}
 
 export default function ShaderNode({ data }) {
     const [color, setColor] = useState([1.0, 0.0, 0.0]);
-  
-    const onChange = useCallback((evt) => {
-      console.log(evt.target.value);
-    }, []);
   
     return (
       <div className="custom-node">
@@ -56,6 +29,10 @@ export default function ShaderNode({ data }) {
           uniforms={{ color: { type: "3fv", value: color } }}
           style={{ margin: "10px" }}
         />
+          <InputVector3 classPrefix="input" onChange={(x,y,z) => console.log("NUEVOS VALORES: " + x + ", " + y + ", " + z)}/>
+          <Button appearance="primary" block>
+            a
+          </Button>
       </div>
     );
   }

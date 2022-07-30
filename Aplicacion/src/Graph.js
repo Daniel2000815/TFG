@@ -1,87 +1,137 @@
 import React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect } from "react";
 import ReactFlow, {
   addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
+  Background,
+  useNodesState,
+  useEdgesState,
   MarkerType
 } from "react-flow-renderer";
-import ArrowEdge from "./ArrowEdge.js";
-import ShaderNode from "./ShaderNode.js";
+import ButtonEdge from './ButtonEdge.js';
+import PrimitiveNode from "./PrimitiveNode.js";
 
 import "./styles.css";
 
 const initialNodes = [
   {
-    id: "node-1",
-    type: "shaderNode",
+    id: "node-0",
+    type: "primitiveNode",
     position: { x: 0, y: 0 },
-    data: { value: 123 }
+    data: { sdf: "sphere(1.0)" }
+  },
+  {
+    id: "node-1",
+    type: "primitiveNode",
+    position: { x: 250, y: 0 },
+    data: { sdf: "box(1.0, 1.0, 1.0)" }
   },
   {
     id: "node-2",
-    type: "shaderNode",
-    position: { x: 250, y: 0 },
-    data: { value: 1 }
-  },
-  {
-    id: "node-3",
-    type: "shaderNode",
+    type: "primitiveNode",
     position: { x: 250, y: -300},
-    data: { value: 1 }
+    data: { sdf: "" }
   }
 ];
 
 const initialEdges = [
-  {
-    id: "e1-2",
-    type: "arrowEdge",
-    source: "node-1",
-    target: "node-2",
-    markerEnd:{
-      type: MarkerType.ArrowClosed,
-    },
-    animated: true
 
-  }
 ];
 
-const nodeTypes = { shaderNode: ShaderNode };
-// const edgeTypes = { arrowEdge: ArrowEdge };
+const nodeTypes = { primitiveNode: PrimitiveNode };
+
+const onInit = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 
 export default function Graph() {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onNodesChange = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes]
-  );
-  const onEdgesChange = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges]
-  );
+  // no funciona: borra todos
+  const onRemoveEdge = (id) =>{
+    console.log(edges);
+    setEdges(edges.filter(edge => edge.id == id));
+    onEdgesChange(edges);
+  }
+
+  const updateNodeSdf = (id, newSdf) =>{
+    console.log("ALO");
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === id) {
+          node.data = {
+            ...node.data,
+            sdf: newSdf,
+          };
+        }
+
+        return node;
+      })
+    );
+  }
+
   const onConnect = useCallback(
-    (connection) => {
-      console.log(connection);
-      setEdges((eds) => addEdge({...connection, animated: true, markerEnd:{
-        type: MarkerType.ArrowClosed,
-      }}, eds))
-    },
-    [setEdges]
+    
+    (params) => setEdges(
+      (eds) => addEdge(
+        { 
+          ...params, 
+          animated:true, 
+          markerEnd: { type: MarkerType.Arrow, color: '#000' }, 
+          data: {} 
+        }, 
+        eds)
+      ),
+    []
   );
+
+  useEffect(() => {
+    console.log("ASASA");
+    console.log(edges);
+  }, [edges]);
+
+  const newNode = () =>{
+    return {
+      id: `node-${nodes.length}`,
+      type: "primitiveNode",
+      position: { x: 0, y: 0 },
+      data: { 
+        sdf: "sphere(p, 1.0)",
+        onChangeSdf: updateNodeSdf
+      }
+    }
+  }
+
+  const handleKey= (e) => {
+    // SPACE BAR
+    if (e.key === " ") {
+      const node = newNode();
+      nodes.push(node);
+
+      onNodesChange([node]);  // Para actualizar
+    }
+
+  };
 
   return (
-    <div style={{height: "100vh"}}>
+    <div style={{height: "100vh"}} tabIndex="0" onKeyDown={handleKey}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
+
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        // onDisconnect={onDisconnect}
+
         nodeTypes={nodeTypes}
+
+        onInit={onInit}
+        onEdgeClick={(ev, edge)=>setEdges(edges.filter(e => e.id != edge.id))}
+
+        snapToGrid={true}
         fitView
-      />
+      >
+        <Background color="#aaa" gap={10} />
+        </ReactFlow>
     </div>
   );
 }

@@ -9,6 +9,7 @@ h3 {
 .custom-node {
   position: relative;
   min-width: 150px;
+  max-width: 150px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
@@ -38,6 +39,45 @@ h3 {
   font-size: 14px;
   letter-spacing: 0.1px;
   border-bottom: 2px solid grey;
+  justify-content: flex-start;
+}
+
+.custom-node-subheader {
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 8px;
+  background: #fff;
+  color: #898d9c;
+  text-transform: uppercase;
+  font-size: 12px;
+  display: flex;
+  margin-bottom: 13px;
+}
+.custom-node-subheader__inputs {
+  justify-content: flex-start;
+}
+
+.circle-port {
+  width: 12px;
+  height: 12px;
+  border-radius: 12px;
+  background: #898d9c;
+  border: 4px solid #edeff5;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  position: absolute;
+  top: 14px;
+}
+.circle-port:hover {
+  background: #bbb;
+  transition: background 200ms ease;
+}
+
+.circle-port-left {
+  left: -18px;
+}
+.circle-port-right {
+  right: -18px;
 }
 
 .handleContainer {
@@ -49,22 +89,83 @@ h3 {
   text-align: center;
 }
 
-.custom-node-subheader__inputs {
-  justify-content: flex-start;
+.custom-node-port {
+  color: #636776;
+  font-size: 12px;
+  flex-grow: 1;
+  padding: 8px;
+  position: relative;
+  text-align: center;
 }
-.custom-node-subheader__output {
-  justify-content: flex-end;
+.custom-node-port-in {
+  text-align: left;
 }
-.custom-handle {
-  width: 8px;
-  height: 8px;
-  border-radius: 12px;
-  background: #898d9c;
-  border: 2px solid #edeff5;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  position: absolute;
+
+.custom-node-port-out {
+  text-align: right;
 }
 .custom-handle:hover {
   border: 0px solid #edeff5;
+}
+
+.custom-node-creater {
+  width: 100%;
+  height: 30px;
+  position: absolute;
+  background: #384ea5;
+  transition: background 300ms ease;
+  border-radius: 0px 0px 8px 8px;
+  
+  bottom: 0px;
+}
+.custom-node-creater-label {
+  color: #aeb2c2;
+  font-size: 20px;
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: color 300ms ease;
+  
+  user-select: none;
+  pointer-events: none;
+}
+.edgebutton {
+  background: #eee;
+  border: 1px solid #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+.edgebutton:hover {
+  box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.08);
+}
+
+.edgebutton-foreignobject body {
+  background: transparent;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40px;
+}
+
+
+.react-flow__edge-path {
+  cursor: pointer;
+  stroke-width: 3x !important;
+  stroke: #3d3d3f;
+}
+
+.custom-inputVector3 {
+  text-align: center;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
