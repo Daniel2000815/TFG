@@ -9,13 +9,14 @@ import ReactFlow, {
 } from "react-flow-renderer";
 import ButtonEdge from './ButtonEdge.js';
 import PrimitiveNode from "./PrimitiveNode.js";
+import BooleanNode from "./BooleanNode.js";
 
 import "./styles.css";
 
 const initialNodes = [
   {
     id: "node-0",
-    type: "primitiveNode",
+    type: "booleanNode",
     position: { x: 0, y: 0 },
     data: { sdf: "sphere(1.0)" }
   },
@@ -37,7 +38,7 @@ const initialEdges = [
 
 ];
 
-const nodeTypes = { primitiveNode: PrimitiveNode };
+const nodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode };
 
 const onInit = (reactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 

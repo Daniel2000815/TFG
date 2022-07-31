@@ -3,9 +3,9 @@ import Shader from "./Shader.js";
 import { InputNumber, InputGroup } from "rsuite";
 import Box from "@mui/material/Box";
 import FilledInput from "@mui/material/FilledInput";
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
@@ -13,8 +13,9 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import { Handle } from "react-flow-renderer";
 import { fs } from "./fragmentShader.js";
 import { useEffect } from "react";
-import { IconButton } from "rsuite";
-import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
+import Button from "@mui/material/Button";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FloatInput from "./FloatInput.js";
 
 const Primitives = {
@@ -22,23 +23,23 @@ const Primitives = {
   Box: "Box",
 };
 
-function Dropdown(props){
+function Dropdown(props) {
   const [open, setOpen] = React.useState(false);
 
-  return(
-    <FormControl onClick={()=>setOpen(!open)} sx={{ m: 1, minWidth: 80 }}>
-        <InputLabel id="demo-simple-select-autowidth-label">Primitive</InputLabel>
-        <Select
-          value={props.primitive}
-          onChange={(ev) => props.onChange(ev.target.value)}
-          autoWidth
-          open={open}
-          label="Primitive"
-        >
-          <MenuItem value={Primitives.Sphere}>Sphere</MenuItem>
-          <MenuItem value={Primitives.Box}>Box</MenuItem>
-        </Select>
-      </FormControl>
+  return (
+    <FormControl onClick={() => setOpen(!open)} sx={{ m: 1, minWidth: 80 }}>
+      <InputLabel id="demo-simple-select-autowidth-label">Primitive</InputLabel>
+      <Select
+        value={props.primitive}
+        onChange={(ev) => props.onChange(ev.target.value)}
+        autoWidth
+        open={open}
+        label="Primitive"
+      >
+        <MenuItem value={Primitives.Sphere}>Sphere</MenuItem>
+        <MenuItem value={Primitives.Box}>Box</MenuItem>
+      </Select>
+    </FormControl>
   );
 }
 export default function PrimitiveNode({ data, id }) {
@@ -83,18 +84,11 @@ export default function PrimitiveNode({ data, id }) {
     <div className="custom-node">
       <div className="custom-node-header">Primitive</div>
 
-      <Dropdown onChange={setPrimitive} primitive={primitive}/>
+      <Dropdown value={primitive} onChange={setPrimitive} items={["sphere", "box"]} label="Primitives"/> 
       <FloatInput val={input1} handleChange={setInput1} label="Radius" />
       {input1}
       {id}
       {data.sdf}
-      <label>Read only:</label>
-      <InputGroup inside size="sm">
-        <InputGroup.Addon style={{ height: "100%", background: "#E7E7E7" }}>
-          r
-        </InputGroup.Addon>
-        <Input />
-      </InputGroup>
 
       {/* INPUT */}
       <div className="custom-node-subheader custom-node-subheader__inputs">
@@ -113,7 +107,34 @@ export default function PrimitiveNode({ data, id }) {
       </div>
 
       {/* OUTPUT */}
+      
+      <div style={{display:"flex"}}>
+        <div style={{textAlign:"left", flexGrow:"1"}}>
+          <div style={{display:"flex", flexDirection:"column"}}>
+            <div style={{flexGrow:"1"}}>inputs</div>
+            <div style={{flexGrow:"1"}}>i1</div>
+            <div style={{flexGrow:"1"}}>i2</div>
+            <div style={{flexGrow:"1"}}>i3</div>
+          </div>
+        </div>
+
+        <div style={{textAlign:"right", flexGrow:"1"}}>
+          <div style={{display:"flex", flexDirection:"column"}}>
+            <div style={{flexGrow:"1"}}>out</div>
+            <div style={{flexGrow:"1"}}>
+            <Handle
+            className="circle-port"
+            type="source"
+            id={0}
+            position="right"
+          />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="custom-node-subheader custom-node-subheader__output">
+      
         <div className="custom-node-port-out">{"Outputs"}</div>
         <div className="custom-node-port custom-node-port-out">
           label
@@ -134,14 +155,17 @@ export default function PrimitiveNode({ data, id }) {
         />
       ) : null}
 
-      <div className="custom-node-creater">
-        <IconButton
-          onClick={() => setShowCanvas(!showCanvas)}
-          placement="right"
-          icon={<ArrowDownLineIcon />}
-          block
-        />
-      </div>
+      <Button
+        onClick={() => setShowCanvas(!showCanvas)}
+        variant="contained"
+        className="custom-node-creater"
+        size="small"
+        endIcon={
+          showCanvas ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
+        }
+      >
+        {showCanvas ? "Hide canvas" : "Show canvas"}
+      </Button>
     </div>
   );
 }
