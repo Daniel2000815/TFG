@@ -1,45 +1,100 @@
 import React from "react";
 import Shader from "./Shader.js";
-import { Dropdown } from "rsuite";
-
-import {
-  Handle
-} from "react-flow-renderer";
+import { InputNumber, InputGroup } from "rsuite";
+import Box from "@mui/material/Box";
+import FilledInput from "@mui/material/FilledInput";
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import FormHelperText from "@mui/material/FormHelperText";
+import Input from "@mui/material/Input";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import { Handle } from "react-flow-renderer";
 import { fs } from "./fragmentShader.js";
 import { useEffect } from "react";
-import { IconButton } from 'rsuite';
-import ArrowDownLineIcon from '@rsuite/icons/ArrowDownLine';
-
+import { IconButton } from "rsuite";
+import ArrowDownLineIcon from "@rsuite/icons/ArrowDownLine";
+import FloatInput from "./FloatInput.js";
 
 const Primitives = {
-	Sphere: "Sphere",
-	Box:   "Box"
-}
+  Sphere: "Sphere",
+  Box: "Box",
+};
 
+function Dropdown(props){
+  const [open, setOpen] = React.useState(false);
+
+  return(
+    <FormControl onClick={()=>setOpen(!open)} sx={{ m: 1, minWidth: 80 }}>
+        <InputLabel id="demo-simple-select-autowidth-label">Primitive</InputLabel>
+        <Select
+          value={props.primitive}
+          onChange={(ev) => props.onChange(ev.target.value)}
+          autoWidth
+          open={open}
+          label="Primitive"
+        >
+          <MenuItem value={Primitives.Sphere}>Sphere</MenuItem>
+          <MenuItem value={Primitives.Box}>Box</MenuItem>
+        </Select>
+      </FormControl>
+  );
+}
 export default function PrimitiveNode({ data, id }) {
   const [primitive, setPrimitive] = React.useState(Primitives.Sphere);
   const [sdf, setSdf] = React.useState(data.sdf);
   const [showCanvas, setShowCanvas] = React.useState(true);
+  const [input1, setInput1] = React.useState(1.0);
+  const [input2, setInput2] = React.useState(1.0);
+  const [input3, setInput3] = React.useState(1.0);
 
   const handleChange = (newPrimitive, newSdf) => {
+    if (newPrimitive == Primitives.Sphere) {
+      console.log("YES");
+    }
     setPrimitive(newPrimitive);
     setSdf(newSdf);
-  }
+  };
+
+  useEffect(() => {
+    setPrimitive(Primitives.Box);
+  }, []);
 
   useEffect(() => {
     console.log("EFE");
     data.onChangeSdf(id, sdf);
   }, [sdf]);
 
+  useEffect(() => {
+    console.log("ASASAS1212");
+    if (primitive == Primitives.Sphere) {
+      setSdf(`sphere(p, ${input1.toFixed(4)})`);
+    } else if (primitive == Primitives.Box) {
+      setSdf(
+        `box(p, vec3(${input1.toFixed(4)}, ${input2.toFixed(
+          4
+        )}, ${input3.toFixed(4)}))`
+      );
+    }
+  }, [primitive, input1, input2, input3]);
+
   return (
     <div className="custom-node">
       <div className="custom-node-header">Primitive</div>
-      <Dropdown style={{width:"100%"}} title={primitive}>
-        <Dropdown.Item onSelect={()=>handleChange(Primitives.Sphere, "sphere(p, 1.0)")}>Sphere</Dropdown.Item>
-        <Dropdown.Item onSelect={()=>handleChange(Primitives.Box, "box(p, vec3(1.0, 1.0, 1.0))")}>Box</Dropdown.Item>
-      </Dropdown>
+
+      <Dropdown onChange={setPrimitive} primitive={primitive}/>
+      <FloatInput val={input1} handleChange={setInput1} label="Radius" />
+      {input1}
       {id}
       {data.sdf}
+      <label>Read only:</label>
+      <InputGroup inside size="sm">
+        <InputGroup.Addon style={{ height: "100%", background: "#E7E7E7" }}>
+          r
+        </InputGroup.Addon>
+        <Input />
+      </InputGroup>
 
       {/* INPUT */}
       <div className="custom-node-subheader custom-node-subheader__inputs">
@@ -52,7 +107,7 @@ export default function PrimitiveNode({ data, id }) {
             target="0"
             id={0}
             position="left"
-            onConnect={(params) => console.log('handle onConnect', params)}
+            onConnect={(params) => console.log("handle onConnect", params)}
           />
         </div>
       </div>
@@ -71,22 +126,22 @@ export default function PrimitiveNode({ data, id }) {
         </div>
       </div>
 
-    {showCanvas ?
-      <Shader
-        shader={fs(sdf)}
-        uniforms={{ color: { type: "3fv", value: [1.0, 1.0, 0.0] } }}
-        style={{ margin: "10px" }}
-      />
-      :
-      null
-    }
+      {showCanvas ? (
+        <Shader
+          shader={fs(sdf)}
+          uniforms={{ color: { type: "3fv", value: [1.0, 1.0, 0.0] } }}
+          style={{ margin: "10px" }}
+        />
+      ) : null}
 
       <div className="custom-node-creater">
-        <IconButton onClick={()=>setShowCanvas(!showCanvas)} placement='right' icon={<ArrowDownLineIcon/>} block />
-        </div>
-      
-
-      
+        <IconButton
+          onClick={() => setShowCanvas(!showCanvas)}
+          placement="right"
+          icon={<ArrowDownLineIcon />}
+          block
+        />
+      </div>
     </div>
   );
 }

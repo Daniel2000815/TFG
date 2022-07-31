@@ -100,6 +100,13 @@ mat4 viewMatrix(vec3 eye, vec3 center, vec3 up) {
     );
 }
 
+float clamp(float val){
+    if(val < 0.0)   return 0.0;
+    if(val >1.0)    return 1.0;
+
+    return val;
+}
+
 void main() {
     Material mat_red = Material(
         vec3(1.0, 1.0, 1.0),    // specular
@@ -126,7 +133,8 @@ void main() {
                     vec3 p = eye + depth * worldDir;
                     vec3 n = normal(p);
 
-                    gl_FragColor = vec4(lighting(p, n, eye, mat_red), 1.0);
+                    gl_FragColor =  vec4(lighting(p, n, eye, mat_red), 1.0);
+                    
                     return;
                 }
 
