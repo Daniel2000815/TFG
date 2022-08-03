@@ -18,8 +18,6 @@ import "rsuite/dist/styles/rsuite-default.css";
 import "./styles.css";
 import Shader from "./Shader";
 import {fs} from "./fragmentShaderMovable";
-import ContextMenu from "./ContextMenu";
-import InputVector3 from "./InputVector3";
 
 const NavBarExample = () => {
   return (

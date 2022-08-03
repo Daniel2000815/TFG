@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { InputNumber, InputGroup } from 'rsuite';
+import { InputNumber } from 'rsuite';
 
 export default function InputVector3(props) {
     const [x, setX] = useState(0);
