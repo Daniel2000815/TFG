@@ -163,7 +163,7 @@ h3 {
 
 .react-flow__edge-path {
   cursor: pointer;
-  stroke-width: 3x !important;
+  stroke-width: 2px !important;
   stroke: #3d3d3f;
 }
 

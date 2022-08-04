@@ -31,45 +31,18 @@ export default function BooleanNode({ data, id }) {
   return (
     <div className="custom-node">
       <div className="custom-node-header">Boolean</div>
+      {Object.values(BooleanOperations)}
       {operationSdf}
       <Dropdown
         value={operation}
         onChange={setOperation}
-        items={[
-          BooleanOperations.Union,
-          BooleanOperations.Difference,
-          BooleanOperations.Intersection,
-        ]}
+        items={Object.values(BooleanOperations)}
         label="Operation"
       />
 
       <CustomHandle id={"0"} type="target" onConnect={(params) => console.log("handle ss", params)} style={{ left: "30%" }}/>
       <CustomHandle id={"1"} type="target" onConnect={(params) => data.updateBooleanPrimitive(params.source, params.target)} style={{ left: "60%" }}/>
       <CustomHandle id={"2"} type="source" onConnect={(params) => console.log("handle onsConnect", params)} style={{ left: "50%" }}/>
-
-      {/* <Handle
-        type="target"
-        id={"0"}
-        style={{ left: "30%" }}
-        position="top"
-        onConnect={(params) => console.log("handle ss", params)}
-      />
-      <Handle
-        type="target"
-        id={"1"}
-        style={{ left: "60%" }}
-        position="top"
-        onConnect={(params) =>
-          data.updateBooleanPrimitive(params.source, params.target)
-        }
-      />
-      <Handle
-        type="source"
-        id={2}
-        style={{ left: "50%" }}
-        position="bottom"
-        onConnect={(params) => console.log("handle onsConnect", params)}
-      /> */}
 
       <Shader
         shader={fs(`${operationSdf}`)}
