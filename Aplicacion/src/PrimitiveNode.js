@@ -1,6 +1,5 @@
 import React, {useContext} from "react";
 import Shader from "./Shader.js";
-import { Handle } from "react-flow-renderer";
 import { fs } from "./fragmentShader.js";
 import { useEffect } from "react";
 import Button from "@mui/material/Button";
@@ -9,6 +8,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import FloatInput from "./FloatInput.js";
 import Dropdown from "./Dropdown";
 import GraphContext from "./GraphContext.js";
+import CustomHandle from "./CustomHandle.js";
 
 const Primitives = {
   Sphere: "Sphere",
@@ -32,6 +32,9 @@ export default function PrimitiveNode({ data, id }) {
     setPrimitive(newPrimitive);
     setSdf(newSdf);
   };
+
+  useEffect(() => {
+  }, [data]);
 
   useEffect(() => {
     sharedFunctions.updateNodeSdf(id, sdf);
@@ -59,14 +62,10 @@ export default function PrimitiveNode({ data, id }) {
       {input1}
       {id}
       {data.sdf}
+      {"CHILDREN: "}
+      {data.children}
 
-      <Handle
-        type="source"
-        id={"0"}
-        style={{left:"50%"}}
-        position="bottom"
-        onConnect={(params) => sharedFunctions.connectSdf(params.source, params.target, params)}
-      />
+      <CustomHandle type="source" onConnect={(params) => sharedFunctions.connectSdf(params.source, params.target, params)}/>
 
       {showCanvas ? (
         <Shader

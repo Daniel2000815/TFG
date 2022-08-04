@@ -3,6 +3,7 @@ import { Handle } from "react-flow-renderer";
 import Shader from "./Shader";
 import { fs } from "./fragmentShader";
 import Dropdown from "./Dropdown";
+import CustomHandle from "./CustomHandle";
 
 const BooleanOperations = {
   Union: "Union",
@@ -16,9 +17,16 @@ export default function BooleanNode({ data, id }) {
 
   useEffect(() => {
     console.log(`SE HAN MODIFICADO LOS SDF EN NODO BOOLEANO. AHORA HAY ${data.sdfs.length}`);
+    const inputs = `${Object.keys(data.sdfs).map(key => `${data.sdfs[key]}`).join(', ')}`;
+
     if(operation===BooleanOperations.Union)
-      setOperationSdf(`min(${data.sdfs[0]},${data.sdfs[1]})`)
-  }, [data]);
+      setOperationSdf(`min(${inputs})`)
+    else if(operation===BooleanOperations.Intersection)
+      setOperationSdf(`max(${inputs})`)
+    else if(operation===BooleanOperations.Difference)
+      setOperationSdf(`max(-${inputs})`)
+
+  }, [data, operation]);
 
   return (
     <div className="custom-node">
@@ -35,7 +43,11 @@ export default function BooleanNode({ data, id }) {
         label="Operation"
       />
 
-      <Handle
+      <CustomHandle id={"0"} type="target" onConnect={(params) => console.log("handle ss", params)} style={{ left: "30%" }}/>
+      <CustomHandle id={"1"} type="target" onConnect={(params) => data.updateBooleanPrimitive(params.source, params.target)} style={{ left: "60%" }}/>
+      <CustomHandle id={"2"} type="source" onConnect={(params) => console.log("handle onsConnect", params)} style={{ left: "50%" }}/>
+
+      {/* <Handle
         type="target"
         id={"0"}
         style={{ left: "30%" }}
@@ -57,7 +69,7 @@ export default function BooleanNode({ data, id }) {
         style={{ left: "50%" }}
         position="bottom"
         onConnect={(params) => console.log("handle onsConnect", params)}
-      />
+      /> */}
 
       <Shader
         shader={fs(`${operationSdf}`)}

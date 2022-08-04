@@ -16,21 +16,21 @@ import { GraphProvider } from "./GraphContext.js";
 const initialNodes = [
   {
     id: "node-0",
-    type: "booleanNode",
-    position: { x: 0, y: 0 },
-    data: { sdf: "sphere(1.0)" },
+    type: "primitiveNode",
+    position: { x: -100, y: 50 },
+    data: { sdf: "sphere(1.0)", children: [] },
   },
   {
     id: "node-1",
     type: "primitiveNode",
-    position: { x: 250, y: 0 },
-    data: { sdf: "box(1.0, 1.0, 1.0)" },
+    position: { x: 100, y: 50 },
+    data: { sdf: "box(1.0, 1.0, 1.0)", children: [] },
   },
   {
     id: "node-2",
-    type: "primitiveNode",
-    position: { x: 250, y: -300 },
-    data: { sdf: "" },
+    type: "booleanNode",
+    position: { x: 0, y: 550 },
+    data: { sdfs: {}, children: [] },
   },
 ];
 
@@ -42,9 +42,9 @@ const onInit = (reactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
 
 export default function Graph() {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [id, setId] = React.useState(0);
+  const [id, setId] = React.useState(3);
 
   const updateNodeSdf = (id, newSdf) => {
     console.log("ACTUALIZADO SDF");
@@ -55,19 +55,35 @@ export default function Graph() {
             ...node.data,
             sdf: newSdf,
           };
+
+          node.data.children.forEach(child => {
+            nds.map((node) => {
+              if (node.id === child){
+                console.log(node);
+            var newSdfs = node.data.sdfs;
+            newSdfs[`${id}`] = newSdf;
+            console.log("HIJO: " + child);
+            node.data = {
+               ...node.data,
+               sdfs: newSdfs
+              }
+              }
+            })
+            
+          });
         }
 
         return node;
       })
     );
+
+    
   };
 
   const connectSdf = (sourceId, targetId, params) => {
     const sourceNode = nodes.find(n => n.id===sourceId);
     var newSdfs = nodes.find(n => n.id===targetId).data.sdfs;
-    const index = parseInt(params.targetHandle, 10);
-    console.log(index);
-    newSdfs[index] = sourceNode.data.sdf;
+    newSdfs[`${sourceId}`] = sourceNode.data.sdf;
     
     console.log(newSdfs);
     setNodes((nds) =>
@@ -105,6 +121,24 @@ export default function Graph() {
         eds
       )
     );
+
+    var newChildren = nodes.find(n => n.id===params.target).data.children;
+    newChildren.push(params.target);
+
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === params.source) {
+          console.log(`AÑADIDO HIJO ${params.target} A ${params.source}`);
+          node.data = {
+             ...node.data,
+             children: newChildren,
+           };
+        }
+
+        onNodesChange([node]);
+        return node;
+      })
+    );
   }, []);
 
   useEffect(() => {
@@ -123,11 +157,7 @@ export default function Graph() {
       id: `node-${id}`,
       type: "primitiveNode",
       position: { x: 0, y: 0 },
-      data: {
-        sdf: "sphere(p, 1.0)",
-        onChangeSdf: updateNodeSdf,
-        onConnectHandle: connectSdf,
-      },
+      data: { sdf: "sphere(1.0)", children: [] }
     };
   };
 
@@ -137,9 +167,7 @@ export default function Graph() {
       id: `node-${id}`,
       type: "booleanNode",
       position: { x: 0, y: 0 },
-      data: {
-        sdfs: ["0", "0"],
-      },
+      data: { sdfs: {}, children: [] }
     };
   };
 
