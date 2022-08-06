@@ -108,6 +108,8 @@ float clamp(float val){
 }
 
 void main() {
+    vec3 total = vec3(0.0);
+
     Material mat_red = Material(
         vec3(1.0, 1.0, 1.0),    // specular
         vec3(color.xyz),        // diffuse
@@ -133,20 +135,23 @@ void main() {
                     vec3 p = eye + depth * worldDir;
                     vec3 n = normal(p);
 
-                    gl_FragColor =  vec4(lighting(p, n, eye, mat_red), 1.0);
+                    total = total + lighting(p, n, eye, mat_red);
                     
-                    return;
+                    break;
                 }
 
                 depth += dist;
 
                 if (depth >= MAX_DIST) {
-                    gl_FragColor = vec4(backGroundColor.xyz, 1.0);
-                    return;
+                    total = total + backGroundColor;
+                    break;
                 }
             }
         }
     }
+
+    total /= float(AA*AA);
+    gl_FragColor = vec4( total, 1.0 );
 }
 
 `;

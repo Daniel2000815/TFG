@@ -51,9 +51,9 @@ export default function CustomEdge({
         className="edgebutton-foreignobject"
         requiredExtensions="http://www.w3.org/1999/xhtml"
       >
-        {showButton ?
+        {true ?
           <body>
-            <button className="edgebutton" onClick={() => data.onRemoveEdge(id)}>
+            <button className="edgebutton" onClick={() => {console.log("SI: " + id); data.onRemoveEdge(id)}}>
               ×
             </button>
           </body> 

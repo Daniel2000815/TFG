@@ -9,34 +9,19 @@ import ReactFlow, {
 } from "react-flow-renderer";
 import PrimitiveNode from "./PrimitiveNode.js";
 import BooleanNode from "./BooleanNode.js";
+import ButtonEdge from "./ButtonEdge";
 
 import "./styles.css";
 import { GraphProvider } from "./GraphContext.js";
 
+const nodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode };
+const edgeTypes = { buttonEdge: ButtonEdge };
+
 const initialNodes = [
-  {
-    id: "node-0",
-    type: "primitiveNode",
-    position: { x: -100, y: 50 },
-    data: { sdf: "sphere(1.0)", children: [] },
-  },
-  {
-    id: "node-1",
-    type: "primitiveNode",
-    position: { x: 100, y: 50 },
-    data: { sdf: "box(1.0, 1.0, 1.0)", children: [] },
-  },
-  {
-    id: "node-2",
-    type: "booleanNode",
-    position: { x: 0, y: 550 },
-    data: { sdfs: {}, children: [] },
-  },
+  
 ];
 
 const initialEdges = [];
-
-const nodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode };
 
 const onInit = (reactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
@@ -46,45 +31,50 @@ export default function Graph() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [id, setId] = React.useState(3);
 
-  const updateNodeSdf = (id, newSdf) => {
-    console.log("ACTUALIZADO SDF");
-    setNodes((nds) =>
+  const updateNodeSdf = (id, newSdf, parent) => {
+    console.log("ACTUALIZADONDO SDF DE " + id);
+   var foundNode = null;
+  
+  
+   setNodes((nds) =>
       nds.map((node) => {
         if (node.id === id) {
+          foundNode = node;
+          console.log("!s");
+          console.log(foundNode);
+          var newSdfs = node.data.sdfs;
+          newSdfs[`${parent}`] = newSdf;
+
           node.data = {
             ...node.data,
-            sdf: newSdf,
+            sdfs: newSdfs,
           };
 
-          node.data.children.forEach(child => {
-            nds.map((node) => {
-              if (node.id === child){
-                console.log(node);
-            var newSdfs = node.data.sdfs;
-            newSdfs[`${id}`] = newSdf;
-            console.log("HIJO: " + child);
-            node.data = {
-               ...node.data,
-               sdfs: newSdfs
-              }
-              }
-            })
-            
+
+          console.log("HIJOS DE " + id + ": ");
+          console.log(node.data.children);
+          node.data.children.forEach((child) => {
+            console.log("\tACTUALIZANDO HIJO " + child);
+            if(child!=id)
+              updateNodeSdf(child, newSdf, id);
           });
+          
         }
 
         return node;
       })
     );
 
+    console.log("enco");
+    console.log(foundNode);
     
   };
 
   const connectSdf = (sourceId, targetId, params) => {
-    const sourceNode = nodes.find(n => n.id===sourceId);
-    var newSdfs = nodes.find(n => n.id===targetId).data.sdfs;
+    const sourceNode = nodes.find((n) => n.id === sourceId);
+    var newSdfs = nodes.find((n) => n.id === targetId).data.sdfs;
     newSdfs[`${sourceId}`] = sourceNode.data.sdf;
-    
+
     console.log(newSdfs);
     setNodes((nds) =>
       nds.map((node) => {
@@ -102,27 +92,41 @@ export default function Graph() {
     );
   };
 
+  const removeEdge = (edgeId) => {
+    var newEdges = edges.filter((edge) => {
+      console.log(edge.source);
+      return edge.id != edgeId;
+    });
+
+    setEdges(newEdges);
+  };
+
   const sharedFunctions = {
     updateNodeSdf,
     connectSdf,
   };
 
-  const onConnect = useCallback((params) => {
+  const onConnect = (params) => {
     const sourceNode = nodes.find((n) => n.id === params.source);
 
     setEdges((eds) =>
       addEdge(
         {
           ...params,
+          type: "buttonEdge",
           animated: true,
           markerEnd: { type: MarkerType.Arrow, color: "#000" },
-          data: {},
+          data: { onRemoveEdge: removeEdge },
         },
         eds
       )
     );
 
-    var newChildren = nodes.find(n => n.id===params.target).data.children;
+    console.log(params);
+    var newChildren = nodes.find((n) => n.id === params.target).data.children;
+    // var newChildren = nodes.find((n) => n.id === params.target);
+
+    console.log(newChildren);
     newChildren.push(params.target);
 
     setNodes((nds) =>
@@ -130,16 +134,16 @@ export default function Graph() {
         if (node.id === params.source) {
           console.log(`AÑADIDO HIJO ${params.target} A ${params.source}`);
           node.data = {
-             ...node.data,
-             children: newChildren,
-           };
+            ...node.data,
+            children: newChildren,
+          };
         }
 
         onNodesChange([node]);
         return node;
       })
     );
-  }, []);
+  };
 
   useEffect(() => {
     console.log("NODOS ACTUALIZADOS");
@@ -151,23 +155,27 @@ export default function Graph() {
     console.log(edges);
   }, [edges]);
 
-  const newPrimitiveNode = () => {
+  const newPrimitiveNode = (xPos = 0, yPos = 0) => {
     setId(id + 1);
+    const nodeId = `node-${id}`;
     return {
-      id: `node-${id}`,
+      id: nodeId,
       type: "primitiveNode",
-      position: { x: 0, y: 0 },
-      data: { sdf: "sphere(1.0)", children: [] }
+      position: { x: xPos, y: yPos },
+      data: {
+        sdfs: { nodeId: "sphere(1.0)" },
+        children: [],
+      },
     };
   };
 
-  const newBooleanNode = () => {
+  const newBooleanNode = (xPos = 0, yPos = 0) => {
     setId(id + 1);
     return {
       id: `node-${id}`,
       type: "booleanNode",
-      position: { x: 0, y: 0 },
-      data: { sdfs: {}, children: [] }
+      position: { x: xPos, y: yPos },
+      data: { sdfs: {}, children: [] },
     };
   };
 
@@ -198,6 +206,7 @@ export default function Graph() {
           // onDisconnect={onDisconnect}
 
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           onInit={onInit}
           onEdgeClick={(ev, edge) =>
             setEdges(edges.filter((e) => e.id != edge.id))

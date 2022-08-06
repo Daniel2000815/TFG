@@ -19,7 +19,7 @@ const Primitives = {
 
 export default function PrimitiveNode({ data, id }) {
   const [primitive, setPrimitive] = React.useState(Primitives.Sphere);
-  const [sdf, setSdf] = React.useState(data.sdf);
+  const [sdf, setSdf] = React.useState("sphere(p, 1.0)");
   const [showCanvas, setShowCanvas] = React.useState(true);
   const [inputs, setInputs] = React.useState([1.0, 1.0, 1.0]);
   const [inputLabels, setInputLabels] = React.useState(["Radius", "", ""]);
@@ -36,6 +36,8 @@ export default function PrimitiveNode({ data, id }) {
   };
 
   useEffect(() => {
+    console.log("HA");
+    console.log(data);
   }, [data]);
 
   useEffect(() => {
@@ -88,17 +90,15 @@ export default function PrimitiveNode({ data, id }) {
   return (
     <div className="custom-node">
       <div className="custom-node-header">Primitive</div>
-
-      <Dropdown value={primitive} onChange={setPrimitive} items={[Primitives.Sphere, Primitives.Box, Primitives.Torus, Primitives.Cylinder]} label="Primitives"/> 
+      <Dropdown value={primitive} onChange={setPrimitive} items={Object.values(Primitives)} label="Primitive"/> 
       {inputsActive[0] ? <FloatInput val={inputs[0]} handleChange={(newVal) => setInputs([newVal, inputs[1], inputs[2]])} label={inputLabels[0]} /> : null}
       {inputsActive[1] ? <FloatInput val={inputs[1]} handleChange={(newVal) => setInputs([inputs[0], newVal, inputs[2]])} label={inputLabels[1]} /> : null}
       {inputsActive[2] ? <FloatInput val={inputs[2]} handleChange={(newVal) => setInputs([inputs[0], inputs[1], newVal])} label={inputLabels[2]} /> : null}
 
-      {inputs[0]}
-      {id}
-      {data.sdf}
-      {"CHILDREN: "}
-      {data.children}
+      
+      <p>{`ID: ${id}`}</p>
+      <p>CHILDREN: {data.children}</p>
+      <p>SDF: {sdf}</p>
 
       <CustomHandle type="source" onConnect={(params) => sharedFunctions.connectSdf(params.source, params.target, params)}/>
 

@@ -19,7 +19,7 @@ export default function Dropdown(props) {
         label="Primitive"
       >
         {props.items.map((item) => (
-          <MenuItem value={item}>{item}</MenuItem>
+          <MenuItem key={item} value={item}>{item}</MenuItem>
         ))}
       </Select>
     </FormControl>

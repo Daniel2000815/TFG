@@ -31,8 +31,10 @@ export default function BooleanNode({ data, id }) {
   return (
     <div className="custom-node">
       <div className="custom-node-header">Boolean</div>
-      {Object.values(BooleanOperations)}
-      {operationSdf}
+      <p>{`ID: ${id}`}</p>
+      <p>CHILDREN: {data.children}</p>
+      <p>SDF: {operationSdf}</p>
+
       <Dropdown
         value={operation}
         onChange={setOperation}
