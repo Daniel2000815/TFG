@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import Shader from "./Shader.js";
 import { fs } from "./fragmentShader.js";
 import { useEffect } from "react";
@@ -19,8 +19,8 @@ const Primitives = {
 
 export default function PrimitiveNode({ data, id }) {
   const [primitive, setPrimitive] = React.useState(Primitives.Sphere);
-  const [sdf, setSdf] = React.useState("sphere(p, 1.0)");
-  const [showCanvas, setShowCanvas] = React.useState(true);
+  const [sdf, setSdf] = useState(data.sdf);
+  const [showCanvas, setShowCanvas] = React.useState(false);
   const [inputs, setInputs] = React.useState([1.0, 1.0, 1.0]);
   const [inputLabels, setInputLabels] = React.useState(["Radius", "", ""]);
   const [inputsActive, setInputsActive] = React.useState([true, false, false]);
@@ -36,11 +36,12 @@ export default function PrimitiveNode({ data, id }) {
   };
 
   useEffect(() => {
-    console.log("HA");
-    console.log(data);
+    console.log(`${id} HA RECIBIDO NUEVOS DATOS:`);
+    console.log(JSON.stringify(data));
   }, [data]);
 
   useEffect(() => {
+    console.log(`SDF DE ${id} MODIFICADO`);
     sharedFunctions.updateNodeSdf(id, sdf);
   }, [sdf]);
 
@@ -97,10 +98,10 @@ export default function PrimitiveNode({ data, id }) {
 
       
       <p>{`ID: ${id}`}</p>
-      <p>CHILDREN: {data.children}</p>
+      <p>CHILDREN: {Object.keys(data.children).map(key => `${data.children[key]}`).join(', ')}</p>
       <p>SDF: {sdf}</p>
 
-      <CustomHandle type="source" onConnect={(params) => sharedFunctions.connectSdf(params.source, params.target, params)}/>
+      <CustomHandle type="source"/>
 
       {showCanvas ? (
         <Shader

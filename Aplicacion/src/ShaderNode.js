@@ -1,38 +1,61 @@
-import React, { useState } from "react";
-import { Button } from "rsuite";
+import React, { useState, useContext, useEffect } from "react";
+import GraphContext from "./GraphContext.js";
+
 import Shader from "./Shader.js";
 import { fs } from "./fragmentShader.js";
-import InputVector3 from "./InputVector3.js";
-import {InputHandle, OutputHandle} from "./Handles.js";
+import Button from "@mui/material/Button";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 
-export default function ShaderNode({ data }) {
-    const [color, setColor] = useState([1.0, 0.0, 0.0]);
-  
-    return (
-      <div className="custom-node">
-        <div className="custom-node-header">Ejemplo:</div>
-        <div>
-          <InputHandle/>
-        </div>
-        <div>
-          <OutputHandle/>
-        </div>
-        <Button
-          onClick={() => setColor([Math.random(), Math.random(), Math.random()])}
-          appearance="primary"
-        >
-          Change Color
-        </Button>
+export default function ShaderNode({ data, id, computeSdf, content }) {
+  const [sdf, setSdf] = React.useState("sphere(p, 1.0)");
+  const [showCanvas, setShowCanvas] = useState(true);
+
+  const sharedFunctions = useContext(GraphContext);
+  useEffect(() => {
+    console.log("HA");
+    console.log(data);
+  }, [data]);
+
+  useEffect(() => {
+    sharedFunctions.updateNodeSdf(id, sdf);
+  }, [sdf]);
+
+  useEffect(() => {
+    console.log("STRAT");
+    computeSdf();
+  }, [sdf]);
+
+  return (
+    <div className="custom-node">
+      <div className="custom-node-header">Ejemplo:</div>
+
+      <p>{`ID: ${id}`}</p>
+      <p>CHILDREN: {data.children}</p>
+      <p>SDF: {sdf}</p>
+
+      {content}
+
+      {showCanvas ? (
         <Shader
-          shader={fs()}
-          uniforms={{ color: { type: "3fv", value: color } }}
+          shader={fs(sdf)}
+          uniforms={{ color: { type: "3fv", value: [1.0, 1.0, 0.0] } }}
           style={{ margin: "10px" }}
         />
-          <InputVector3 classPrefix="input" onChange={(x,y,z) => console.log("NUEVOS VALORES: " + x + ", " + y + ", " + z)}/>
-          <Button appearance="primary" block>
-            a
-          </Button>
-      </div>
-    );
-  }
+      ) : null}
+
+      <Button
+        onClick={() => setShowCanvas(!showCanvas)}
+        variant="contained"
+        className="custom-node-creater"
+        size="small"
+        endIcon={
+          showCanvas ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
+        }
+      >
+        {showCanvas ? "Hide canvas" : "Show canvas"}
+      </Button>
+    </div>
+  );
+}

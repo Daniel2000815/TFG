@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { getBezierPath, getEdgeCenter } from 'react-flow-renderer';
+import GraphContext from "./GraphContext.js";
 
 import './styles.css';
 
@@ -32,6 +33,7 @@ export default function CustomEdge({
   });
 
   const [showButton, setShowButton] = React.useState(false);
+  const sharedFunctions = useContext(GraphContext);
 
   return (
     <>
@@ -53,7 +55,7 @@ export default function CustomEdge({
       >
         {true ?
           <body>
-            <button className="edgebutton" onClick={() => {console.log("SI: " + id); data.onRemoveEdge(id)}}>
+            <button className="edgebutton" onClick={() => {console.log("SI: " + id); sharedFunctions.removeEdge(id)}}>
               ×
             </button>
           </body> 
