@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import CustomNode from "./CustomNode";
+import FloatInput from "./FloatInput.js";
 
 const Primitives = {
   Sphere: "Sphere",
@@ -56,10 +57,41 @@ export default function PrimitiveNode({ data, id }) {
 
   return (
     <CustomNode
-        title={"!Primitive"}
+      title={"!Primitive"}
       id={id}
       data={data}
       dropdownOptions={Object.values(Primitives)}
+      body={
+        <>
+          {inputsActive[0] ? (
+            <FloatInput
+              val={inputs[0]}
+              handleChange={(newVal) =>
+                setInputs([newVal, inputs[1], inputs[2]])
+              }
+              label={inputLabels[0]}
+            />
+          ) : null}
+          {inputsActive[1] ? (
+            <FloatInput
+              val={inputs[1]}
+              handleChange={(newVal) =>
+                setInputs([inputs[0], newVal, inputs[2]])
+              }
+              label={inputLabels[1]}
+            />
+          ) : null}
+          {inputsActive[2] ? (
+            <FloatInput
+              val={inputs[2]}
+              handleChange={(newVal) =>
+                setInputs([inputs[0], inputs[1], newVal])
+              }
+              label={inputLabels[2]}
+            />
+          ) : null}
+        </>
+      }
       onChangeOption={setPrimitive}
       sdf={sdf}
     />

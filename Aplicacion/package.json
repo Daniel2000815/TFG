@@ -18,6 +18,7 @@
     "react-flow-renderer": "10.3.11",
     "react-ratio": "0.1.5",
     "react-scripts": "3.4.3",
+    "react-scroll-wheel-handler": "^2.2.0",
     "rsuite": "4.8.4",
     "shadertoy-react": "1.1.2"
   },

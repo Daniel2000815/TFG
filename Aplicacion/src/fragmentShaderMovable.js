@@ -1,5 +1,7 @@
+import { primitives } from "./primitives";
+
 export const fs = (sdf) => {
-    return `
+  return `
     
     // https://thebookofshaders.com/03/?lan=es
   // https://thebookofshaders.com/03/
@@ -22,7 +24,8 @@ export const fs = (sdf) => {
   const float MIN_DIST = 0.0;
   const float MAX_DIST = 100.0;
 
-  uniform bool leftClick;
+  vec3 cameraPos                    = vec3(10.0, 1.0, 10.0);
+  ${primitives()}
 
   struct Material
   {
@@ -32,18 +35,9 @@ export const fs = (sdf) => {
       float smoothness;
   };
   
-  float sdfCube(vec3 p, vec3 dim){
-      vec3 d = abs(p) - dim;
-  
-      float insideDistance = min(max(d.x, max(d.y, d.z)), 0.0);
-      float outsideDistance = length(max(d, 0.0));
-      
-      return insideDistance + outsideDistance;
-  }
-  
-  float map( in vec3 pos )
+  float map( in vec3 p )
   {
-      return  sdfCube(pos, vec3(1.0));
+    return ${sdf};
   }
   
   
@@ -109,14 +103,21 @@ export const fs = (sdf) => {
       );
   }
   
+  float clamp(float val){
+    if(val < 0.0)   return 0.0;
+    if(val >1.0)    return 1.0;
+
+    return val;
+}
+
   void main() {
-      Material mat_red = Material(
+      Material mat_yellow = Material(
           vec3(1.0, 1.0, 1.0),    // specular
           vec3(1.0, 1.0,0.0),        // diffuse
           vec3(0.2),              // ambient
           10.0                    // shiness
       );
-      vec3 cameraPos                    = vec3(10.0, 1.0, 10.0);
+      
       const vec3 backGroundColor  = vec3(0.7);
       vec2 mouseStartPos, mouseCurrPos;
       vec2 mouse = iMouse.xy / iResolution.xy;
@@ -127,8 +128,10 @@ export const fs = (sdf) => {
 
         float angleX = 6.28 * mouse.x;
         float angleY =  mouse.y * 6.28 ;
-        cameraPos	= 12.0 * (vec3(sin(angleX)*cos(angleY), sin(angleY), cos(angleX)*cos(angleY)));
+        cameraPos	= distance * (vec3(sin(angleX)*cos(angleY), sin(angleY), cos(angleX)*cos(angleY)));
       }
+
+      
 
       for( int m=0; m<AA; m++ ){
           for( int n=0; n<AA; n++ ){
@@ -146,7 +149,7 @@ export const fs = (sdf) => {
                       vec3 p = cameraPos + depth * worldDir;
                       vec3 n = normal(p);
   
-                      gl_FragColor = vec4(lighting(p, n, cameraPos, mat_red), 1.0);
+                      gl_FragColor = vec4(lighting(p, n, cameraPos, mat_yellow), 1.0);
                       return;
                   }
   
@@ -163,5 +166,4 @@ export const fs = (sdf) => {
 
   
   `;
-  };
-  
+};

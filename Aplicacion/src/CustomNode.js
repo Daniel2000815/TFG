@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import Shader from "./Shader";
-import { fs } from "./fragmentShader";
+import { fs } from "./fragmentShaderMovable";
 import Dropdown from "./Dropdown";
 import CustomHandle from "./CustomHandle";
 import GraphContext from "./GraphContext.js";
@@ -61,11 +61,15 @@ export default function CustomNode(props) {
         style={{ top: "50%" }}
       />
 
+        {props.body}
       {showCanvas ? (
         <Shader
           shader={fs(props.sdf)}
-          uniforms={{ color: { type: "3fv", value: [1.0, 1.0, 0.0] } }}
-          style={{ margin: "10px" }}
+          uniforms={{ 
+            color:    { type: "3fv" , value: [1.0, 1.0, 0.0] },
+            
+           }}
+          style={{ margin: "10px", height:"100%" }}
         />
       ) : null}
 

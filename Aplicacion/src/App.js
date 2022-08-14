@@ -48,7 +48,7 @@ function MainContent(){
         <Col xs={6}>
           <Shader 
             style={{height: "100vh"}}
-            shader={fs()} 
+            shader={fs("box(p, vec3(1.0))")} 
             uniforms={{ color: { type: "3fv", value: [1.0, 1.0, 0.0] } }}
           />
         </Col>
