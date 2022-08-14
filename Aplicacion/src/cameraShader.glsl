@@ -39,6 +39,58 @@ float sdfCube(vec3 p,vec3 dim){
 	return insideDistance+outsideDistance;
 }
 
+vec3 opRepLim( in vec3 p, in float s, in vec3 lim )
+{
+    return p-s*clamp(floor(p/s+0.5),-lim,lim);
+}
+
+
+float opSmoothUnion( float d1, float d2, float k ) {
+    float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
+    return mix( d2, d1, h ) - k*h*(1.0-h); 
+}
+
+float opSmoothSubtraction( float d1, float d2, float k ) {
+    float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
+    return mix( d2, -d1, h ) + k*h*(1.0-h); 
+}
+
+float opSmoothIntersection( float d1, float d2, float k ) {
+    float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
+    return mix( d2, d1, h ) + k*h*(1.0-h); 
+}
+
+vec3 opTwist( in vec3 p, in float k )
+{
+    float c = cos(k*p.y);
+    float s = sin(k*p.y);
+    mat2  m = mat2(c,-s,s,c);
+    vec3  q = vec3(m*p.xz,p.y);
+    return q;
+}
+
+vec3 opCheapBend(in vec3 p, in float k )
+{
+    float c = cos(k*p.x);
+    float s = sin(k*p.x);
+    mat2  m = mat2(c,-s,s,c);
+    vec3  q = vec3(m*p.xy,p.z);
+    return q;
+}
+
+
+vec3 opSymX( in vec3 p )
+{
+    p.x = abs(p.x);
+    return p;
+}
+
+vec3 opSymXZ( in vec3 p)
+{
+    p.xz = abs(p.xz);
+    return p;
+}
+
 float line(in vec3 p,in vec3 start,in vec3 end,in float thickness){
 	vec3 ba=end-start;
 	vec3 pa=p-start;
@@ -57,7 +109,7 @@ float axes(in vec3 pos){
 }
 float map(in vec3 pos)
 {
-	return min(sdfCube(pos,vec3(.5)),axes(pos));
+	return  sdfCube(opSymXZ(pos), vec3(.5));
 }
 
 vec3 rayDirection(vec2 size,vec2 fragCoord){

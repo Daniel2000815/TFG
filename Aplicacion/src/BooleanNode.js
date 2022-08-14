@@ -5,6 +5,7 @@ const BooleanOperations = {
     Union: "Union",
     Difference: "Difference",
     Intersection: "Intersection",
+    Repetition: "Repetition"
   };
   
   export default function BooleanNode({ data, id }) {
@@ -26,6 +27,10 @@ const BooleanOperations = {
         setSdf(`max(${inputs})`);
       else if (operation === BooleanOperations.Difference)
         setSdf(`max(-${inputs})`);
+      else if (operation === BooleanOperations.Repetition)
+        setSdf(`max(-${inputs})`);
+
+
     }, [data, operation]);
   
     return (
