@@ -39,9 +39,25 @@ float sdfCube(vec3 p,vec3 dim){
 	return insideDistance+outsideDistance;
 }
 
+float line(in vec3 p,in vec3 start,in vec3 end,in float thickness){
+	vec3 ba=end-start;
+	vec3 pa=p-start;
+	float h=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);
+	return length(pa-h*ba)-thickness;
+}
+
+float axes(in vec3 pos){
+	return min(
+		line(pos,vec3(0.),vec3(0.,1.,0.),.02),
+		min(
+			line(pos,vec3(0.),vec3(0.,0.,1.),.02),
+			line(pos,vec3(0.),vec3(1.,0.,0.),.02)
+		)
+	);
+}
 float map(in vec3 pos)
 {
-	return sdfCube(pos,vec3(1.));
+	return min(sdfCube(pos,vec3(.5)),axes(pos));
 }
 
 vec3 rayDirection(vec2 size,vec2 fragCoord){

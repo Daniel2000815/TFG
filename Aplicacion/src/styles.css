@@ -1,3 +1,11 @@
+:root {
+  --myBlue: #192A51;
+  --myYellow: #FFBA08;
+  --myGreen: #369683;
+  --myRed: #E63946;
+  --myGrey: #EFF7FF;
+}
+
 .navbar-brand {
   padding: 18px 20px;
   display: inline-block;
@@ -16,7 +24,7 @@ h3 {
   border-radius: 7px 7px 7px 7px;
   border-bottom-width: 10px solid #000;
   padding-bottom: 20px;
-  border: 1px solid transparent;
+  border: 1px solid grey;
   transition: border 300ms ease;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
@@ -30,6 +38,7 @@ h3 {
   flex-grow: 1;
   padding: 8px 12px;
   margin-bottom: 16px;
+  background-color: var(--myGrey);
   color: #312227;
   border-radius: 7px 7px 0px 0px;
   border-bottom: 2px solid grey;

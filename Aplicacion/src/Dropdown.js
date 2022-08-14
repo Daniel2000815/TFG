@@ -12,6 +12,7 @@ export default function Dropdown(props) {
     <FormControl onClick={() => setOpen(!open)} sx={{ m: 1, minWidth: 80 }}>
       <InputLabel>{props.label}</InputLabel>
       <Select
+        defaultValue={props.defaultValue}
         value={props.value}
         onChange={(ev) => props.onChange(ev.target.value)}
         autoWidth
@@ -19,7 +20,9 @@ export default function Dropdown(props) {
         label="Primitive"
       >
         {props.items.map((item) => (
-          <MenuItem key={item} value={item}>{item}</MenuItem>
+          <MenuItem key={item} value={item}>
+            {item}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

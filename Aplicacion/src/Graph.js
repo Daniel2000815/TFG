@@ -25,11 +25,13 @@ const initialNodes = [
     id: `prim-0`,
     type: "primitiveNode",
     position: { x: -50, y: -150 },
+    dragHandle: ".custom-node-header",
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `prim-1`,
     type: "primitiveNode",
+    dragHandle: ".custom-node-header",
     position: { x: -50, y: 200 },
     data: { inputs: {}, sdf: "", children: [] },
   },
@@ -37,23 +39,27 @@ const initialNodes = [
     id: `prim-2`,
     type: "primitiveNode",
     position: { x: -50, y: 550 },
+    dragHandle: ".custom-node-header",
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `bool-0`,
     type: "booleanNode",
+    dragHandle: ".custom-node-header",
     position: { x: 200, y: 25 },
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `bool-1`,
     type: "booleanNode",
+    dragHandle: ".custom-node-header",
     position: { x: 200, y: 325 },
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `bool-2`,
     type: "booleanNode",
+    dragHandle: ".custom-node-header",
     position: { x: 450, y: 150 },
     data: { inputs: {}, sdf: "", children: [] },
   },
@@ -233,6 +239,7 @@ export default function Graph() {
     return {
       id: nodeId,
       type: "primitiveNode",
+      dragHandle: ".custom-node-header",
       position: { x: xPos, y: yPos },
       data: {
         inputs: {},
@@ -247,6 +254,7 @@ export default function Graph() {
     return {
       id: `node-${id}`,
       type: "booleanNode",
+      dragHandle: ".custom-node-header",
       position: { x: xPos, y: yPos },
       data: { inputs: {}, sdf: "", children: [] },
     };

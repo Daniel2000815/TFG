@@ -22,4 +22,11 @@ export const primitives = () => `
     return min(max(d.x,d.y),0.0) + length(max(d,0.0));
     }
 
+    float line(in vec3 p, in vec3 start, in vec3 end, in float thickness) {
+        vec3 ba = end - start;
+        vec3 pa = p - start;
+        float h = clamp(dot(pa, ba) / dot(ba, ba), 0., 1.);
+        return length(pa - h * ba) - thickness;
+    }
+
 `
