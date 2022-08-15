@@ -295,7 +295,7 @@ export default function Graph() {
           snapToGrid={true}
           fitView
         >
-          <Background color="#aaa" gap={10} />
+          <Background variant="lines" color="#aaa" gap={10} />
           <CustomControls save={onSave} load={onLoad}/>
         </ReactFlow>
       </GraphProvider>

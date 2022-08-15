@@ -1,9 +1,14 @@
 :root {
-  --myBlue: #192A51;
-  --myYellow: #FFBA08;
-  --myGreen: #369683;
-  --myRed: #E63946;
-  --myGrey: #EFF7FF;
+  --myBlue:     #609dff;
+  --myDarkBlue: #166cf5;
+  
+  --myRed:      #ff5858;
+  --myDarkRed:  #ff2323;
+
+  --myGrey:     #EFF7FF;
+  --myPurple:   #8771ff;
+  --myYellow:   #faff76;
+  --myGreen:    #90ff7a;
 }
 
 .navbar-brand {
@@ -18,37 +23,70 @@ h3 {
   position: relative;
   min-width: 150px;
   max-width: 150px;
-  background-color: #fff;
+  
   display: flex;
   flex-direction: column;
-  border-radius: 7px 7px 7px 7px;
-  border-bottom-width: 10px solid #000;
+  
   padding-bottom: 20px;
-  border: 1px solid grey;
+  
   transition: border 300ms ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+  border-radius: 7px 7px 7px 7px;
+  border: 1px solid #fff;
+  border-bottom-width: 10px solid #000;
+
+  background-color: #fff;
+
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
 .custom-node:hover {
-  transition: border 300ms ease;
-  border: 1px solid #cacddb;
+  transition: box-shadow 200ms ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.25);
+  
 }
 
 .custom-node-header {
   flex-grow: 1;
   padding: 8px 12px;
   margin-bottom: 16px;
-  background-color: var(--myGrey);
-  color: #312227;
-  border-radius: 7px 7px 0px 0px;
-  border-bottom: 2px solid grey;
+  
+  color: var(--myGrey);
+  border-radius: 5px 5px 0px 0px;
   border-bottom-width: 10px solid #000;
   text-align: left;
+  
   font-weight: 600;
   font-size: 14px;
   letter-spacing: 0.1px;
-  border-bottom: 2px solid grey;
   justify-content: flex-start;
+
+  
+}
+
+.custom-node-primitive {
+  border: 1px solid var(--myBlue);
+}
+
+.custom-node-primitive:hover {
+  border: 1px solid var(--myDarkBlue);
+}
+
+.custom-node-header-primitive {
+  background-color: var(--myBlue);
+}
+
+.custom-node-boolean {
+  border: 1px solid var(--myRed);
+}
+
+.custom-node-boolean:hover {
+  border: 1px solid var(--myDarkRed);
+}
+
+.custom-node-header-boolean {
+  background-color: var(--myRed);
 }
 
 .custom-node-subheader {

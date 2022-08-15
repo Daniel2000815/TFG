@@ -21,8 +21,8 @@ export default function CustomNode(props) {
   }, [props.sdf]);
 
   return (
-    <div className="custom-node">
-      <div className="custom-node-header">{props.title}</div>
+    <div className={`custom-node custom-node-${props.styleClass}`}>
+      <div className={`custom-node-header custom-node-header-${props.styleClass}`}>{props.title}</div>
       <p>{`ID: ${props.id}`}</p>
       <p>
         CHILDREN:{" "}

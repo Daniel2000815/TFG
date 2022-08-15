@@ -61,6 +61,7 @@ export default function PrimitiveNode({ data, id }) {
       id={id}
       data={data}
       dropdownOptions={Object.values(Primitives)}
+      styleClass="primitive"
       body={
         <>
           {inputsActive[0] ? (

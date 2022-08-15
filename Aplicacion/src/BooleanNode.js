@@ -41,6 +41,7 @@ const BooleanOperations = {
         dropdownOptions={Object.values(BooleanOperations)}
         onChangeOption={setOperation}
         sdf={sdf}
+        styleClass="boolean"
       />
     );
   }
