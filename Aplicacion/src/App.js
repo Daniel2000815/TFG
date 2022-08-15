@@ -16,8 +16,8 @@ import Graph from "./Graph";
 import "rsuite/dist/styles/rsuite-default.css";
 
 import "./styles.css";
-import Shader from "./Shader";
-import {fs} from "./fragmentShaderMovable";
+import Shader from "./CustomComponents/Shader";
+import {fs} from "./ShaderStuff/fragmentShaderMovable";
 
 const NavBarExample = () => {
   return (

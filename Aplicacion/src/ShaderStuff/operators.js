@@ -1,0 +1,54 @@
+export const operators = () => `
+    vec3 sdfTwist( in vec3 p, in float k )
+    {
+        float c = cos(k*p.y);
+        float s = sin(k*p.y);
+        mat2  m = mat2(c,-s,s,c);
+        vec3  q = vec3(m*p.xz,p.y);
+        return q;
+    }
+
+    vec3 sdfBend(in vec3 p, in float k )
+    {
+        float c = cos(k*p.x);
+        float s = sin(k*p.x);
+        mat2  m = mat2(c,-s,s,c);
+        vec3  q = vec3(m*p.xy,p.z);
+        return q;
+    }
+    vec3 sdfRepeat( in vec3 p, in float s, in vec3 lim )
+    {
+        return p-s*clamp(floor(p/s+0.5),-lim,lim);
+    }
+
+    float sdfUnion( float d1, float d2 ) {
+        
+        return min(d1,d2);
+    }
+
+    float sdfSmoothUnion( float d1, float d2, float k ) {
+        float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
+        return mix( d2, d1, h ) - k*h*(1.0-h); 
+    }
+
+    float sdfDifference( float d1, float d2 ) {
+        
+        return max(-d1,d2);
+    }
+
+    float sdfSmoothDifference( float d1, float d2, float k ) {
+        float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
+        return mix( d2, -d1, h ) + k*h*(1.0-h); 
+    }
+
+    float sdfIntersection( float d1, float d2 ) {
+        
+        return max(d1,d2);
+    }
+
+    float sdfSmoothIntersection( float d1, float d2, float k ) {
+        float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
+        return mix( d2, d1, h ) + k*h*(1.0-h); 
+    }
+
+`

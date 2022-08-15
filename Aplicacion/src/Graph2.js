@@ -3,7 +3,6 @@ import ReactFlow, {
   getSmoothStepPath,
   getMarkerEnd,
   getEdgeCenter,
-  removeElements,
   addEdge
 } from "react-flow-renderer";
 

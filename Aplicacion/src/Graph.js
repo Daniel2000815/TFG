@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import ReactFlow, {
   addEdge,
   Background,
@@ -7,11 +7,9 @@ import ReactFlow, {
   useEdgesState,
   MarkerType,
 } from "react-flow-renderer";
-import PrimitiveNode from "./PrimitiveNode.js";
-import BooleanNode from "./BooleanNode.js";
-import ButtonEdge from "./ButtonEdge";
-import ShaderNode from "./ShaderNode.js";
-import TestNode from "./TestNode.js";
+import PrimitiveNode from "./CustomNodes/PrimitiveNode.js";
+import BooleanNode from "./CustomNodes/BooleanNode.js";
+import ButtonEdge from "./CustomNodes/ButtonEdge";
 import CustomControls from "./CustomControls.js";
 import "./styles.css";
 import { GraphProvider } from "./GraphContext.js";
@@ -217,6 +215,8 @@ export default function Graph() {
   const onSave = () => {
     if (rfInstance) {
       const flow = rfInstance.toObject();
+      console.log("FLOW SAVED:");
+      console.log(flow);
       localStorage.setItem(flowKey, JSON.stringify(flow));
     }
   };
@@ -225,7 +225,7 @@ export default function Graph() {
     const flow = JSON.parse(localStorage.getItem(flowKey));
 
     if (flow) {
-      console.log("FLOW");
+      console.log("FLOW LOADED:");
       console.log(flow);
       const { x = 0, y = 0, zoom = 1 } = flow.viewport;
       setNodes(flow.nodes || []);
