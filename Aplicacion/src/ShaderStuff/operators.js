@@ -51,4 +51,46 @@ export const operators = () => `
         return mix( d2, d1, h ) + k*h*(1.0-h); 
     }
 
+    // https://stackoverflow.com/questions/34050929/3d-point-rotation-algorithm
+    vec3 sdfRotate(vec3 p, vec3 ang) {
+        float pitch = ang.x;
+        float roll = ang.y;
+        float yaw = ang.z;
+
+        float cosa = cos(yaw);
+        float sina = sin(yaw);
+
+        float cosb = cos(pitch);
+        float sinb = sin(pitch);
+
+        float cosc = cos(roll);
+        float sinc = sin(roll);
+
+        float Axx = cosa*cosb;
+        float Axy = cosa*sinb*sinc - sina*cosc;
+        float Axz = cosa*sinb*cosc + sina*sinc;
+
+        float Ayx = sina*cosb;
+        float Ayy = sina*sinb*sinc + cosa*cosc;
+        float Ayz = sina*sinb*cosc - cosa*sinc;
+
+        float Azx = -sinb;
+        float Azy = cosb*sinc;
+        float Azz = cosb*cosc;
+
+        float px = p.x;
+        float py = p.y;
+        float pz = p.z;
+
+        p.x = Axx*px + Axy*py + Axz*pz;
+        p.y = Ayx*px + Ayy*py + Ayz*pz;
+        p.z = Azx*px + Azy*py + Azz*pz;
+        
+        return p;
+    }
+
+    vec3 sdfTranslate(vec3 p, vec3 t) {
+        return p+t;
+    }
+
 `

@@ -10,7 +10,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 
 export default function CustomNode(props) {
-  const [showCanvas, setShowCanvas] = React.useState(false);
+  const [showCanvas, setShowCanvas] = React.useState(true);
 
   const sharedFunctions = useContext(GraphContext);
 
@@ -40,6 +40,8 @@ export default function CustomNode(props) {
           label={props.title}
         />
       ) : null}
+
+      
 
       <CustomHandle
         id={"0"}

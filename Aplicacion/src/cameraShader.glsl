@@ -60,6 +60,8 @@ float opSmoothIntersection( float d1, float d2, float k ) {
     return mix( d2, d1, h ) + k*h*(1.0-h); 
 }
 
+
+
 vec3 opTwist( in vec3 p, in float k )
 {
     float c = cos(k*p.y);
@@ -107,9 +109,53 @@ float axes(in vec3 pos){
 		)
 	);
 }
+
+
+// https://stackoverflow.com/questions/34050929/3d-point-rotation-algorithm
+vec3 sdfRotate(vec3 p, vec3 ang) {
+	float pitch = ang.x;
+	float roll = ang.y;
+	float yaw = ang.z;
+
+    float cosa = cos(yaw);
+    float sina = sin(yaw);
+
+    float cosb = cos(pitch);
+    float sinb = sin(pitch);
+
+    float cosc = cos(roll);
+    float sinc = sin(roll);
+
+    float Axx = cosa*cosb;
+    float Axy = cosa*sinb*sinc - sina*cosc;
+    float Axz = cosa*sinb*cosc + sina*sinc;
+
+    float Ayx = sina*cosb;
+    float Ayy = sina*sinb*sinc + cosa*cosc;
+    float Ayz = sina*sinb*cosc - cosa*sinc;
+
+    float Azx = -sinb;
+    float Azy = cosb*sinc;
+    float Azz = cosb*cosc;
+
+	float px = p.x;
+	float py = p.y;
+	float pz = p.z;
+
+	p.x = Axx*px + Axy*py + Axz*pz;
+	p.y = Ayx*px + Ayy*py + Ayz*pz;
+	p.z = Azx*px + Azy*py + Azz*pz;
+    
+	return p;
+}
+
+vec3 sdfTranslate(vec3 p, vec3 t) {
+    return p+t;
+}
+
 float map(in vec3 pos)
 {
-	return  sdfCube(opSymXZ(pos), vec3(.5));
+	return  sdfCube(sdfRotate(pos, vec3(1.5, 0.5, 0.8)), vec3(.5));
 }
 
 vec3 rayDirection(vec2 size,vec2 fragCoord){
@@ -173,6 +219,10 @@ vec3 normal(vec3 p){
 			vec4(0.,0.,0.,1)
 		);
 	}
+
+	float axis(vec3 p, vec3 dir){
+		return min(line(p,vec3(0.), dir, .01), sdfCube(p-dir, vec3(0.02)));
+	}
 	
 	void main(){
 		Material mat_red=Material(
@@ -203,24 +253,40 @@ vec3 normal(vec3 p){
 				
 				// raytracing
 				for(int i=0;i<MAX_MARCHING_STEPS;i++){
-					float dist=map(cameraPos+depth*worldDir);
-					if(dist<EPSILON){
-						vec3 p=cameraPos+depth*worldDir;
+					vec3 p=cameraPos+depth*worldDir;
+					float xDist = axis(p, vec3(1.0, 0.0, 0.0));
+					float yDist = axis(p, vec3(0.0, 1.0, 0.0));
+					float zDist = axis(p, vec3(0.0, 0.0, 1.0));
+
+					float surfaceDist = map(p);
+
+					float dist = min(xDist, min(yDist, min(zDist, surfaceDist)));
+					float xAxes = axes(p);
+
+					if(xDist < EPSILON)	gl_FragColor=vec4(1.0, 0.0, 0.0,1.);
+					if(yDist < EPSILON)	gl_FragColor=vec4(0.0, 1.0, 0.0,1.);
+					if(zDist < EPSILON)	gl_FragColor=vec4(0.0, 0.0, 1.0,1.);
+
+					if(surfaceDist<EPSILON){
+						
 						vec3 n=normal(p);
 						
 						gl_FragColor=vec4(lighting(p,n,cameraPos,mat_red),1.);
-						return;
+						break;
 					}
+					
 					
 					depth+=dist;
 					
 					if(depth>=MAX_DIST){
 						gl_FragColor=vec4(backGroundColor.xyz,1.);
-						return;
+						break;
 					}
 				}
 			}
 		}
+    
+
 	}
 	
 	

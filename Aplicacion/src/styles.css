@@ -1,14 +1,20 @@
 :root {
-  --myBlue:     #609dff;
-  --myDarkBlue: #166cf5;
+  --myBlue:       #609dff;
+  --myDarkBlue:   #166cf5;
   
-  --myRed:      #ff5858;
-  --myDarkRed:  #ff2323;
+  --myRed:        #ff5858;
+  --myDarkRed:    #ff2323;
 
-  --myGrey:     #EFF7FF;
-  --myPurple:   #8771ff;
-  --myYellow:   #faff76;
-  --myGreen:    #90ff7a;
+  --myGreen:      #3ec224;
+  --myDarkGreen:  #1c9404;
+
+  --myYellow:     #ffbb62;
+  --myDarkYellow: #fa9c21;
+
+  --myGrey:       #EFF7FF;
+  --myPurple:     #8771ff;
+  
+  
 }
 
 .navbar-brand {
@@ -77,6 +83,8 @@ h3 {
   background-color: var(--myBlue);
 }
 
+/* ------------------------------------- */
+
 .custom-node-boolean {
   border: 1px solid var(--myRed);
 }
@@ -88,6 +96,36 @@ h3 {
 .custom-node-header-boolean {
   background-color: var(--myRed);
 }
+
+/* ------------------------------------- */
+
+.custom-node-deform {
+  border: 1px solid var(--myGreen);
+}
+
+.custom-node-deform:hover {
+  border: 1px solid var(--myDarkGreen);
+}
+
+.custom-node-header-deform {
+  background-color: var(--myGreen);
+}
+
+/* ------------------------------------- */
+
+.custom-node-transform {
+  border: 1px solid var(--myYellow);
+}
+
+.custom-node-transform:hover {
+  border: 1px solid var(--myDarkYellow);
+}
+
+.custom-node-header-transform {
+  background-color: var(--myYellow);
+}
+
+/* ------------------------------------- */
 
 .custom-node-subheader {
   flex-direction: column;

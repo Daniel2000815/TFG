@@ -20,6 +20,7 @@ export default function PrimitiveNode({ data, id }) {
     setInputLabels([label1, label2, label3]);
     setInputsActive([label1, label2, label3]);
   };
+  
   useEffect(() => {
     console.log("ACTUALIZADO SDF");
     if (primitive == Primitives.Sphere) {

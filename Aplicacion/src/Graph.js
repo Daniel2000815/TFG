@@ -9,20 +9,23 @@ import ReactFlow, {
 } from "react-flow-renderer";
 import PrimitiveNode from "./CustomNodes/PrimitiveNode.js";
 import BooleanNode from "./CustomNodes/BooleanNode.js";
+import DeformNode from "./CustomNodes/DeformNode.js";
+import TransformNode from "./CustomNodes/TransformNode.js";
+
 import ButtonEdge from "./CustomNodes/ButtonEdge";
 import CustomControls from "./CustomControls.js";
 import "./styles.css";
 import { GraphProvider } from "./GraphContext.js";
 
 const flowKey = "savedGraph";
-const nodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode };
+const nodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode, deformNode: DeformNode, transformNode:  TransformNode};
 const edgeTypes = { buttonEdge: ButtonEdge };
 
 const initialNodes = [
   {
     id: `prim-0`,
     type: "primitiveNode",
-    position: { x: -50, y: -150 },
+    position: { x: -50, y: -350 },
     dragHandle: ".custom-node-header",
     data: { inputs: {}, sdf: "", children: [] },
   },
@@ -30,28 +33,28 @@ const initialNodes = [
     id: `prim-1`,
     type: "primitiveNode",
     dragHandle: ".custom-node-header",
-    position: { x: -50, y: 200 },
+    position: { x: -50, y: 125 },
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `prim-2`,
     type: "primitiveNode",
-    position: { x: -50, y: 550 },
+    position: { x: -50, y: 600 },
     dragHandle: ".custom-node-header",
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
-    id: `bool-0`,
-    type: "booleanNode",
+    id: `deform-0`,
+    type: "deformNode",
     dragHandle: ".custom-node-header",
-    position: { x: 200, y: 25 },
+    position: { x: 200, y: -125 },
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
-    id: `bool-1`,
-    type: "booleanNode",
+    id: `transform-0`,
+    type: "transformNode",
     dragHandle: ".custom-node-header",
-    position: { x: 200, y: 325 },
+    position: { x: 200, y: 375 },
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
@@ -233,12 +236,12 @@ export default function Graph() {
     }
   };
 
-  const newPrimitiveNode = (xPos = 0, yPos = 0) => {
+  const newNode = (nodeType, xPos = 0, yPos = 0) => {
     setId(id + 1);
     const nodeId = `node-${id}`;
     return {
       id: nodeId,
-      type: "primitiveNode",
+      type: nodeType,
       dragHandle: ".custom-node-header",
       position: { x: xPos, y: yPos },
       data: {
@@ -247,30 +250,18 @@ export default function Graph() {
         children: [],
       },
     };
-  };
-
-  const newBooleanNode = (xPos = 0, yPos = 0) => {
-    setId(id + 1);
-    return {
-      id: `node-${id}`,
-      type: "booleanNode",
-      dragHandle: ".custom-node-header",
-      position: { x: xPos, y: yPos },
-      data: { inputs: {}, sdf: "", children: [] },
-    };
-  };
+  }
 
   const handleKey = (e) => {
+    let node = null;
+
     // SPACE BAR
-    if (e.key.toLowerCase() === "p") {
-      const node = newPrimitiveNode();
-      nodes.push(node);
+    if (e.key.toLowerCase() === "p")      node = newNode("primitiveNode");
+    else if (e.key.toLowerCase() === "b") node = newNode("booleanNode");
+    else if (e.key.toLowerCase() === "d") node = newNode("deformNode");
 
-      onNodesChange([node]); // Para actualizar
-    } else if (e.key.toLowerCase() === "b") {
-      const node = newBooleanNode();
+    if(node){
       nodes.push(node);
-
       onNodesChange([node]); // Para actualizar
     }
   };
