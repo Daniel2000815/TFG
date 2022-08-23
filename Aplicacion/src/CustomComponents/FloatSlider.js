@@ -3,12 +3,13 @@ import Slider from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
 
 const CustomSlider = styled(Slider)(({ theme }) => ({
-    color: theme.palette.boolean,
+    color: theme.palette.primary,
     "& .MuiSlider-thumb": {
-        backgroundColor: theme.palette.boolean //color of thumbs
+        backgroundColor: theme.palette.primary
     },
     "& .MuiSlider-rail": {
-        color: theme.palette.boolean ////color of the slider outside  teh area between thumbs
+        opacity: 0.5,
+        backgroundColor: theme.palette.primary
     }
 }));
 

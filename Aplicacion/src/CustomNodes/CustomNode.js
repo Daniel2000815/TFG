@@ -7,15 +7,67 @@ import Dropdown from "../CustomComponents/Dropdown";
 import CustomHandle from "./CustomHandle";
 import GraphContext from "../GraphContext.js";
 import Button from "@mui/material/Button";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
+import ToggleButton from "../CustomComponents/ToggleButton";
 
 export default function CustomNode(props) {
   const [showMore, setShowMore] = React.useState(true);
+  const [isHover, setIsHover] = React.useState(false);
 
   const sharedFunctions = useContext(GraphContext);
   const theme = useTheme();
+
+  const nodeStyle = {
+    position: "relative",
+    minWidth: "150px",
+    maxWidth: "150px",
+    display: "flex",
+    flexDirection: "column",
+    transition: "border 300ms ease",
+    boxShadow: "0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)",
+    borderRadius: "7px 7px 7px 7px",
+    borderBottomWidth: "10px solid #000",
+    backgroundColor: "#fff",
+
+    boxShadow: isHover ?
+      "0 6px 12px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.25)" :
+      "0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)",
+
+    border: isHover ?
+      `2px solid ${theme.palette.primary.dark}` :
+      `2px solid ${theme.palette.primary.main}`,
+
+    "&:hover": {
+      transition: "box-shadow 200ms ease",
+      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.25)",
+      border: `1px solid ${theme.palette.primary.dark}`
+    },
+  }
+
+
+  const headerStyle = {
+    flexGrow: "1",
+    padding: "8px 12px",
+    marginBottom: "16px",
+    width: "100%",
+    color: "#EFF7FF",
+    borderRadius: "5px 5px 0px 0px",
+    borderBottomWidth: "10px solid #000",
+    textAlign: "left",
+    fontWeight: "600",
+    fontSize: "14px",
+    letterSpacing: "0.1px",
+    justifyContent: "flex-start",
+    backgroundColor: `${theme.palette.primary.main}`
+  }
+
+  const handleMouseEnter = () => {
+    setIsHover(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHover(false);
+  };
 
   useEffect(() => {
     console.log(`SDF DE ${props.id} MODIFICADO`);
@@ -24,10 +76,8 @@ export default function CustomNode(props) {
   }, [props.sdf]);
 
   return (
-    <div className={`custom-node custom-node-${props.styleClass}`}>
-      <div className={`custom-node-header custom-node-header-${props.styleClass}`}>{props.title}</div>
-      
-
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={nodeStyle}>
+      <div className="nodeHeader" style={headerStyle}>{props.title}</div>
       
       {props.dropdownOptions ? (
         <Dropdown
@@ -37,6 +87,7 @@ export default function CustomNode(props) {
           label={props.title}
         />
       ) : null}
+
       <CustomHandle
         id={"0"}
         type="target"
@@ -58,42 +109,35 @@ export default function CustomNode(props) {
         style={{ top: "50%" }}
       />
 
-        
+
       {showMore ? (
         <>
-        <p>{`ID: ${props.id}`}</p>
-      <p>
-        CHILDREN:{" "}
-        {Object.keys(props.data.children)
-          .map((key) => `${props.data.children[key]}`)
-          .join(", ")}
-      </p>
-      <p>{`SDF: ${props.sdf}`}</p>
-      
-      
-      
-        {props.body}
-        <Shader
-          shader={fs(props.sdf)}
-          uniforms={{ 
-            color:    { type: "3fv" , value: [1.0, 1.0, 0.0] },
-            
-           }}
-          style={{ margin: "10px", height:"100%" }}
-        />
+          <p>{`ID: ${props.id}`}</p>
+          <p>
+            CHILDREN:{" "}
+            {Object.keys(props.data.children)
+              .map((key) => `${props.data.children[key]}`)
+              .join(", ")}
+          </p>
+          <p>{`SDF: ${props.sdf}`}</p>
+
+
+
+          {props.body}
+          <Shader
+            shader={fs(props.sdf)}
+            uniforms={{
+              color: { type: "3fv", value: [1.0, 1.0, 0.0] },
+
+            }}
+            style={{ margin: "10px", height: "100%" }}
+          />
         </>
       ) : null}
 
-      <Button
-        onClick={() => setShowMore(!showMore)}
-        variant="contained"
-        size="small"
-        style={{width: "100%", borderRadius: "0 0 5px 5px", height: "15px", backgroundColor: theme.palette[props.styleClass] }}
-        endIcon={
-          showMore ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
-        }
-      >
-      </Button>
+
+      <ToggleButton value={showMore} onClick={() => setShowMore(!showMore)} />
+      
     </div>
   );
 }

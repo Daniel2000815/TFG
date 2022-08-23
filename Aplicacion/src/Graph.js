@@ -242,7 +242,7 @@ export default function Graph() {
     return {
       id: nodeId,
       type: nodeType,
-      dragHandle: ".custom-node-header",
+      dragHandle: '.nodeHeader',
       position: { x: xPos, y: yPos },
       data: {
         inputs: {},
