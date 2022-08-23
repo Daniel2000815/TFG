@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
-import Toggle from "../CustomComponents/Toggle";
 import Slider from '@mui/material/Slider';
-import Stack from '@mui/material/Stack';
+import FloatSlider from "../CustomComponents/FloatSlider";
 
 const TransformOperations = {
   Translate: "Translate",
@@ -31,6 +30,10 @@ export default function TransformNode({ data, id }) {
     
   }, [data, operation, k]);
 
+  const handleChange = (ev, val) => {
+    setK(parseFloat(val).toFixed(4));
+  }
+
   return (
     <CustomNode
       title={"Transform Operator"}
@@ -43,16 +46,10 @@ export default function TransformNode({ data, id }) {
       body={
         <div style={{ margin: 10 }}>
             Amount
-         
-            <Slider
-              size="small"
-              value={k}
-              valueLabelDisplay="k"
-              onChange={(e, v) => setK(parseFloat(v).toFixed(4))}
-              min={0}
-              max={5}
-              step={0.1}
-          />          
+            <FloatSlider
+          handleChange={handleChange}
+          range={[0,5]}
+          />         
         </div>
       }
     />

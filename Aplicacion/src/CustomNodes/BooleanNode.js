@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
-import Toggle from "../CustomComponents/Toggle";
-import Slider from '@mui/material/Slider';
-import Stack from '@mui/material/Stack';
+import FloatSlider from "../CustomComponents/FloatSlider";
 
 const BooleanOperations = {
   Union: "Union",
@@ -29,6 +27,12 @@ export default function BooleanNode({ data, id }) {
     setSdf(`sdf${smooth ? "Smooth" : ""}${operation}( ${inputs}${smooth ? `,${k}` : ""} )`);
   }, [data, operation, smooth, k]);
 
+
+
+  const handleChange = (ev, val) => {
+    setK(parseFloat(val).toFixed(4));
+  }
+  
   return (
     <CustomNode
       title={"!Boolean Operator"}
@@ -41,19 +45,13 @@ export default function BooleanNode({ data, id }) {
       body={
         <div style={{ margin: 10 }}>
           Smoothness
-         
-            <Slider
-            size="small"
-            value={k}
-            valueLabelDisplay="k"
-            onChange={(e, v) => setK(parseFloat(v).toFixed(4))}
-            min={0}
-            max={10}
-            step={0.1}
+
+          <FloatSlider
+            handleChange={handleChange}
+            range={[0, 10]}
           />
 
 
-          
           {/* <Toggle label="Smooth" fullWidth={true} value={smooth} onChange={() => setSmooth(!smooth)} /> */}
         </div>
       }

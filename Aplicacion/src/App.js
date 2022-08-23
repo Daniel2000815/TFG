@@ -1,4 +1,5 @@
 import React from "react";
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 
 import {
   Header,
@@ -18,6 +19,15 @@ import "rsuite/dist/styles/rsuite-default.css";
 import "./styles.css";
 import Shader from "./CustomComponents/Shader";
 import {fs} from "./ShaderStuff/fragmentShaderMovable";
+
+const theme = createTheme({
+  palette: {
+    primitive: '#609dff',
+    boolean: '#ff5858',
+    deform: '#3ec224',
+    transform: '#ffbb62'
+  },
+});
 
 const NavBarExample = () => {
   return (
@@ -76,17 +86,19 @@ const layoutStyles = {
 export default function App() {
   return (
     <div style={layoutStyles}>
-      <Header>
-        <NavBarExample />
-      </Header>
-      <Content style={{ flexGrow: 1 }}>
-        <MainContent />
-      </Content>
-      <Footer>
-        <Panel bordered>
-          <p>Daniel Zufrí Quesada</p>
-        </Panel>
-      </Footer>
+      <ThemeProvider theme={theme}>
+        <Header>
+          <NavBarExample />
+        </Header>
+        <Content style={{ flexGrow: 1 }}>
+          <MainContent />
+        </Content>
+        <Footer>
+          <Panel bordered>
+            <p>Daniel Zufrí Quesada</p>
+          </Panel>
+        </Footer>
+      </ThemeProvider>
     </div>
   );
 }

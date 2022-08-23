@@ -1,5 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import Shader from "../CustomComponents/Shader";
+import { useTheme } from '@mui/material/styles';
+
 import { fs } from "../ShaderStuff/fragmentShaderMovable";
 import Dropdown from "../CustomComponents/Dropdown";
 import CustomHandle from "./CustomHandle";
@@ -10,9 +12,10 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 
 export default function CustomNode(props) {
-  const [showCanvas, setShowCanvas] = React.useState(true);
+  const [showMore, setShowMore] = React.useState(true);
 
   const sharedFunctions = useContext(GraphContext);
+  const theme = useTheme();
 
   useEffect(() => {
     console.log(`SDF DE ${props.id} MODIFICADO`);
@@ -23,14 +26,8 @@ export default function CustomNode(props) {
   return (
     <div className={`custom-node custom-node-${props.styleClass}`}>
       <div className={`custom-node-header custom-node-header-${props.styleClass}`}>{props.title}</div>
-      <p>{`ID: ${props.id}`}</p>
-      <p>
-        CHILDREN:{" "}
-        {Object.keys(props.data.children)
-          .map((key) => `${props.data.children[key]}`)
-          .join(", ")}
-      </p>
-      <p>{`SDF: ${props.sdf}`}</p>
+      
+
       
       {props.dropdownOptions ? (
         <Dropdown
@@ -40,9 +37,6 @@ export default function CustomNode(props) {
           label={props.title}
         />
       ) : null}
-
-      
-
       <CustomHandle
         id={"0"}
         type="target"
@@ -64,8 +58,21 @@ export default function CustomNode(props) {
         style={{ top: "50%" }}
       />
 
+        
+      {showMore ? (
+        <>
+        <p>{`ID: ${props.id}`}</p>
+      <p>
+        CHILDREN:{" "}
+        {Object.keys(props.data.children)
+          .map((key) => `${props.data.children[key]}`)
+          .join(", ")}
+      </p>
+      <p>{`SDF: ${props.sdf}`}</p>
+      
+      
+      
         {props.body}
-      {showCanvas ? (
         <Shader
           shader={fs(props.sdf)}
           uniforms={{ 
@@ -74,18 +81,18 @@ export default function CustomNode(props) {
            }}
           style={{ margin: "10px", height:"100%" }}
         />
+        </>
       ) : null}
 
       <Button
-        onClick={() => setShowCanvas(!showCanvas)}
+        onClick={() => setShowMore(!showMore)}
         variant="contained"
-        className="custom-node-creater"
         size="small"
+        style={{width: "100%", borderRadius: "0 0 5px 5px", height: "15px", backgroundColor: theme.palette[props.styleClass] }}
         endIcon={
-          showCanvas ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
+          showMore ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />
         }
       >
-        {showCanvas ? "Hide canvas" : "Show canvas"}
       </Button>
     </div>
   );

@@ -33,7 +33,6 @@ h3 {
   display: flex;
   flex-direction: column;
   
-  padding-bottom: 20px;
   
   transition: border 300ms ease;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -201,15 +200,10 @@ h3 {
 }
 
 .custom-node-creater {
-  width: 100%;
-  height: 30px;
+  width: 10%;
   position: absolute;
-  background: #384ea5;
-  transition: background 300ms ease;
-  border-radius: 0px 0px 8px 8px;
-  
-  bottom: 0px;
 }
+
 .custom-node-creater-label {
   color: #aeb2c2;
   font-size: 20px;
