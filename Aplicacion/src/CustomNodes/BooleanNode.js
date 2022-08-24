@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
 import FloatSlider from "../CustomComponents/FloatSlider";
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
@@ -47,13 +47,12 @@ export default function BooleanNode({ data, id }) {
   return (
     <ThemeProvider theme={theme}>
       <CustomNode
-        title={"!Boolean Operator"}
+        title={"Boolean"}
         id={id}
         data={data}
         dropdownOptions={Object.values(BooleanOperations)}
         onChangeOption={setOperation}
         sdf={sdf}
-        styleClass="boolean"
         body={
           <div style={{ margin: 10 }}>
             Smoothness
@@ -62,9 +61,7 @@ export default function BooleanNode({ data, id }) {
               handleChange={handleChange}
               range={[0, 10]}
             />
-
-
-            {/* <Toggle label="Smooth" fullWidth={true} value={smooth} onChange={() => setSmooth(!smooth)} /> */}
+            
           </div>
         }
       />

@@ -1,8 +1,18 @@
 import React, { useEffect } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
-import Toggle from "../CustomComponents/Toggle";
 import Slider from '@mui/material/Slider';
-import Stack from '@mui/material/Stack';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: '#a8f798',
+      main: '#3ec224',
+      dark: '#1c9404',
+      contrastText: 'white',
+    },
+  },
+});
 
 const DeformOperations = {
   Bend: "Bend",
@@ -32,14 +42,14 @@ export default function DeformNode({ data, id }) {
   }, [data, operation, k]);
 
   return (
+    <ThemeProvider theme={theme}>
     <CustomNode
-      title={"Deform Operator"}
+      title={"Deform"}
       id={id}
       data={data}
       dropdownOptions={Object.values(DeformOperations)}
       onChangeOption={setOperation}
       sdf={sdf}
-      styleClass="deform"
       body={
         <div style={{ margin: 10 }}>
             Amount
@@ -56,5 +66,6 @@ export default function DeformNode({ data, id }) {
         </div>
       }
     />
+    </ThemeProvider>
   );
 }

@@ -16,6 +16,7 @@ export default function Dropdown(props) {
         value={props.value}
         onChange={(ev) => props.onChange(ev.target.value)}
         autoWidth
+        size="small"
         open={open}
         label="Primitive"
       >

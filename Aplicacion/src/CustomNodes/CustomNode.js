@@ -34,8 +34,8 @@ export default function CustomNode(props) {
       "0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)",
 
     border: isHover ?
-      `2px solid ${theme.palette.primary.dark}` :
-      `2px solid ${theme.palette.primary.main}`,
+      `1px solid ${theme.palette.primary.dark}` :
+      `1px solid ${theme.palette.primary.main}`,
 
     "&:hover": {
       transition: "box-shadow 200ms ease",
@@ -47,13 +47,13 @@ export default function CustomNode(props) {
 
   const headerStyle = {
     flexGrow: "1",
-    padding: "8px 12px",
     marginBottom: "16px",
+    height: "20px",
     width: "100%",
     color: "#EFF7FF",
     borderRadius: "5px 5px 0px 0px",
     borderBottomWidth: "10px solid #000",
-    textAlign: "left",
+    textAlign: "center",
     fontWeight: "600",
     fontSize: "14px",
     letterSpacing: "0.1px",
@@ -107,6 +107,7 @@ export default function CustomNode(props) {
         type="source"
         onConnect={(params) => console.log("handle onsConnect", params)}
         style={{ top: "50%" }}
+
       />
 
 
