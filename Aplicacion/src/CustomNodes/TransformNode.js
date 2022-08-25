@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
 import FloatSlider from "../CustomComponents/FloatSlider";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Vector3Input from "../CustomComponents/Vector3Input";
 
 const theme = createTheme({
   palette: {
@@ -22,9 +23,8 @@ const TransformOperations = {
 
 export default function TransformNode({ data, id }) {
   const [operation, setOperation] = React.useState(TransformOperations.Translate);
-  const [k, setK] = React.useState(0.0.toFixed(4));
-
   const [sdf, setSdf] = React.useState("");
+  const [transformVal, setTransformVal] = React.useState([0,0,0]);
 
   useEffect(() => {
     console.log(
@@ -35,15 +35,11 @@ export default function TransformNode({ data, id }) {
     let input = data.inputs[Object.keys(data.inputs)[0]];
 
     if (input) {
-      setSdf(input.replace("p,", `sdf${operation}(p, ${k}),`));
+      setSdf(input.replace("p,", `sdf${operation}(p, vec3(${transformVal[0]},${transformVal[1]},${transformVal[2]}) ),`));
 
     }
 
-  }, [data, operation, k]);
-
-  const handleChange = (ev, val) => {
-    setK(parseFloat(val).toFixed(4));
-  }
+  }, [data, operation, transformVal]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -54,14 +50,10 @@ export default function TransformNode({ data, id }) {
         dropdownOptions={Object.values(TransformOperations)}
         onChangeOption={setOperation}
         sdf={sdf}
-        styleClass="transform"
         body={
           <div style={{ margin: 10 }}>
             Amount
-            <FloatSlider
-              handleChange={handleChange}
-              range={[0, 5]}
-            />
+            <Vector3Input handleChange={setTransformVal}/>
           </div>
         }
       />

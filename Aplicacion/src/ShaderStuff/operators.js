@@ -90,7 +90,7 @@ export const operators = () => `
     }
 
     vec3 sdfTranslate(vec3 p, vec3 t) {
-        return p+t;
+        return p-t;
     }
 
 `

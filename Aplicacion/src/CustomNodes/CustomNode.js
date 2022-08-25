@@ -19,8 +19,7 @@ export default function CustomNode(props) {
 
   const nodeStyle = {
     position: "relative",
-    minWidth: "150px",
-    maxWidth: "150px",
+    width: "200px",
     display: "flex",
     flexDirection: "column",
     transition: "border 300ms ease",
