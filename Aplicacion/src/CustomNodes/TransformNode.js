@@ -35,7 +35,12 @@ export default function TransformNode({ data, id }) {
     let input = data.inputs[Object.keys(data.inputs)[0]];
 
     if (input) {
-      setSdf(input.replace("p,", `sdf${operation}(p, vec3(${transformVal[0]},${transformVal[1]},${transformVal[2]}) ),`));
+      if(operation !== TransformOperations.Scale)
+        setSdf(input.replace("p,", `sdf${operation}(p, vec3(${transformVal[0]},${transformVal[1]},${transformVal[2]}) ),`));
+      else{
+        const s = `vec3(${transformVal[0]},${transformVal[1]},${transformVal[2]})`;
+        setSdf(input.replace("p,", `(p/${s}) * ${s},`));
+      }
 
     }
 

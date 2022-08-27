@@ -93,4 +93,9 @@ export const operators = () => `
         return p-t;
     }
 
+    vec3 sdfScale( vec3 p, vec3 s )
+    {
+        return (p/s)*s;
+    }
+
 `

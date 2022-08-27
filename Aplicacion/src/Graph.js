@@ -26,13 +26,13 @@ const initialNodes = [
     id: `prim-0`,
     type: "primitiveNode",
     position: { x: -50, y: -350 },
-    dragHandle: ".custom-node-header",
-    data: { inputs: {}, sdf: "", children: [] },
+    dragHandle: " .nodeHeader",
+    data: { default: "Cube", inputs: {}, sdf: "", children: [] },
   },
   {
     id: `prim-1`,
     type: "primitiveNode",
-    dragHandle: ".custom-node-header",
+    dragHandle: ".nodeHeader",
     position: { x: -50, y: 125 },
     data: { inputs: {}, sdf: "", children: [] },
   },
@@ -40,27 +40,27 @@ const initialNodes = [
     id: `prim-2`,
     type: "primitiveNode",
     position: { x: -50, y: 600 },
-    dragHandle: ".custom-node-header",
+    dragHandle: ".nodeHeader",
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `deform-0`,
     type: "deformNode",
-    dragHandle: ".custom-node-header",
+    dragHandle: ".nodeHeader",
     position: { x: 200, y: -125 },
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `transform-0`,
     type: "transformNode",
-    dragHandle: ".custom-node-header",
+    dragHandle: ".nodeHeader",
     position: { x: 200, y: 375 },
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `bool-2`,
     type: "booleanNode",
-    dragHandle: ".custom-node-header",
+    dragHandle: ".nodeHeader",
     position: { x: 450, y: 150 },
     data: { inputs: {}, sdf: "", children: [] },
   },
@@ -259,6 +259,7 @@ export default function Graph() {
     if (e.key.toLowerCase() === "p")      node = newNode("primitiveNode");
     else if (e.key.toLowerCase() === "b") node = newNode("booleanNode");
     else if (e.key.toLowerCase() === "d") node = newNode("deformNode");
+    else if (e.key.toLowerCase() === "t") node = newNode("transformNode");
 
     if(node){
       nodes.push(node);

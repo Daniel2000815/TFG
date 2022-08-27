@@ -52,10 +52,10 @@ export default function Vector3Input(props) {
                     <Grid item xs={2} sm={4} md={4} key={4}>
                         <Field val={x} handleChange={setX}/>
                     </Grid>
-                    <Grid item xs={2} sm={4} md={4} key={4}>
+                    <Grid item xs={2} sm={4} md={4} key={5}>
                         <Field val={y} handleChange={setY}/>
                     </Grid>
-                    <Grid item xs={2} sm={4} md={4} key={4}>
+                    <Grid item xs={2} sm={4} md={4} key={6}>
                         <Field val={z} handleChange={setZ}/>
                     </Grid>
 

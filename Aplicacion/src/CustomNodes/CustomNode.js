@@ -75,7 +75,7 @@ export default function CustomNode(props) {
   }, [props.sdf]);
 
   return (
-    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={nodeStyle}>
+    <div className="nodeBody" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={nodeStyle}>
       <div className="nodeHeader" style={headerStyle}>{props.title}</div>
       
       {props.dropdownOptions ? (
