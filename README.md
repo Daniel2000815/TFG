@@ -23,6 +23,7 @@
     - Sobre una conexión: eliminar conexión.
   - `rueda ratón`: hacer zoom.
   - `retroceso`: elimina el nodo seleccionado anteriormente.
+  - `s`: colapsar/expandir todos los nodos
 
 ### Fallos conocidos / TODO
 

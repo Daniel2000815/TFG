@@ -13,7 +13,7 @@ import DeformNode from "./CustomNodes/DeformNode.js";
 import TransformNode from "./CustomNodes/TransformNode.js";
 
 import ButtonEdge from "./CustomNodes/ButtonEdge";
-import CustomControls from "./CustomControls.js";
+import CustomControls from "./CustomComponents/CustomControls.js";
 import "./styles.css";
 import { GraphProvider } from "./GraphContext.js";
 
@@ -54,14 +54,14 @@ const initialNodes = [
     id: `transform-0`,
     type: "transformNode",
     dragHandle: ".nodeHeader",
-    position: { x: 200, y: 375 },
+    position: { x: 450, y: 150 },
     data: { inputs: {}, sdf: "", children: [] },
   },
   {
     id: `bool-2`,
     type: "booleanNode",
     dragHandle: ".nodeHeader",
-    position: { x: 450, y: 150 },
+    position: { x: 200, y: 375 },
     data: { inputs: {}, sdf: "", children: [] },
   },
 ];

@@ -50,6 +50,7 @@ export default function DeformNode({ data, id }) {
       dropdownOptions={Object.values(DeformOperations)}
       onChangeOption={setOperation}
       sdf={sdf}
+      currOption={operation}
       body={
         <div style={{ margin: 10 }}>
             Amount

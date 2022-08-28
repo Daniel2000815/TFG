@@ -31,11 +31,17 @@ export default function BooleanNode({ data, id }) {
       `SE HAN MODIFICADO LOS SDF EN NODO BOOLEANO. AHORA HAY ${Object.keys(data.inputs).length
       }`
     );
-    const inputs = `${Object.keys(data.inputs)
-      .map((key) => `${data.inputs[key]}`)
-      .join(", ")}`;
 
-    setSdf(`sdf${smooth ? "Smooth" : ""}${operation}( ${inputs}${smooth ? `,${k}` : ""} )`);
+    const keys = Object.keys(data.inputs);
+
+    let newSdf  = `sdfSmooth${operation}(${data.inputs[keys[0]]}, ${data.inputs[keys[1]]}, ${k})`;
+
+    for (let i=0; i < keys.length-2; i++) {
+      console.log(data.inputs[keys[i+2]]);
+      newSdf = `sdfSmooth${operation}(${data.inputs[keys[i+2]]}, ${newSdf}, ${k})`;
+    };
+
+    setSdf(newSdf);
   }, [data, operation, smooth, k]);
 
 
@@ -53,6 +59,8 @@ export default function BooleanNode({ data, id }) {
         dropdownOptions={Object.values(BooleanOperations)}
         onChangeOption={setOperation}
         sdf={sdf}
+        currOption={operation}
+        nInputs={Math.max(2, Object.keys(data.inputs).length + 1)}
         body={
           <div style={{ margin: 10 }}>
             Smoothness

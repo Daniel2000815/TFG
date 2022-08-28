@@ -121,7 +121,7 @@ export const fs = (sdf) => {
           10.0                    // shiness
       );
       
-      const vec3 backGroundColor  = vec3(0.7);
+      const vec3 backGroundColor  = vec3(0.9);
       vec2 mouseStartPos, mouseCurrPos;
       vec2 mouse = iMouse.xy / iResolution.xy;
 

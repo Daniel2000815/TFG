@@ -108,6 +108,8 @@ export default function PrimitiveNode({ data, id }) {
         }
         onChangeOption={setPrimitive}
         sdf={sdf}
+        currOption={primitive}
+        nInputs={0}
       />
     </ThemeProvider>
   );

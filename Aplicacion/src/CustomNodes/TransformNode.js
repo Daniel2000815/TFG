@@ -55,6 +55,7 @@ export default function TransformNode({ data, id }) {
         dropdownOptions={Object.values(TransformOperations)}
         onChangeOption={setOperation}
         sdf={sdf}
+        currOption={operation}
         body={
           <div style={{ margin: 10 }}>
             Amount
