@@ -1,11 +1,13 @@
 import React, {useState} from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ReactFlow, {
   addEdge,
   Background,
   useNodesState,
   useEdgesState,
   MarkerType,
+  project,
+  useReactFlow
 } from "react-flow-renderer";
 import PrimitiveNode from "./CustomNodes/PrimitiveNode.js";
 import BooleanNode from "./CustomNodes/BooleanNode.js";
@@ -74,6 +76,9 @@ export default function Graph() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [rfInstance, setRfInstance] = useState(null);
   const [id, setId] = React.useState(3);
+  const [mouseCoor, setMouseCoor] = useState([0,0]);
+
+  const reactFlowRef = useRef(null);
 
   const updateNodeSdf = (id, newSdf, parent) => {
     console.log("ACTUALIZADONDO SDF DE " + id);
@@ -255,22 +260,32 @@ export default function Graph() {
   const handleKey = (e) => {
     let node = null;
 
-    // SPACE BAR
-    if (e.key.toLowerCase() === "p")      node = newNode("primitiveNode");
-    else if (e.key.toLowerCase() === "b") node = newNode("booleanNode");
-    else if (e.key.toLowerCase() === "d") node = newNode("deformNode");
-    else if (e.key.toLowerCase() === "t") node = newNode("transformNode");
+    const { x, y } = rfInstance.project({ x: mouseCoor[0], y: mouseCoor[1] });
+    
+
+    if (e.key.toLowerCase() === "p")      node = newNode("primitiveNode", x, y);
+    else if (e.key.toLowerCase() === "b") node = newNode("booleanNode", x, y);
+    else if (e.key.toLowerCase() === "d") node = newNode("deformNode", x, y);
+    else if (e.key.toLowerCase() === "t") node = newNode("transformNode", x, y);
 
     if(node){
       nodes.push(node);
       onNodesChange([node]); // Para actualizar
     }
+
   };
 
+  const handleMouse = (e) => {
+    const bounds = reactFlowRef.current.getBoundingClientRect();
+    setMouseCoor([e.clientX - bounds.left, e.clientY - bounds.top]);
+  }
+
   return (
-    <div style={{ height: "100vh" }} tabIndex="0" onKeyDown={handleKey}>
+    <div style={{ height: "100vh" }} tabIndex="0" onKeyDown={handleKey}  onMouseMove={handleMouse}>
+
       <GraphProvider value={sharedFunctions}>
         <ReactFlow
+          ref={reactFlowRef}
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
