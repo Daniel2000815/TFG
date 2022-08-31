@@ -8,7 +8,7 @@
   --myGreen:      #3ec224;
   --myDarkGreen:  #1c9404;
 
-  --myYellow:     #ffbb62;
+  --myYellow:     #ffd7a2;
   --myDarkYellow: #fa9c21;
 
   --myGrey:       #EFF7FF;
@@ -254,4 +254,39 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+nav.react-contextmenu {
+  width: 175px;
+  left: 0;
+  top: calc(100% + 10px);
+  border-radius: 4px;
+  background-color: #fff;
+  padding: 10px 0;
+  z-index: 99;
+  flex-grow: 1;
+  box-shadow: 0 0 20px rgba(0,0,0,.2);
+}
+.react-contextmenu .react-contextmenu-item:hover{
+background: #cccccc;
+}
+
+.react-contextmenu-item:hover:not(.react-contextmenu-item--disabled) {
+background-color: #f1f1f1;
+}
+
+.react-contextmenu .react-contextmenu-item{
+font-size: 14px;
+text-decoration: none;
+padding: 10px 15px;
+cursor: pointer;
+user-select: none;
+transition: .2s;
+position: relative;
+margin-bottom: 2px;
+font-weight: 500;
+display: flex;
+align-items: center;
+
+outline: none;
 }

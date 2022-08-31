@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import ReactFlow, {
   addEdge,
@@ -18,9 +18,14 @@ import ButtonEdge from "./CustomNodes/ButtonEdge";
 import CustomControls from "./CustomComponents/CustomControls.js";
 import "./styles.css";
 import { GraphProvider } from "./GraphContext.js";
+import CustomContextMenu from "./CustomComponents/CustomContextMenu.js";
+import CustomContextMenu2 from "./CustomComponents/CustomContextMenu copy.js";
+
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+
 
 const flowKey = "savedGraph";
-const nodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode, deformNode: DeformNode, transformNode:  TransformNode};
+const graphNodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode, deformNode: DeformNode, transformNode: TransformNode };
 const edgeTypes = { buttonEdge: ButtonEdge };
 
 const initialNodes = [
@@ -76,7 +81,7 @@ export default function Graph() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [rfInstance, setRfInstance] = useState(null);
   const [id, setId] = React.useState(3);
-  const [mouseCoor, setMouseCoor] = useState([0,0]);
+  const [mouseCoor, setMouseCoor] = useState([0, 0]);
 
   const reactFlowRef = useRef(null);
 
@@ -210,10 +215,10 @@ export default function Graph() {
     // INICIAMOS HIJO
   };
 
-  useEffect(() => {
-    console.log("NODOS ACTUALIZADOS");
-    console.log(nodes);
-  }, [nodes]);
+  // useEffect(() => {
+  //   console.log("NODOS ACTUALIZADOS");
+  //   console.log(nodes);
+  // }, [nodes]);
 
   useEffect(() => {
     console.log("NUEVO EDGE:");
@@ -242,6 +247,7 @@ export default function Graph() {
   };
 
   const newNode = (nodeType, xPos = 0, yPos = 0) => {
+    console.log("CREANDO " + nodeType);
     setId(id + 1);
     const nodeId = `node-${id}`;
     return {
@@ -257,18 +263,25 @@ export default function Graph() {
     };
   }
 
+  const createAddNodeMousePos = (nodeType) => {
+    const { x, y } = rfInstance.project({ x: mouseCoor[0], y: mouseCoor[1] });
+    let node = newNode(nodeType, x, y);
+    nodes.push(node);
+      onNodesChange([node]);
+  }
+
   const handleKey = (e) => {
     let node = null;
 
     const { x, y } = rfInstance.project({ x: mouseCoor[0], y: mouseCoor[1] });
-    
 
-    if (e.key.toLowerCase() === "p")      node = newNode("primitiveNode", x, y);
+
+    if (e.key.toLowerCase() === "p") node = newNode("primitiveNode", x, y);
     else if (e.key.toLowerCase() === "b") node = newNode("booleanNode", x, y);
     else if (e.key.toLowerCase() === "d") node = newNode("deformNode", x, y);
     else if (e.key.toLowerCase() === "t") node = newNode("transformNode", x, y);
 
-    if(node){
+    if (node) {
       nodes.push(node);
       onNodesChange([node]); // Para actualizar
     }
@@ -281,31 +294,43 @@ export default function Graph() {
   }
 
   return (
-    <div style={{ height: "100vh" }} tabIndex="0" onKeyDown={handleKey}  onMouseMove={handleMouse}>
+    <>
+    
 
-      <GraphProvider value={sharedFunctions}>
-        <ReactFlow
-          ref={reactFlowRef}
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          // onDisconnect={onDisconnect}
+      <ContextMenuTrigger id="contextmenu">
+        <div style={{ height: "100vh" }} tabIndex="0" onKeyDown={handleKey} onMouseMove={handleMouse}>
 
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          onInit={setRfInstance}
-          // onEdgeClick={(ev, edge) =>
-          //   setEdges(edges.filter((e) => e.id != edge.id))
-          // }
-          snapToGrid={true}
-          fitView
-        >
-          <Background variant="lines" color="#aaa" gap={10} />
-          <CustomControls save={onSave} load={onLoad}/>
-        </ReactFlow>
-      </GraphProvider>
-    </div>
+          <GraphProvider value={sharedFunctions}>
+            <ReactFlow
+              ref={reactFlowRef}
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              // onDisconnect={onDisconnect}
+
+              nodeTypes={graphNodeTypes}
+              edgeTypes={edgeTypes}
+              onInit={setRfInstance}
+              // onEdgeClick={(ev, edge) =>
+              //   setEdges(edges.filter((e) => e.id != edge.id))
+              // }
+              snapToGrid={false}
+              fitView
+            >
+              <Background variant="lines" color="#aaa" gap={10} />
+              <CustomControls save={onSave} load={onLoad} />
+            </ReactFlow>
+          </GraphProvider>
+
+
+
+
+        </div>
+      </ContextMenuTrigger>
+      <CustomContextMenu2 newNode={createAddNodeMousePos}/>
+      
+    </>
   );
 }

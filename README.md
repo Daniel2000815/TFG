@@ -16,6 +16,7 @@
   - `B`: crear nodo de operación booleana.
   - `D`: crear nodo de deformación.
   - `T`: crear nodo de movimiento rígido (transformación).
+  - `click derecho`:  menú contextual.
 - Navegación / Edición:
   - `click izquierdo`: 
     - Sobre el fondo: mover vista.
@@ -28,6 +29,7 @@
 ### Fallos conocidos / TODO
 
 - [ ] Operador escala no funciona
+- [ ] Los nodos con una entrada no se actualizan si se la desconectas
 - [ ] Hacer sliders continuos
 - [ ] Save / Load ?
 - [ ] Añadir soporte para introducir ecuaciones
