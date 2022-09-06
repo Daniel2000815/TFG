@@ -13,8 +13,11 @@ import {
   Row, Col,
 } from "rsuite";
 
+import AppBar from '@mui/material/AppBar';
 import Graph from "./Graph";
+import MaterialsPage from './MaterialsPage';
 import "rsuite/dist/styles/rsuite-default.css";
+import { Box, Tab, Tabs, Typography } from '@mui/material';
 
 import "./styles.css";
 import Shader from "./CustomComponents/Shader";
@@ -29,25 +32,7 @@ const theme = createTheme({
   },
 });
 
-const NavBarExample = () => {
-  return (
-    <Navbar appearance="inverse">
-      <Navbar.Header>
-        <a className="navbar-brand logo">3D Visualizer</a>
-      </Navbar.Header>
-      <Navbar.Body>
-        <Nav>
-          <Nav.Item eventKey="1">Tab 1</Nav.Item>
-          <Nav.Item eventKey="2">Tab 2</Nav.Item>
-          <Nav.Item eventKey="3">Tab 3</Nav.Item>
-        </Nav>
-        <Nav pullRight>
-          <Nav.Item icon={<Icon icon="cog" />}>Settings</Nav.Item>
-        </Nav>
-      </Navbar.Body>
-    </Navbar>
-  );
-};
+
 
 
 function MainContent(){ 
@@ -84,14 +69,33 @@ const layoutStyles = {
 };
 
 export default function App() {
+  const [tabVal, setTabVal] = React.useState(0);
+  
   return (
     <div style={layoutStyles}>
       <ThemeProvider theme={theme}>
-        <Header>
-          <NavBarExample />
-        </Header>
+      <Box>
+      <Box>
+        <Tabs value={tabVal} onChange={(e,v)=>setTabVal(v)}>
+          <Tab label="Graph" />
+          <Tab label="Materials" />
+          <Tab label="Surfaces" />
+        </Tabs>
+      </Box>
+      <Box sx={{ padding: 2 }}>
+        {tabVal === 0 && (<MainContent />)}
+        {tabVal === 1 && ( <MaterialsPage/>
+        )}
+        {tabVal === 2 && (
+          <Box>
+            <Typography>The third tab</Typography>
+          </Box>
+        )}
+      </Box>
+      </Box>
+
         <Content style={{ flexGrow: 1 }}>
-          <MainContent />
+          
         </Content>
         <Footer>
           <Panel bordered>
