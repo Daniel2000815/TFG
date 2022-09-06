@@ -10,7 +10,7 @@ const theme = createTheme({
       main: '#ff5858',
       dark: '#ff2323',
       contrastText: 'white',
-    },  
+    },
   },
 });
 
@@ -34,11 +34,11 @@ export default function BooleanNode({ data, id }) {
 
     const keys = Object.keys(data.inputs);
 
-    let newSdf  = `sdfSmooth${operation}(${data.inputs[keys[0]]}, ${data.inputs[keys[1]]}, ${k})`;
+    let newSdf = `sdfSmooth${operation}(${data.inputs[keys[0]]}, ${data.inputs[keys[1]]}, ${k})`;
 
-    for (let i=0; i < keys.length-2; i++) {
-      console.log(data.inputs[keys[i+2]]);
-      newSdf = `sdfSmooth${operation}(${data.inputs[keys[i+2]]}, ${newSdf}, ${k})`;
+    for (let i = 0; i < keys.length - 2; i++) {
+      console.log(data.inputs[keys[i + 2]]);
+      newSdf = `sdfSmooth${operation}(${data.inputs[keys[i + 2]]}, ${newSdf}, ${k})`;
     };
 
     setSdf(newSdf);
@@ -69,7 +69,7 @@ export default function BooleanNode({ data, id }) {
               handleChange={handleChange}
               range={[0, 10]}
             />
-            
+
           </div>
         }
       />

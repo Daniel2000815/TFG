@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useEffect, useRef } from "react";
+import React, { useState } from 'react';
+import { useEffect, useRef } from 'react';
 import ReactFlow, {
   addEdge,
   Background,
@@ -8,73 +8,73 @@ import ReactFlow, {
   MarkerType,
   project,
   useReactFlow
-} from "react-flow-renderer";
-import PrimitiveNode from "./CustomNodes/PrimitiveNode.js";
-import BooleanNode from "./CustomNodes/BooleanNode.js";
-import DeformNode from "./CustomNodes/DeformNode.js";
-import TransformNode from "./CustomNodes/TransformNode.js";
+} from 'react-flow-renderer';
+import PrimitiveNode from './CustomNodes/PrimitiveNode.js';
+import BooleanNode from './CustomNodes/BooleanNode.js';
+import DeformNode from './CustomNodes/DeformNode.js';
+import TransformNode from './CustomNodes/TransformNode.js';
 
-import ButtonEdge from "./CustomNodes/ButtonEdge";
-import CustomControls from "./CustomComponents/CustomControls.js";
-import "./styles.css";
-import { GraphProvider } from "./GraphContext.js";
-import CustomContextMenu from "./CustomComponents/CustomContextMenu.js";
-import CustomContextMenu2 from "./CustomComponents/CustomContextMenu copy.js";
+import ButtonEdge from './CustomNodes/ButtonEdge';
+import CustomControls from './CustomComponents/CustomControls.js';
+import './styles.css';
+import { GraphProvider } from './GraphContext.js';
+import CustomContextMenu from './CustomComponents/CustomContextMenu.js';
+import CustomContextMenu2 from './CustomComponents/CustomContextMenu copy.js';
 
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
 
-const flowKey = "savedGraph";
+const flowKey = 'savedGraph';
 const graphNodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode, deformNode: DeformNode, transformNode: TransformNode };
 const edgeTypes = { buttonEdge: ButtonEdge };
 
 const initialNodes = [
   {
-    id: `prim-0`,
-    type: "primitiveNode",
+    id: 'prim-0',
+    type: 'primitiveNode',
     position: { x: -50, y: -350 },
-    dragHandle: " .nodeHeader",
-    data: { default: "Cube", inputs: {}, sdf: "", children: [] },
+    dragHandle: ' .nodeHeader',
+    data: { default: 'Cube', inputs: {}, sdf: '', children: [] },
   },
   {
-    id: `prim-1`,
-    type: "primitiveNode",
-    dragHandle: ".nodeHeader",
+    id: 'prim-1',
+    type: 'primitiveNode',
+    dragHandle: '.nodeHeader',
     position: { x: -50, y: 125 },
-    data: { inputs: {}, sdf: "", children: [] },
+    data: { inputs: {}, sdf: '', children: [] },
   },
   {
-    id: `prim-2`,
-    type: "primitiveNode",
+    id: 'prim-2',
+    type: 'primitiveNode',
     position: { x: -50, y: 600 },
-    dragHandle: ".nodeHeader",
-    data: { inputs: {}, sdf: "", children: [] },
+    dragHandle: '.nodeHeader',
+    data: { inputs: {}, sdf: '', children: [] },
   },
   {
-    id: `deform-0`,
-    type: "deformNode",
-    dragHandle: ".nodeHeader",
+    id: 'deform-0',
+    type: 'deformNode',
+    dragHandle: '.nodeHeader',
     position: { x: 200, y: -125 },
-    data: { inputs: {}, sdf: "", children: [] },
+    data: { inputs: {}, sdf: '', children: [] },
   },
   {
-    id: `transform-0`,
-    type: "transformNode",
-    dragHandle: ".nodeHeader",
+    id: 'transform-0',
+    type: 'transformNode',
+    dragHandle: '.nodeHeader',
     position: { x: 450, y: 150 },
-    data: { inputs: {}, sdf: "", children: [] },
+    data: { inputs: {}, sdf: '', children: [] },
   },
   {
-    id: `bool-2`,
-    type: "booleanNode",
-    dragHandle: ".nodeHeader",
+    id: 'bool-2',
+    type: 'booleanNode',
+    dragHandle: '.nodeHeader',
     position: { x: 200, y: 375 },
-    data: { inputs: {}, sdf: "", children: [] },
+    data: { inputs: {}, sdf: '', children: [] },
   },
 ];
 
 const onInit = (reactFlowInstance) =>
-  console.log("flow loaded:", reactFlowInstance);
+  console.log('flow loaded:', reactFlowInstance);
 
 export default function Graph() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -86,7 +86,7 @@ export default function Graph() {
   const reactFlowRef = useRef(null);
 
   const updateNodeSdf = (id, newSdf, parent) => {
-    console.log("ACTUALIZADONDO SDF DE " + id);
+    console.log('ACTUALIZADONDO SDF DE ' + id);
     var nodesCopy = [...nodes];
     var parent = nodesCopy.find((node) => node.id === id);
     parent.data = {
@@ -130,7 +130,7 @@ export default function Graph() {
         if (node.id === child) {
           console.log(`ACTUALIZANDO ${child}`);
           var newInputs = node.data.inputs;
-          newInputs[`${parent}`] = "";
+          newInputs[`${parent}`] = '';
           node.data = {
             ...node.data,
             inputs: newInputs,
@@ -144,7 +144,7 @@ export default function Graph() {
   };
 
   const removeEdge = (edgeId) => {
-    console.log("WDGES: ");
+    console.log('WDGES: ');
     console.log(edges);
     const edge = edges.find((e) => e.id === edgeId);
 
@@ -170,9 +170,9 @@ export default function Graph() {
       addEdge(
         {
           ...params,
-          type: "buttonEdge",
+          type: 'buttonEdge',
           animated: true,
-          markerEnd: { type: MarkerType.Arrow, color: "#000" },
+          markerEnd: { type: MarkerType.Arrow, color: '#000' },
         },
         eds
       )
@@ -216,19 +216,19 @@ export default function Graph() {
   };
 
   // useEffect(() => {
-  //   console.log("NODOS ACTUALIZADOS");
+  //   console.log('NODOS ACTUALIZADOS');
   //   console.log(nodes);
   // }, [nodes]);
 
   useEffect(() => {
-    console.log("NUEVO EDGE:");
+    console.log('NUEVO EDGE:');
     console.log(edges);
   }, [edges]);
 
   const onSave = () => {
     if (rfInstance) {
       const flow = rfInstance.toObject();
-      console.log("FLOW SAVED:");
+      console.log('FLOW SAVED:');
       console.log(flow);
       localStorage.setItem(flowKey, JSON.stringify(flow));
     }
@@ -238,7 +238,7 @@ export default function Graph() {
     const flow = JSON.parse(localStorage.getItem(flowKey));
 
     if (flow) {
-      console.log("FLOW LOADED:");
+      console.log('FLOW LOADED:');
       console.log(flow);
       const { x = 0, y = 0, zoom = 1 } = flow.viewport;
       setNodes(flow.nodes || []);
@@ -247,7 +247,7 @@ export default function Graph() {
   };
 
   const newNode = (nodeType, xPos = 0, yPos = 0) => {
-    console.log("CREANDO " + nodeType);
+    console.log('CREANDO ' + nodeType);
     setId(id + 1);
     const nodeId = `node-${id}`;
     return {
@@ -257,18 +257,18 @@ export default function Graph() {
       position: { x: xPos, y: yPos },
       data: {
         inputs: {},
-        sdf: "",
+        sdf: '',
         children: [],
       },
     };
-  }
+  };
 
   const createAddNodeMousePos = (nodeType) => {
     const { x, y } = rfInstance.project({ x: mouseCoor[0], y: mouseCoor[1] });
     let node = newNode(nodeType, x, y);
     nodes.push(node);
-      onNodesChange([node]);
-  }
+    onNodesChange([node]);
+  };
 
   const handleKey = (e) => {
     let node = null;
@@ -276,10 +276,10 @@ export default function Graph() {
     const { x, y } = rfInstance.project({ x: mouseCoor[0], y: mouseCoor[1] });
 
 
-    if (e.key.toLowerCase() === "p") node = newNode("primitiveNode", x, y);
-    else if (e.key.toLowerCase() === "b") node = newNode("booleanNode", x, y);
-    else if (e.key.toLowerCase() === "d") node = newNode("deformNode", x, y);
-    else if (e.key.toLowerCase() === "t") node = newNode("transformNode", x, y);
+    if (e.key.toLowerCase() === 'p') node = newNode('primitiveNode', x, y);
+    else if (e.key.toLowerCase() === 'b') node = newNode('booleanNode', x, y);
+    else if (e.key.toLowerCase() === 'd') node = newNode('deformNode', x, y);
+    else if (e.key.toLowerCase() === 't') node = newNode('transformNode', x, y);
 
     if (node) {
       nodes.push(node);
@@ -291,14 +291,12 @@ export default function Graph() {
   const handleMouse = (e) => {
     const bounds = reactFlowRef.current.getBoundingClientRect();
     setMouseCoor([e.clientX - bounds.left, e.clientY - bounds.top]);
-  }
+  };
 
   return (
     <>
-    
-
-      <ContextMenuTrigger id="contextmenu">
-        <div style={{ height: "100vh" }} tabIndex="0" onKeyDown={handleKey} onMouseMove={handleMouse}>
+      <ContextMenuTrigger id='contextmenu'>
+        <div style={{ height: '100vh' }} tabIndex='0' onKeyDown={handleKey} onMouseMove={handleMouse}>
 
           <GraphProvider value={sharedFunctions}>
             <ReactFlow
@@ -319,7 +317,7 @@ export default function Graph() {
               snapToGrid={false}
               fitView
             >
-              <Background variant="lines" color="#aaa" gap={10} />
+              <Background variant='lines' color='#aaa' gap={10} />
               <CustomControls save={onSave} load={onLoad} />
             </ReactFlow>
           </GraphProvider>
@@ -329,8 +327,8 @@ export default function Graph() {
 
         </div>
       </ContextMenuTrigger>
-      <CustomContextMenu2 newNode={createAddNodeMousePos}/>
-      
+      <CustomContextMenu2 newNode={createAddNodeMousePos} />
+
     </>
   );
 }
