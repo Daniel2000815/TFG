@@ -261,7 +261,7 @@ void main(){
 	if(raymarched < MAX_DIST){
 		vec3 p = cameraPos + ray*raymarched;
 		vec3 n = normal(p);
-		gl_FragColor=vec4(lighting(p,n,cameraPos,mat_red),1.);
+		gl_FragColor=vec4(lighting(p,n,cameraPos, mat_red),1.);
 	}
 	else{
 		gl_FragColor=vec4(backGroundColor.xyz,1.);
