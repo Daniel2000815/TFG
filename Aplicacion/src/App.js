@@ -16,6 +16,7 @@ import {
 import AppBar from '@mui/material/AppBar';
 import Graph from "./Graph";
 import MaterialsPage from './MaterialsPage';
+import SurfacePage from './SurfacePage';
 import "rsuite/dist/styles/rsuite-default.css";
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 
@@ -69,7 +70,7 @@ const layoutStyles = {
 };
 
 export default function App() {
-  const [tabVal, setTabVal] = React.useState(0);
+  const [tabVal, setTabVal] = React.useState(2);
   
   return (
     <div style={layoutStyles}>
@@ -84,13 +85,8 @@ export default function App() {
       </Box>
       <Box sx={{ padding: 2 }}>
         {tabVal === 0 && (<MainContent />)}
-        {tabVal === 1 && ( <MaterialsPage/>
-        )}
-        {tabVal === 2 && (
-          <Box>
-            <Typography>The third tab</Typography>
-          </Box>
-        )}
+        {tabVal === 1 && (<MaterialsPage/>)}
+        {tabVal === 2 && (<SurfacePage/>)}
       </Box>
       </Box>
 
