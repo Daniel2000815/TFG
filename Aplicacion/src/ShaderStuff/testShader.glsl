@@ -117,7 +117,7 @@ float f(vec3 p)
    float y= p.g;
    float z = p.b;
 
- 
+  return (x*x+y*y+z*z-12.0)/sqrt(4.0*x*x + 4.0*y*y + 4.0*z*z);
   //  return sqrt(p.x*p.x + p.y*p.y + p.z*p.z) - 1.0; 
   //  return  sqrt(p.x*p.x + p.y*p.y)*cos(PI/8.0) - sqrt(p.z*p.z)*sin(PI/8.0); 
    

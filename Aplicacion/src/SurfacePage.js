@@ -19,80 +19,151 @@ import evaluatex from '../node_modules/evaluatex/dist/evaluatex';
 import MathJax from 'react-mathjax';
 
 import { evaluate, create, all } from 'mathjs';
+import nerdamer from 'nerdamer';
+import { isImportEqualsDeclaration } from 'typescript';
 
 function SurfaceDialog(props) {
-  const [equation, setEquation] = useState('2+x');
+  var nerdamer = require('nerdamer');
+  require('nerdamer/Calculus');
+
   const [eqData, setEqData] = useState({});
+  const [validEq, setValEq] = useState(true);
 
   const handleSave = () => {
-    let fn = evaluatex(equation);
-    let result = fn({ x: 3, y: 0, z: 0 });
-    console.log('EVALUACION EN X=3: ' + result);
-
-    const math = create(all);
-
-    // defined methods can be used in both JavaScript as well as the parser
-    math.import({
-      myConstant: 42,
-      sdf: function (x, y, z) {
-        return fn({ x: x, y: y, z: z });
-      },
-    });
-
-    console.log(math.evaluate('sdf(3,2,0)')); // 84
-    console.log(math.derivative(math.sdf, 'x').evaluate({ x: 4 }));
+    // let fn = evaluatex(equation);
+    // let result = fn({ x: 3, y: 0, z: 0 });
+    // console.log('EVALUACION EN X=3: ' + result);
+    // const math = create(all);
+    // // defined methods can be used in both JavaScript as well as the parser
+    // math.import({
+    //   myConstant: 42,
+    //   sdf: function (x, y, z) {
+    //     return fn({ x: x, y: y, z: z });
+    //   },
+    // });
+    // console.log(math.evaluate('sdf(3,2,0)')); // 84
+    // console.log(math.derivative(math.sdf, 'x').evaluate({ x: 4 }));
   };
 
-  const handleNewEquation = (newEq) => {
-    const math = create(all);
+  // const handleNewEquation = (newEq) => {
+  //   const math = create(all);
+  //   setEquation(newEq);
+  //   let f = null;
 
-    setEquation(newEq);
+  //   try {
+  //     f = math.parse(newEq);
+  //   } catch (error) {
+  //     setValEq(false);
+  //     console.warn("ERROR PARSING EQUATION");
+  //     console.log(f);
+  //     return;
+  //   }
+
+  //   setValEq(true);
+
+  //   const x = math.parse('x');
+  //   const y = math.parse('y');
+  //   const z = math.parse('z');
+
+  //   const dfdx = math.derivative(f, x);
+  //   const dfdy = math.derivative(f, y);
+  //   const dfdz = math.derivative(f, z);
+
+  //   const norm = math.sqrt(dfdx*dfdx + dfdy*dfdy + dfdz*dfdz);
+  //   console.log(math.multiply(dfdx,dfdx));
+  //   console.log("NORMA: " + norm);
+
+  //   let newData = {
+  //     f: f,
+  //     dx: dfdx,
+  //     dy: dfdy,
+  //     dz: dfdz}
+
+  //   setEqData(eqData => ({
+  //     ...eqData,
+  //     ...newData
+  //   }));
+
+  //   console.log("dFdX: " + dfdx);
+  //   console.log("dFdY: " + dfdy);
+  //   console.log("dFdZ: " + dfdz);
+  //   //console.log(math.norm([dfdx, dfdy, dfdz]));
+  //   console.log(eqData);
+  // }
+
+  const handleNewEquation = (newEq) => {
     let f = null;
 
     try {
-      f = math.parse(newEq);
+      f = nerdamer(newEq);
     } catch (error) {
+      setValEq(false);
+      console.warn('ERROR PARSING EQUATION');
+
       return;
     }
-    
-    const x = math.parse('x');
-    const y = math.parse('y');
-    const z = math.parse('z');
 
-    const dfdx = math.derivative(f, x);
-    const dfdy = math.derivative(f, y);
-    const dfdz = math.derivative(f, z);   
+    setValEq(true);
+
+    let dfdx = nerdamer.diff(f, 'x', 1);
+    let dfdy = nerdamer.diff(f, 'y', 1);
+    let dfdz = nerdamer.diff(f, 'z', 1);
+
+    let norm = nerdamer(`sqrt((${dfdx})^2 + (${dfdy})^2 + (${dfdz})^2)`);
+    let sdf = nerdamer(`(${f})/(${norm})`);
+
+    console.log('F: ' + f.toString());
+    console.log('dFdX: ' + dfdx.toString());
+    console.log('dFdY: ' + dfdy.toString());
+    console.log('dFdZ: ' + dfdz.toString());
+    console.log('norm: ' + norm.toString());
+    console.log('sdf: ' + sdf.toString());
 
     setEqData({
-      eq: newEq,
+      f: f,
       dx: dfdx,
       dy: dfdy,
-      dz: dfdz
-    })
+      dz: dfdz,
+      norm: norm,
+      sdf: sdf,
+    });
 
-    console.log("dFdX: " + dfdx);
-    console.log("dFdY: " + dfdy);
-    console.log("dFdZ: " + dfdz);
     console.log(eqData);
-  }
+  };
+
+  useEffect(() => {
+    console.log('CHANGE');
+    console.log(eqData);
+  }, [eqData]);
 
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
       <DialogTitle>New Surface</DialogTitle>
-      
-      <DialogContent>
-        <MathJax.Node formula={'2x'} />
-        <DialogContentText>
-          Introduce surface information:
-          {/* <EquationEditor
-            value={equation}
-            onChange={setEquation}
-            autoCommands="pi theta sqrt sum prod alpha beta gamma rho"
-            autoOperatorNames="sin cos tan"
-          /> */}
-          {equation}
-        </DialogContentText>
 
+      <DialogContent>
+        EQ: {eqData.f ? eqData.f.toString() : ''}
+        <MathJax.Provider>
+      <div>
+
+        <p>Block formula:</p>
+        <MathJax.Node formula={
+          eqData.f ?
+          `\\begin{align*} 
+            f(x,y,z) &=  ${nerdamer.convertToLaTeX(eqData.f.toString())} \\\\[10pt]
+            \\nabla f(x,y,z) &= \\left( 
+              ${nerdamer.convertToLaTeX(eqData.dx.toString())}, 
+              ${nerdamer.convertToLaTeX(eqData.dy.toString())}, 
+              ${nerdamer.convertToLaTeX(eqData.dz.toString())}
+            \\right) \\\\[10pt]
+            \\Vert \\nabla f(x,y,z) \\Vert &= ${nerdamer.convertToLaTeX(eqData.norm.toString())} \\\\[10pt]
+            \\text{sdf}(x,y,z) &= ${nerdamer.convertToLaTeX(eqData.sdf.toString())}
+          \\end{align*}` : ""} 
+        />
+        salida string: {eqData.f ? eqData.f.toString() : ""} 
+      </div>
+    </MathJax.Provider>
+
+        <DialogContentText>Introduce surface information:</DialogContentText>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField id="name" label="Name" />
@@ -103,8 +174,9 @@ function SurfaceDialog(props) {
               sx={{ width: '100%' }}
               defaultValue="x^2 + y^2 + z^2 - 1"
               label="Implicit"
-              id="Implicit"
               onChange={(e) => handleNewEquation(e.target.value)}
+              id="Implicit"
+              error={!validEq}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end"> = 0</InputAdornment>
@@ -135,7 +207,6 @@ export default function SurfacePage() {
 
   return (
     <Box>
-      <MathJax.Node inline formula={'2x'} />
       <Fab
         style={{ position: 'absolute', bottom: 16, right: 16 }}
         color="primary"
