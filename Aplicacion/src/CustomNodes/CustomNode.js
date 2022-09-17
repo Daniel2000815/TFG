@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { fs } from "../ShaderStuff/fragmentShaderMovable";
 import Dropdown from "../CustomComponents/Dropdown";
 import CustomHandle from "./CustomHandle";
-import GraphContext from "../GraphContext.js";
+import GraphContext from "../GraphPage/GraphContext.js";
 import ToggleButton from "../CustomComponents/ToggleButton";
 
 

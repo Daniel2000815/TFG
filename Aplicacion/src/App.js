@@ -14,9 +14,9 @@ import {
 } from "rsuite";
 
 import AppBar from '@mui/material/AppBar';
-import Graph from "./Graph";
-import MaterialsPage from './MaterialsPage';
-import SurfacePage from './SurfacePage';
+import Graph from "./GraphPage/Graph";
+import MaterialsPage from './MaterialPage/MaterialsPage';
+import SurfacePage from './SurfacePage/SurfacePage';
 import "rsuite/dist/styles/rsuite-default.css";
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 

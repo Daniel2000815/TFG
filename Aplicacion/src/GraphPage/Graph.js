@@ -9,17 +9,16 @@ import ReactFlow, {
   project,
   useReactFlow
 } from 'react-flow-renderer';
-import PrimitiveNode from './CustomNodes/PrimitiveNode.js';
-import BooleanNode from './CustomNodes/BooleanNode.js';
-import DeformNode from './CustomNodes/DeformNode.js';
-import TransformNode from './CustomNodes/TransformNode.js';
+import PrimitiveNode from '../CustomNodes/PrimitiveNode.js';
+import BooleanNode from '../CustomNodes/BooleanNode.js';
+import DeformNode from '../CustomNodes/DeformNode.js';
+import TransformNode from '../CustomNodes/TransformNode.js';
 
-import ButtonEdge from './CustomNodes/ButtonEdge';
-import CustomControls from './CustomComponents/CustomControls.js';
-import './styles.css';
+import ButtonEdge from '../CustomNodes/ButtonEdge';
+import CustomControls from '../CustomComponents/CustomControls.js';
+import '../styles.css';
 import { GraphProvider } from './GraphContext.js';
-import CustomContextMenu from './CustomComponents/CustomContextMenu.js';
-import CustomContextMenu2 from './CustomComponents/CustomContextMenu copy.js';
+import CustomContextMenu from '../CustomComponents/CustomContextMenu.js';
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
@@ -327,7 +326,7 @@ export default function Graph() {
 
         </div>
       </ContextMenuTrigger>
-      <CustomContextMenu2 newNode={createAddNodeMousePos} />
+      <CustomContextMenu newNode={createAddNodeMousePos} />
 
     </>
   );

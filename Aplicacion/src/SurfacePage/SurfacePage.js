@@ -15,7 +15,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import EquationEditor from 'equation-editor-react';
-import evaluatex from '../node_modules/evaluatex/dist/evaluatex';
+import evaluatex from '../../node_modules/evaluatex/dist/evaluatex';
 import MathJax from 'react-mathjax';
 
 import { evaluate, create, all } from 'mathjs';
@@ -159,7 +159,7 @@ function SurfaceDialog(props) {
             \\text{sdf}(x,y,z) &= ${nerdamer.convertToLaTeX(eqData.sdf.toString())}
           \\end{align*}` : ""} 
         />
-        salida string: {eqData.f ? eqData.f.toString() : ""} 
+        salida string: {eqData.sdf ? eqData.sdf.toString() : ""} 
       </div>
     </MathJax.Provider>
 

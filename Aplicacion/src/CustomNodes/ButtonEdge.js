@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import { getBezierPath, getEdgeCenter } from 'react-flow-renderer';
-import GraphContext from "../GraphContext.js";
+import GraphContext from "../GraphPage/GraphContext";
 
 import '../styles.css';
 
