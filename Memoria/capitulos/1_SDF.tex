@@ -2,12 +2,71 @@
 % !TeX encoding = utf8
 
 \section{Preliminares}
-Introducción, definición de SDF, breve explicación de raytracing. 
 
-\begin{definition}
-    hola
-\end{definition}
-\section{Cálculo de normales}
+\begin{definicion}
+    Sea $\Omega \subseteq \R^3$ un espacio métrico. Una \textit{función distancia} $d(x)$ es aquella que a cada punto de $\R^3$ le asigna la menor distancia a la frontera de $\Omega$:
+    \begin{equation*}
+        d(x) = \min(|x-x_i|),\ \forall x_i \in \delta\Omega
+    \end{equation*}
+\end{definicion}
+
+\begin{definicion}[SDF]
+    Una \textit{función distancia con signo} es una función implícita $\phi(x)$ de forma que:
+    \begin{equation*}
+        \phi(x) = \begin{cases}
+            d(x)  & , x\in \R^3\setminus \mathring{\Omega} \\
+            -d(x) & , x\in \mathring{\Omega}
+        \end{cases}
+    \end{equation*}
+
+    De forma general nos referiremos a esta función por sus siglas en inglés SDF (\textit{Signed Distance Field}).
+\end{definicion}
+
+\section{Raymarching}
+
+\section{Iluminación}
+Utilizaremos el modelo de reflexión de Phong, en el cual se trabaja con
+\begin{itemize}
+    \item Luz ambiente $i_a$.
+    \item Materiales definidos por las constantes $(k_s, k_d, k_a, \alpha)$, que representan los factores de reflexión especular, difusa y ambiente y el coeficiente de brillo respectivamente.
+    \item Lista de fuentes de luz $(l_1, \dots, l_m, \dots, l_n)$
+    \item Los vectores normalizados definidos para cada punto de la superficie $p$:
+          \begin{itemize}
+              \item $L_m$: vector director desde $p$ a cada fuente de luz $l_m$.
+              \item $N$ vector normal a la superficie en $p$.
+              \item $R_m$ dirección del rayo de luz reflejado especularmente desde la fuente $l_m$ en el punto $p$.
+              \item $V$: dirección de $p$ a la posición del observador.
+          \end{itemize} $(L_m, N, R_m, V)$, que
+\end{itemize}
+
+Con estas variables, el color en $p$ vendrá dado por la fórmula:
+\begin{equation*}
+    I_p = k_a i_a + \sum_{m=0}^{n} \left(k_d\left(L_m\cdot N\right) + k_s\left(R_m\cdot V\right)^{\alpha} \right)
+\end{equation*}
+
+De los vectores anteriores, $L_m$ y $V$ se calculan trivialmente, y $R_m$ se puede obtener como
+\begin{equation*}
+    R_m = 2(L_m\cdot N)N - L_m
+\end{equation*}
+
+Sin embargo, dado que la superficie viene dada por un SDF, no podemos calcular $N$ de forma analítica.
+
+\begin{definicion}
+    El \textit{gradiente} de una función implícita $\phi$ es $\nabla\phi = \left(\frac{\partial \phi}{\partial x}, \frac{\partial \phi}{\partial y}, \frac{\partial \phi}{\partial z}\right)$
+\end{definicion}
+
+\begin{proposicion}
+    $\nabla\phi$ es perpendicular al isocontorno de $\phi$.
+\end{proposicion}
+\begin{proof}
+    alo
+\end{proof}
+
+\begin{itemize}
+    \item $k_s$: factor de reflexión especular.
+    \item $k_d$: factor de reflexión difusa.
+    \item $k_a$: factor de reflexi
+\end{itemize}
 \section{Operadores}
 \subsection{Transformaciones afines}
 \subsection{Booleanos}
