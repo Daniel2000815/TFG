@@ -28,68 +28,106 @@ function SurfaceDialog(props) {
 
   const [eqData, setEqData] = useState({});
   const [validEq, setValEq] = useState(true);
+  const [parsedEq, setParsedEq] = useState("");
 
-  const handleSave = () => {
-    // let fn = evaluatex(equation);
-    // let result = fn({ x: 3, y: 0, z: 0 });
-    // console.log('EVALUACION EN X=3: ' + result);
-    // const math = create(all);
-    // // defined methods can be used in both JavaScript as well as the parser
-    // math.import({
-    //   myConstant: 42,
-    //   sdf: function (x, y, z) {
-    //     return fn({ x: x, y: y, z: z });
-    //   },
-    // });
-    // console.log(math.evaluate('sdf(3,2,0)')); // 84
-    // console.log(math.derivative(math.sdf, 'x').evaluate({ x: 4 }));
-  };
+  /*
+  const handleNewEquation = (newEq) => {
+    const math = create(all);
 
-  // const handleNewEquation = (newEq) => {
-  //   const math = create(all);
-  //   setEquation(newEq);
-  //   let f = null;
+    let f = null;
 
-  //   try {
-  //     f = math.parse(newEq);
-  //   } catch (error) {
-  //     setValEq(false);
-  //     console.warn("ERROR PARSING EQUATION");
-  //     console.log(f);
-  //     return;
-  //   }
+    try {
+      f = math.parse(newEq);
+    } catch (error) {
+      setValEq(false);
+      console.warn("ERROR PARSING EQUATION");
+      console.log(f);
+      return;
+    }
 
-  //   setValEq(true);
+    setValEq(true);
 
-  //   const x = math.parse('x');
-  //   const y = math.parse('y');
-  //   const z = math.parse('z');
+    const x = math.parse('x');
+    const y = math.parse('y');
+    const z = math.parse('z');
 
-  //   const dfdx = math.derivative(f, x);
-  //   const dfdy = math.derivative(f, y);
-  //   const dfdz = math.derivative(f, z);
+    const dfdx = math.derivative(f, x);
+    const dfdy = math.derivative(f, y);
+    const dfdz = math.derivative(f, z);
 
-  //   const norm = math.sqrt(dfdx*dfdx + dfdy*dfdy + dfdz*dfdz);
-  //   console.log(math.multiply(dfdx,dfdx));
-  //   console.log("NORMA: " + norm);
+    //const norm = math.sqrt(dfdx*dfdx + dfdy*dfdy + dfdz*dfdz);
+    console.log(math.prod(dfdx,dfdx));
+    // console.log("NORMA: " + norm);
 
-  //   let newData = {
-  //     f: f,
-  //     dx: dfdx,
-  //     dy: dfdy,
-  //     dz: dfdz}
+    let newData = {
+      f: f,
+      dx: dfdx,
+      dy: dfdy,
+      dz: dfdz}
 
-  //   setEqData(eqData => ({
-  //     ...eqData,
-  //     ...newData
-  //   }));
+    setEqData(eqData => ({
+      ...eqData,
+      ...newData
+    }));
+  
 
-  //   console.log("dFdX: " + dfdx);
-  //   console.log("dFdY: " + dfdy);
-  //   console.log("dFdZ: " + dfdz);
-  //   //console.log(math.norm([dfdx, dfdy, dfdz]));
-  //   console.log(eqData);
-  // }
+    console.log("dFdX: " + dfdx);
+    console.log("dFdY: " + dfdy);
+    console.log("dFdZ: " + dfdz);
+    //console.log(math.norm([dfdx, dfdy, dfdz]));
+    console.log(eqData);
+  }
+  */
+
+  const traverseTree = (node) => {
+
+    if(node){
+      if(node.type === 'VARIABLE_OR_LITERAL'){
+        console.log("VARIABLE: " + node.value);
+        const isVariable = node.value==='x' || node.value==='y' || node.value==='z';
+        return isVariable ? node.value : parseFloat(node.value).toFixed(4);
+      }
+      if(node.type === 'OPERATOR'){
+        console.log("OPERATOR: " + node.value);
+        let left = traverseTree(node.left);
+        let right = traverseTree(node.right);
+
+        if(node.value === '^'){
+          console.log(`pow(${left}, ${right})`);
+          return `pow(${left}, ${right})`;
+          
+        }
+        else{
+          if(right && left) return `(${left})${node.value}(${right})`;
+          else if(left) return `${node.value}(${left})`;
+          else return "????";
+        }
+        
+        console.log(node.toString());
+        return node.toString();
+        
+      }
+      if(node.type === 'FUNCTION'){
+        console.log("FUNCTION: " + node.value);
+        let left = traverseTree(node.left);
+        let right = traverseTree(node.right);
+
+        if(node.value === '^'){
+          console.log(`pow(${left}, ${right})`);
+          return `pow(${left}, ${right})`;
+          
+        }
+        else{
+          if(right) return `${node.value}(${right})`;
+          else return "????";
+        }
+        
+      }
+      
+
+      
+    }
+  }
 
   const handleNewEquation = (newEq) => {
     let f = null;
@@ -119,6 +157,10 @@ function SurfaceDialog(props) {
     console.log('norm: ' + norm.toString());
     console.log('sdf: ' + sdf.toString());
 
+    var x = nerdamer.tree(sdf.toString());
+    console.log(x);
+    setParsedEq(traverseTree(x));
+
     setEqData({
       f: f,
       dx: dfdx,
@@ -130,6 +172,7 @@ function SurfaceDialog(props) {
 
     console.log(eqData);
   };
+  
 
   useEffect(() => {
     console.log('CHANGE');
@@ -159,7 +202,7 @@ function SurfaceDialog(props) {
             \\text{sdf}(x,y,z) &= ${nerdamer.convertToLaTeX(eqData.sdf.toString())}
           \\end{align*}` : ""} 
         />
-        salida string: {eqData.sdf ? eqData.sdf.toString() : ""} 
+        salida string: {parsedEq} 
       </div>
     </MathJax.Provider>
 
@@ -197,11 +240,13 @@ function SurfaceDialog(props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={props.handleClose}>Cancel</Button>
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={()=>{}}>Save</Button>
       </DialogActions>
     </Dialog>
   );
 }
+
+
 export default function SurfacePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
 

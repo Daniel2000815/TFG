@@ -296,7 +296,6 @@ export default function Graph() {
     <>
       <ContextMenuTrigger id='contextmenu'>
         <div style={{ height: '100vh' }} tabIndex='0' onKeyDown={handleKey} onMouseMove={handleMouse}>
-
           <GraphProvider value={sharedFunctions}>
             <ReactFlow
               ref={reactFlowRef}
@@ -320,14 +319,9 @@ export default function Graph() {
               <CustomControls save={onSave} load={onLoad} />
             </ReactFlow>
           </GraphProvider>
-
-
-
-
         </div>
       </ContextMenuTrigger>
       <CustomContextMenu newNode={createAddNodeMousePos} />
-
     </>
   );
 }
