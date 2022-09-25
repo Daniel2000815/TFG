@@ -27,6 +27,7 @@ import { fs } from './ShaderStuff/fragmentShaderMovable';
 
 const theme = createTheme({
   palette: {
+    main: '#0076DF',
     primitive: '#609dff',
     boolean: '#ff5858',
     deform: '#3ec224',

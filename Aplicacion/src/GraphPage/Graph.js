@@ -19,6 +19,7 @@ import CustomControls from '../CustomComponents/CustomControls.js';
 import '../styles.css';
 import { GraphProvider } from './GraphContext.js';
 import CustomContextMenu from '../CustomComponents/CustomContextMenu.js';
+import useLocalStorage from '../storageHook.js';
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
@@ -81,7 +82,7 @@ export default function Graph() {
   const [rfInstance, setRfInstance] = useState(null);
   const [id, setId] = React.useState(3);
   const [mouseCoor, setMouseCoor] = useState([0, 0]);
-
+  const [storage, setStorage] = useLocalStorage("user_implicits", {});
   const reactFlowRef = useRef(null);
 
   const updateNodeSdf = (id, newSdf, parent) => {
@@ -294,6 +295,7 @@ export default function Graph() {
 
   return (
     <>
+    {JSON.stringify(storage)}
       <ContextMenuTrigger id='contextmenu'>
         <div style={{ height: '100vh' }} tabIndex='0' onKeyDown={handleKey} onMouseMove={handleMouse}>
           <GraphProvider value={sharedFunctions}>
