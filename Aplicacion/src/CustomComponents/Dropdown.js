@@ -18,7 +18,6 @@ export default function Dropdown(props) {
         autoWidth
         size="small"
         open={open}
-        label="Primitive"
       >
         {props.items.map((item) => (
           <MenuItem key={item} value={item}>

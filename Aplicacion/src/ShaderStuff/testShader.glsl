@@ -117,34 +117,15 @@ float f(vec3 p)
    float y = p.g;
    float z = p.b;
 
-return  (((pow((((1.0000)+(pow(x, 2.0000)))+(pow(y, 2.0000)))+(pow(z, 2.0000)), 2.0000))-((16.0000)*(pow(x, 2.0000))))-((16.0000)*(pow(y, 2.0000))))*(pow(sqrt(((((((((((((((((-(((224.0000)*(pow(x, 2.0000)))*(pow(z, 2.0000))))-((224.0000)*(pow(x, 4.0000))))+((16.0000)*(pow(x, 6.0000))))+((784.0000)*(pow(x, 2.0000))))-(((224.0000)*(pow(y, 2.0000)))*(pow(z, 2.0000))))-((224.0000)*(pow(y, 4.0000))))+((16.0000)*(pow(y, 6.0000))))+((784.0000)*(pow(y, 2.0000))))-(((448.0000)*(pow(x, 2.0000)))*(pow(y, 2.0000))))+(((16.0000)*(pow((((1.0000)+(pow(x, 2.0000)))+(pow(y, 2.0000)))+(pow(z, 2.0000)), 2.0000)))*(pow(z, 2.0000))))+(((16.0000)*(pow(x, 2.0000)))*(pow(z, 4.0000))))+(((16.0000)*(pow(y, 2.0000)))*(pow(z, 4.0000))))+(((32.0000)*(pow(x, 4.0000)))*(pow(z, 2.0000))))+(((32.0000)*(pow(y, 4.0000)))*(pow(z, 2.0000))))+(((48.0000)*(pow(x, 2.0000)))*(pow(y, 4.0000))))+(((48.0000)*(pow(x, 4.0000)))*(pow(y, 2.0000))))+((((64.0000)*(pow(x, 2.0000)))*(pow(y, 2.0000)))*(pow(z, 2.0000)))), -(1.0000)));
-
-return ((((-(12.0000))+(pow(x, 2.0000)))+(pow(y, 2.0000)))+(pow(z, 2.0000)))*(pow(sqrt((((4.0000)*(pow(x, 2.0000)))+((4.0000)*(pow(y, 2.0000))))+((4.0000)*(pow(z, 2.0000)))), -(1.0000)));
-
   return (x*x+y*y+z*z-12.0)/sqrt(4.0*x*x + 4.0*y*y + 4.0*z*z);
-  //  return sqrt(p.x*p.x + p.y*p.y + p.z*p.z) - 1.0; 
-  //  return  sqrt(p.x*p.x + p.y*p.y)*cos(PI/8.0) - sqrt(p.z*p.z)*sin(PI/8.0); 
-   
-  //  return p.x*p.x + p.y*p.y + p.z*p.z - 1.0; 
-  //return y*y * x*x + y*y*z*z + 0.01*x*x + 0.01*z*z - 0.01;
-  //  return p.x + 2.0*p.y - 3.0*p.z + 1.0;
-
-  return (p.x*p.x + p.y*p.y + p.z*p.z - 1.0)/length(vec3(2.0*p.x,2.0*p.y,2.0*p.z));
-
 } 
 
 Surface map(vec3 p){
-  Material b1Mat = Material(vec3(1.),vec3(1.,0.,0.),vec3(.2),10.);
-  Material b2Mat = Material(vec3(4.),vec3(0.,1.,0.),vec3(.2),30.);
-  Material b3Mat = Material(vec3(10.),vec3(0.,0.,1.),vec3(.2),50.);
+  Material mat = Material(vec3(1.),vec3(1.,0.,0.),vec3(.2),10.);
   
-  float box = box(p-vec3(4.,0.,0.),vec3(1.));
   float sphere = f(p);
-  float torus = torus(p+vec3(4.,0.,0.),vec2(1.,.3));
   
-  Surface co = Surface(sphere,b1Mat);
-  // co = minWithColor(co,Surface(box,b2Mat));
-  // co = minWithColor(co,Surface(torus,b3Mat));
+  Surface co = Surface(sphere, mat);
   
   return co;
 }
@@ -157,8 +138,6 @@ vec3 grad( in vec3 p )
     map(vec3(p.x,p.y,p.z+EPSILON)).sd - map(vec3(p.x,p.y,p.z-EPSILON)).sd
   );
 }
-
-
 
 mat3 camera(vec3 cameraPos,vec3 lookAtPoint){
   vec3 cd = normalize(lookAtPoint-cameraPos);      // camera direction

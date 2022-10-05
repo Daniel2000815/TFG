@@ -1,7 +1,9 @@
-import { primitives } from "./primitives";
-import { operators } from "./operators";
+import React, { useEffect, useState } from 'react';
+import { operators } from './operators';
+import usePrimitivesHook from '../primitivesHook';
 
-export const fs = (sdf) => {
+export const fs = (sdf, primitives) => {
+
   return `
     
     // https://thebookofshaders.com/03/?lan=es
@@ -27,7 +29,14 @@ export const fs = (sdf) => {
 
   vec3 cameraPos                    = vec3(10.0, 1.0, 10.0);
   
-  ${primitives()}
+
+  float sphere(vec3 p){
+    float x = p.r;
+    float y = p.g;
+    float z = p.b;
+
+    return ((((-(1.0000))+(pow(x, 2.0000)))+(pow(y, 2.0000)))+(pow(z, 2.0000)))*(pow(sqrt((((4.0000)*(pow(x, 2.0000)))+((4.0000)*(pow(y, 2.0000))))+((4.0000)*(pow(z, 2.0000)))), -(1.0000)));
+}
   ${operators()}
 
   struct Material
@@ -169,4 +178,4 @@ export const fs = (sdf) => {
 
   
   `;
-};
+}

@@ -20,7 +20,7 @@ import { styled } from '@mui/material/styles';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: "#222222",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -94,8 +94,8 @@ function EnhancedTableHead(props) {
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-              {headCell.id}
-              {headCell.label}
+              <Typography variant="subtitle1">{headCell.label}</Typography>
+              
             </TableSortLabel>
           </StyledTableCell>
         ))}
@@ -109,6 +109,7 @@ const EnhancedTableToolbar = (props) => {
 
   return (
     <Toolbar
+    style={{ background: '#222222' }}
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
@@ -124,7 +125,7 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Typography
           sx={{ flex: '1 1 100%' }}
-          color="inherit"
+          color="white"
           variant="subtitle1"
           component="div"
         >
@@ -132,12 +133,13 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       ) : (
         <Typography
+        color="white"
           sx={{ flex: '1 1 100%' }}
           variant="h6"
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          Surfaces
         </Typography>
       )}
 
@@ -218,7 +220,6 @@ export default function CustomTable(props) {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      {selected}
       <EnhancedTableToolbar
         numSelected={selected.length}
         handleDelete={() => handleDelete(selected)}
@@ -244,13 +245,13 @@ export default function CustomTable(props) {
                 return (
                   <StyledTableRow
                     hover
-                    role="checkbox"
-                    onClick={(event) => handleClick(event, row.name)}
+                    onClick={(event) => {console.log(row.id); props.handleRowClick(row.id)}}
                     tabIndex={-1}
-                    key={row.code}
+                    key={row.id}
                   >
                     <StyledTableCell padding="checkbox">
                       <Checkbox
+                      onClick={(event) => handleClick(event, row.name)}
                         color="primary"
                         checked={isSelected(row.name)}
                         inputProps={{

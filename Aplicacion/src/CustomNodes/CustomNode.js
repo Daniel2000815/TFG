@@ -1,8 +1,6 @@
 import React, { useEffect, useContext, useRef } from "react";
 import Shader from "../CustomComponents/Shader";
 import { useTheme } from '@mui/material/styles';
-
-import { fs } from "../ShaderStuff/fragmentShaderMovable";
 import Dropdown from "../CustomComponents/Dropdown";
 import CustomHandle from "./CustomHandle";
 import GraphContext from "../GraphPage/GraphContext.js";
@@ -124,11 +122,7 @@ export default function CustomNode(props) {
 
               {props.body}
               <Shader
-                shader={fs(props.sdf)}
-                uniforms={{
-                  color: { type: "3fv", value: [1.0, 1.0, 0.0] },
-
-                }}
+                sdf={props.sdf}
                 style={{ margin: "10px", height: "100%" }}
               />
             </>
