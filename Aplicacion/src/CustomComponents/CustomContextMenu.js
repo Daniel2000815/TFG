@@ -28,11 +28,9 @@ export default function CustomContextMenu(props) {
 
   return (
 
-
-
     <ContextMenu id="contextmenu">
       {Object.keys(NodeTypes).map((type, index) =>
-        <MenuItem onClick={()=>{props.newNode(Object.values(NodeTypes)[index],0,0); console.log(Object.values(NodeTypes)[index])}}>
+        <MenuItem key={index} onClick={()=>props.newNode(Object.values(NodeTypes)[index],0,0)}>
           {icons[index]}
           <Typography align="left" style={{marginLeft: "10px"}} variant="body1" color="text.primary">
             {type}

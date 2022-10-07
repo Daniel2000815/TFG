@@ -245,7 +245,7 @@ export default function CustomTable(props) {
                 return (
                   <StyledTableRow
                     hover
-                    onClick={(event) => {console.log(row.id); props.handleRowClick(row.id)}}
+                    onClick={(event) => props.handleRowClick(row.id)}
                     tabIndex={-1}
                     key={row.id}
                   >

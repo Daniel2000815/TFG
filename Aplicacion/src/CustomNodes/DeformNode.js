@@ -21,7 +21,7 @@ const DeformOperations = {
 
 export default function DeformNode({ data, id }) {
   const [operation, setOperation] = React.useState(DeformOperations.Bend);
-  const [k, setK] = React.useState(0.0.toFixed(4));
+  const [k, setK] = React.useState((0.0).toFixed(4));
 
   const [sdf, setSdf] = React.useState("");
 
@@ -58,7 +58,8 @@ export default function DeformNode({ data, id }) {
             <Slider
               size="small"
               value={k}
-              valueLabelDisplay="k"
+              label="k"
+              valueLabelDisplay="on"
               onChange={(e, v) => setK(parseFloat(v).toFixed(4))}
               min={0}
               max={5}

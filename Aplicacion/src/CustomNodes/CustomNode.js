@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef } from "react";
+import React, { useEffect, useContext } from "react";
 import Shader from "../CustomComponents/Shader";
 import { useTheme } from '@mui/material/styles';
 import Dropdown from "../CustomComponents/Dropdown";
@@ -21,7 +21,6 @@ export default function CustomNode(props) {
     display: "flex",
     flexDirection: "column",
     transition: "border 300ms ease",
-    boxShadow: "0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)",
     borderRadius: "0px 0px 0px 0px",
     backgroundColor: "#fff",
 
@@ -147,7 +146,7 @@ export default function CustomNode(props) {
       }
 
       <CustomHandle
-        id={"2"}
+        id={"sourceHandle"}
         type="source"
         onConnect={(params) => console.log("handle onsConnect", params)}
         style={{ top: "50%" }}

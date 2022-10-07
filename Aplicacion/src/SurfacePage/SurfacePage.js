@@ -54,14 +54,10 @@ export default function SurfacePage() {
 
   useEffect(() => {
     let newRows = [];
-    console.log('hasasa');
-    console.log(storage);
-    console.log('as');
 
     Object.keys(storage).forEach(function (key, index) {
       const item = storage[key];
-      console.log("KEY: " + key);
-      console.log(item);
+
       newRows.push({
         id: item.id,
         name: item.name,
@@ -70,9 +66,6 @@ export default function SurfacePage() {
       });
     });
 
-    console.log("NEW ROWS: " + newRows);
-    console.log(newRows);
-
     setTableRows(newRows);
   }, [storage]);
 
@@ -80,17 +73,13 @@ export default function SurfacePage() {
     // Convert `obj` to a key/value array
     // `[['name', 'Luke Skywalker'], ['title', 'Jedi Knight'], ...]`
     const asArray = Object.entries(storage);
-    console.log(selectedList);
     const filtered = asArray.filter(
       ([key, value]) => !selectedList.includes(key)
     );
 
-    console.log(filtered);
-
     // Convert the key/value array back to an object:
     // `{ name: 'Luke Skywalker', title: 'Jedi Knight' }`
     const newStorage = Object.fromEntries(filtered);
-    console.log(newStorage);
     setStorage(newStorage);
   };
 
@@ -102,53 +91,15 @@ export default function SurfacePage() {
         columns={tableCols}
         handleDelete={handleDelete}
         handleCreateRow={() => {setEditedRow(""); setDialogOpen(true)}}
-        handleRowClick={(name)=>{setEditedRow(name); setDialogOpen(true); console.log("ROW: " + name); console.log("ALA"); console.log(storage[name])}}
+        handleRowClick={(name)=>{setEditedRow(name); setDialogOpen(true)}}
       />
 
-
       <SurfaceDialog
-        eqData={
-          editedRow ? 
-          {
-            name: storage[editedRow].name,
-            implicit: storage[editedRow].implicit,
-            sdf: "",
-            parsedSdf: "",
-            fName: "",
-          } : null
-        }
+        savedData={editedRow ? storage[editedRow] : null}
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
       />
-      <Grid
-        container
-        direction="row"
-        justifyContent="flex-start"
-        alignItems="flex-start"
-        spacing={2}
-      >
-        <Grid item>
-          <ButtonCard />
-        </Grid>
-        <Grid item>
-          <SurfaceCard />
-        </Grid>
-        <Grid item>
-          <SurfaceCard />
-        </Grid>
-        <Grid item>
-          <SurfaceCard />
-        </Grid>
-        <Grid item>
-          <SurfaceCard />
-        </Grid>
-        <Grid item>
-          <SurfaceCard />
-        </Grid>
-        <Grid item>
-          <SurfaceCard />
-        </Grid>
-      </Grid>
+      
     </Box>
   );
 }

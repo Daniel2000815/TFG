@@ -13,7 +13,7 @@ export const usePrimitivesHook = () => {
         console.log(key);
         let p = storage[key];
         res += 
-        `float ${p.fName}(vec3 p){
+        `float ${p.fHeader}{
             float x = p.r;
             float y = p.g;
             float z = p.b;
@@ -23,8 +23,6 @@ export const usePrimitivesHook = () => {
       }
 
       setPrimitives(res);
-
-      console.log(res);
   }, [storage]);
 
   return [primitives, setPrimitives];

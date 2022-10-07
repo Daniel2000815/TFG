@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
 import { operators } from './operators';
-import usePrimitivesHook from '../primitivesHook';
 
 export const fs = (sdf, primitives) => {
 

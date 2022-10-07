@@ -16,14 +16,6 @@ import usePrimitivesHook from '../primitivesHook';
 import Shader from '../CustomComponents/Shader';
 import CustomInputTable from '../CustomComponents/CustomInputTable';
 
-function createParameter(symbol, label, defaultVal) {
-  return {
-    symbol: symbol,
-    label: label,
-    defaultVal: defaultVal,
-  };
-}
-
 export default function SurfaceDialog(props) {
   var nerdamer = require('nerdamer');
   require('nerdamer/Calculus');
@@ -44,7 +36,6 @@ export default function SurfaceDialog(props) {
   const [validName, setValidName] = useState(false);
 
   const latexInfo = () => {
-    console.log(eqData ? 'HAHA' : 'NONO');
     const implicit =
       eqData && validEq ? nerdamer.convertToLaTeX(eqData.f.toString()) : '';
     const dx =
@@ -73,18 +64,15 @@ export default function SurfaceDialog(props) {
   const traverseTree = (node) => {
     if (node) {
       if (node.type === 'VARIABLE_OR_LITERAL') {
-        console.log('VARIABLE: ' + node.value);
         const isVariable =
           node.value === 'x' || node.value === 'y' || node.value === 'z';
         return isVariable ? node.value : parseFloat(node.value).toFixed(4);
       }
       if (node.type === 'OPERATOR') {
-        console.log('OPERATOR: ' + node.value);
         let left = traverseTree(node.left);
         let right = traverseTree(node.right);
 
         if (node.value === '^') {
-          console.log(`pow(${left}, ${right})`);
           return `pow(${left}, ${right})`;
         } else {
           if (right && left) return `(${left})${node.value}(${right})`;
@@ -92,16 +80,13 @@ export default function SurfaceDialog(props) {
           else return '????';
         }
 
-        console.log(node.toString());
         return node.toString();
       }
       if (node.type === 'FUNCTION') {
-        console.log('FUNCTION: ' + node.value);
         let left = traverseTree(node.left);
         let right = traverseTree(node.right);
 
         if (node.value === '^') {
-          console.log(`pow(${left}, ${right})`);
           return `pow(${left}, ${right})`;
         } else {
           if (right) return `${node.value}(${right})`;
@@ -154,12 +139,11 @@ export default function SurfaceDialog(props) {
       parsedSdf: traverseTree(x),
     });
 
-    console.log(eqData);
   };
 
   const handleSave = () => {
     if (nameInput in storage) {
-      console.log('ya esta');
+      return;
     } else {
       let newData = { ...storage };
       newData[nameInput.toLowerCase()] = {
@@ -168,9 +152,10 @@ export default function SurfaceDialog(props) {
         implicit: eqData.f.toString(),
         sdf: eqData.sdf.toString(),
         parsedSdf: eqData.parsedSdf,
-        fName: nameInput.toLowerCase(),
+        fHeader: `${nameInput.toLowerCase()}(vec3 p ${parametersInput.length>0?',':''}${(parametersInput.map(p=>`float ${p.symbol}`)).join(',')})`,
         parameters: parametersInput,
       };
+
 
       setStorage(newData);
       props.handleClose();
@@ -178,21 +163,21 @@ export default function SurfaceDialog(props) {
   };
 
   useEffect(() => {
-    if (props.eqData) {
-      setNameInput(props.eqData.name);
-      setEqInput(props.eqData.implicit);
-      setParametersInput([createParameter("r", "Radius", 1), createParameter("a", "Radius", 1)]);
-      handleNewEquation(props.eqData.implicit);
+    
+    if (props.savedData) {
+      setNameInput(props.savedData.name);
+      setEqInput(props.savedData.implicit);
+      setParametersInput(props.savedData.parameters);
+      handleNewEquation(props.savedData.implicit);
     } else {
       setNameInput('');
       setEqInput('');
       setParametersInput([]);
       setEqData(null);
     }
-  }, [props.eqData]);
+  }, [props.savedData]);
 
   useEffect(() => {
-    console.log(storage);
     setValidName(!(nameInput in storage));
   }, [nameInput]);
 
@@ -201,7 +186,6 @@ export default function SurfaceDialog(props) {
       <DialogTitle>New Surface</DialogTitle>
 
       <DialogContent>
-        <DialogContentText>Introduce surface information:</DialogContentText>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -238,12 +222,6 @@ export default function SurfaceDialog(props) {
               <MathJax.Node formula={latexInfo()} />
             </MathJax.Provider>
           </Grid>
-          <Grid item xs={12}>
-            <CustomInputTable
-              rows={parametersInput}
-              handleNewParameters={(newParams) => {console.log(newParams);setParametersInput(newParams)}}
-            />
-          </Grid>
           <Grid item xs={6}>
             <Shader
               sdf={'sphere(p, 1.0)'}
@@ -251,6 +229,13 @@ export default function SurfaceDialog(props) {
               style={{ margin: '10px' }}
             />
           </Grid>
+          <Grid item xs={12}>
+            <CustomInputTable
+              rows={parametersInput}
+              handleNewParameters={(newParams) => setParametersInput(newParams)}
+            />
+          </Grid>
+          
         </Grid>
       </DialogContent>
       <DialogActions>

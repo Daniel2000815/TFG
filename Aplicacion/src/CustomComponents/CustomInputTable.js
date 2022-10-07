@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -9,8 +9,9 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import Dropdown from '../CustomComponents/Dropdown';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,7 +51,9 @@ function EnhancedTableHead(props) {
 
   return (
     <TableHead>
+      
       <StyledTableRow>
+      <StyledTableCell/>
         {props.columns.map((headCell) => (
           <StyledTableCell
             sx={{ minWidth: headCell.minWidth }}
@@ -67,22 +70,39 @@ function EnhancedTableHead(props) {
   );
 }
 
-export default function CustomInputTable(props) {
+function createParameter(symbol = '', label = '', defaultVal = '') {
+  return {
+    symbol: symbol,
+    label: label,
+    defaultVal: defaultVal,
+  };
+}
 
+export default function CustomInputTable(props) {
   const [rows, setRows] = useState(props.rows);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(rows);
-  }, [rows])
+  }, [rows]);
 
   const handleRowChange = (row, column, value) => {
     let newRows = [...rows];
-    newRows[row][column] = value;
+    console.log("HANDLEANDO: " + column);
+    newRows[row][column] = column==='defaultVal' ? parseFloat(value,10) : value;
 
     // TODO: check if valid
 
     setRows(newRows);
     props.handleNewParameters(rows);
+  };
+
+  const handleAdd = () => {
+    setRows(rows.concat(createParameter()));
+  };
+
+  const handleDelete = (index) => {
+    setRows([
+      ...rows.slice(0, index)]);
   }
 
   return (
@@ -97,18 +117,25 @@ export default function CustomInputTable(props) {
             {rows.map((row, index) => {
               return (
                 <StyledTableRow hover tabIndex={-1} key={row.id}>
+                  <StyledTableCell padding="checkbox">
+                  <IconButton onClick={()=>handleDelete(index)} aria-label="delete">
+                <DeleteIcon />
+              </IconButton>
+                  </StyledTableCell>
+
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <StyledTableCell 
-                        key={column.id} 
-                        align={column.align} 
-                        >
-                          <TextField 
-                            defaultValue={value} 
-                            id="standard-basic" 
-                            variant="standard"
-                            onChange={(e)=>handleRowChange(index, column.id, e.target.value)} />
+                      <StyledTableCell key={column.id} align={column.align}>
+                        <TextField
+                          defaultValue={value}
+                          id="standard-basic"
+                          variant="standard"
+                          error={value === ''}
+                          onChange={(e) =>
+                            handleRowChange(index, column.id, e.target.value)
+                          }
+                        />
                       </StyledTableCell>
                     );
                   })}
@@ -117,7 +144,9 @@ export default function CustomInputTable(props) {
             })}
           </TableBody>
         </Table>
-        <Button style={{ width: '100%' }}>+</Button>
+        <Button onClick={handleAdd} style={{ width: '100%' }}>
+          +
+        </Button>
       </TableContainer>
     </Paper>
   );
