@@ -32,7 +32,6 @@ export default function CustomEdge({
     targetY,
   });
 
-  const [showButton, setShowButton] = React.useState(false);
   const sharedFunctions = useContext(GraphContext);
 
   return (

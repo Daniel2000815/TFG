@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useLocalStorage from './storageHook.js';
 
 export const usePrimitivesHook = () => {
   const [primitives, setPrimitives] = useState('');
-  const [storage, setStorage] = useLocalStorage('user_implicits', {});
+  const [storage] = useLocalStorage('user_implicits', {});
 
   useEffect(() => {
     let res = '';

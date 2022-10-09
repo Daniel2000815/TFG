@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
-import FloatSlider from "../CustomComponents/FloatSlider";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Vector3Input from "../CustomComponents/Vector3Input";
 
@@ -28,7 +27,7 @@ export default function TransformNode({ data, id }) {
 
   useEffect(() => {
     console.log(
-      `SE HAN MODIFICADO LOS SDF EN NODO TRANSFORM. AHORA HAY ${Object.keys(data.inputs).length
+      `SE HAN MODIFICADO LOS SDF EN NODO TRANSFORM ${id}. AHORA HAY ${Object.keys(data.inputs).length
       }`
     );
 

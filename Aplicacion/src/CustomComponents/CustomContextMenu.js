@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { useCallback, useEffect, useState, useRef } from "react";
-
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import { ContextMenu, MenuItem } from "react-contextmenu";
 
 import { NodeTypes } from '../GraphPage/nodeTypes';
 import Typography from '@mui/material/Typography';
@@ -11,16 +9,16 @@ import TransformIcon from '@mui/icons-material/Transform';
 import BooleanIcon from '@mui/icons-material/JoinRight';
 import DeformIcon from '@mui/icons-material/Storm';
 
-const customStyles = {
-  width: "250px",
-  height: "250px",
-  backgroundColor: "purple",
-  color: "white",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  margin: "auto"
-};
+// const customStyles = {
+//   width: "250px",
+//   height: "250px",
+//   backgroundColor: "purple",
+//   color: "white",
+//   display: "flex",
+//   alignItems: "center",
+//   justifyContent: "center",
+//   margin: "auto"
+// };
 
 // https://codesandbox.io/s/tq8r3?file=/src/components/coupon.css:969-2051
 export default function CustomContextMenu(props) {

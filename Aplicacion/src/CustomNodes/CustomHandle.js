@@ -1,6 +1,7 @@
 import React from "react";
 import { Handle } from "react-flow-renderer";
 import { useTheme } from '@mui/material/styles';
+import newId from "../uniqueIdHook";
 
 export default function CustomHandle(props) {
   const theme = useTheme();
@@ -13,6 +14,7 @@ export default function CustomHandle(props) {
     border: `1px solid ${theme.palette.primary.main}`
   }
 
+  const id = newId('handle');
 
 
   return (
@@ -20,7 +22,7 @@ export default function CustomHandle(props) {
       {props.type === "source" ?
         <Handle
           type="source"
-          id={props.id}
+          key={id}
           style={{
             ...style, marginRight: `${margin}`
           }}
@@ -29,7 +31,7 @@ export default function CustomHandle(props) {
         :
         <Handle
           type="target"
-          id={props.id ? props.id : "0"}
+          key={id}
           style={{
             ...style, marginLeft: `${margin}`
           }}

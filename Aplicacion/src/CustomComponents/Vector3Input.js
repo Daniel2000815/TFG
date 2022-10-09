@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import FloatInput from './FloatInput';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid'; import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 

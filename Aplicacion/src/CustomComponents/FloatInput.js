@@ -1,11 +1,13 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import newId from '../uniqueIdHook';
 
 export default function FloatInput(props) {
   return (
 
     <TextField
+      id={newId(`${props.label}_floatInput`)}
       value={props.val}
       type="number"
       onChange={(ev) => props.handleChange(parseFloat(ev.target.value))}

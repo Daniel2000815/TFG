@@ -21,13 +21,13 @@ const DeformOperations = {
 
 export default function DeformNode({ data, id }) {
   const [operation, setOperation] = React.useState(DeformOperations.Bend);
-  const [k, setK] = React.useState((0.0).toFixed(4));
+  const [k, setK] = React.useState(0.0);
 
   const [sdf, setSdf] = React.useState("");
 
   useEffect(() => {
     console.log(
-      `SE HAN MODIFICADO LOS SDF EN NODO DEFORM. AHORA HAY ${Object.keys(data.inputs).length
+      `SE HAN MODIFICADO LOS SDF EN NODO DEFORM ${id}. AHORA HAY ${Object.keys(data.inputs).length
       }`
     );
     
@@ -60,7 +60,7 @@ export default function DeformNode({ data, id }) {
               value={k}
               label="k"
               valueLabelDisplay="on"
-              onChange={(e, v) => setK(parseFloat(v).toFixed(4))}
+              onChange={(e, v) => setK(parseFloat(v))}
               min={0}
               max={5}
               step={0.1}

@@ -6,13 +6,11 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import MathJax from 'react-mathjax';
 import 'katex/dist/katex.min.css';
 import useLocalStorage from '../storageHook.js';
-import usePrimitivesHook from '../primitivesHook';
 import Shader from '../CustomComponents/Shader';
 import CustomInputTable from '../CustomComponents/CustomInputTable';
 
@@ -21,16 +19,10 @@ export default function SurfaceDialog(props) {
   require('nerdamer/Calculus');
 
   const [eqData, setEqData] = useState(props.eqData ? props.eqData : null);
-
   const [eqInput, setEqInput] = useState('');
   const [nameInput, setNameInput] = useState('');
   const [parametersInput, setParametersInput] = useState([]);
-
-  const [parsedEq, setParsedEq] = useState('');
-
   const [storage, setStorage] = useLocalStorage('user_implicits', {});
-  const [primitives, setPrimitives] = usePrimitivesHook();
-
   const [errorMsg, setErrorMsg] = useState('');
   const [validEq, setValEq] = useState(false);
   const [validName, setValidName] = useState(false);
@@ -62,10 +54,13 @@ export default function SurfaceDialog(props) {
   };
 
   const traverseTree = (node) => {
+    const parametersSymbols = Object.keys(parametersInput).map((val,key) => parametersInput[key].symbol);
+    console.log(parametersInput);
+
     if (node) {
       if (node.type === 'VARIABLE_OR_LITERAL') {
-        const isVariable =
-          node.value === 'x' || node.value === 'y' || node.value === 'z';
+        const isVariable = [...parametersSymbols, 'x','y','z'].includes(node.value);
+        
         return isVariable ? node.value : parseFloat(node.value).toFixed(4);
       }
       if (node.type === 'OPERATOR') {
@@ -80,7 +75,7 @@ export default function SurfaceDialog(props) {
           else return '????';
         }
 
-        return node.toString();
+        // return node.toString();
       }
       if (node.type === 'FUNCTION') {
         let left = traverseTree(node.left);
@@ -190,7 +185,7 @@ export default function SurfaceDialog(props) {
           <Grid item xs={12}>
             <TextField
               value={nameInput}
-              error={!validName || nameInput == ''}
+              error={!validName || nameInput === ''}
               helperText={
                 nameInput === '' ? '' : validName ? '' : 'Name already in use'
               }

@@ -1,26 +1,19 @@
 import React from 'react';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import {
-  Header,
   Content,
   Footer,
-  Navbar,
-  Nav,
-  Icon,
   Panel,
   Grid,
   Row,
   Col,
 } from 'rsuite';
-
-import AppBar from '@mui/material/AppBar';
 import Graph from './GraphPage/Graph';
 import MaterialsPage from './MaterialPage/MaterialsPage';
 import SurfacePage from './SurfacePage/SurfacePage';
 import 'rsuite/dist/styles/rsuite-default.css';
-import { Box, Tab, Tabs, Typography } from '@mui/material';
-
+import { Box, Tab, Tabs } from '@mui/material';
 import './styles.css';
 import Shader from './CustomComponents/Shader';
 import { fs } from './ShaderStuff/fragmentShaderMovable';
@@ -68,7 +61,7 @@ const layoutStyles = {
 };
 
 export default function App() {
-  const [tabVal, setTabVal] = React.useState(2);
+  const [tabVal, setTabVal] = React.useState(0);
 
   return (
     <div style={layoutStyles}>

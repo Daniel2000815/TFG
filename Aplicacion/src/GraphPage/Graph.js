@@ -6,8 +6,6 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   MarkerType,
-  project,
-  useReactFlow
 } from 'react-flow-renderer';
 import PrimitiveNode from '../CustomNodes/PrimitiveNode.js';
 import BooleanNode from '../CustomNodes/BooleanNode.js';
@@ -21,7 +19,7 @@ import { GraphProvider } from './GraphContext.js';
 import CustomContextMenu from '../CustomComponents/CustomContextMenu.js';
 import useLocalStorage from '../storageHook.js';
 
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import { ContextMenuTrigger } from 'react-contextmenu';
 
 
 const flowKey = 'savedGraph';
@@ -73,20 +71,18 @@ const initialNodes = [
   },
 ];
 
-const onInit = (reactFlowInstance) =>
-  console.log('flow loaded:', reactFlowInstance);
-
 export default function Graph() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [rfInstance, setRfInstance] = useState(null);
   const [id, setId] = React.useState(3);
   const [mouseCoor, setMouseCoor] = useState([0, 0]);
-  const [storage, setStorage] = useLocalStorage("user_implicits", {});
+  const [storage] = useLocalStorage("user_implicits", {});
   const reactFlowRef = useRef(null);
 
-  const updateNodeSdf = (id, newSdf, parent) => {
+  const updateNodeSdf = (id, newSdf) => {
     console.log('ACTUALIZADONDO SDF DE ' + id);
+
     var nodesCopy = [...nodes];
     var parent = nodesCopy.find((node) => node.id === id);
     parent.data = {
@@ -119,7 +115,7 @@ export default function Graph() {
 
           var newChildren = node.data.children;
           newChildren = newChildren.filter(function (c) {
-            return c.id != child;
+            return c.id !== child;
           });
 
           node.data = {
@@ -150,7 +146,7 @@ export default function Graph() {
 
     var newEdges = edges.filter((edge) => {
       console.log(edge.source);
-      return edge.id != edgeId;
+      return edge.id !== edgeId;
     });
 
     setEdges(newEdges);
@@ -240,7 +236,7 @@ export default function Graph() {
     if (flow) {
       console.log('FLOW LOADED:');
       console.log(flow);
-      const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+
       setNodes(flow.nodes || []);
       setEdges(flow.edges || []);
     }

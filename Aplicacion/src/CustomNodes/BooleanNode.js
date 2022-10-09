@@ -22,20 +22,26 @@ const BooleanOperations = {
 
 export default function BooleanNode({ data, id }) {
   const [operation, setOperation] = React.useState(BooleanOperations.Union);
-  const [smooth, setSmooth] = React.useState(true);
-  const [k, setK] = React.useState(0.0.toFixed(4));
+  const [smooth] = React.useState(true);
+  const [k, setK] = React.useState(0.0);
   const [sdf, setSdf] = React.useState("");
 
   useEffect(() => {
     console.log(
-      `SE HAN MODIFICADO LOS SDF EN NODO BOOLEANO. AHORA HAY ${Object.keys(data.inputs).length
+      `SE HAN MODIFICADO LOS SDF EN NODO BOOLEANO ${id}. AHORA HAY ${Object.keys(data.inputs).length
       }`
     );
 
+    
+
+    // minimum of 2 inputs
     const keys = Object.keys(data.inputs);
+    if(keys.length < 2)
+      return;
 
     let newSdf = `sdfSmooth${operation}(${data.inputs[keys[0]]}, ${data.inputs[keys[1]]}, ${k})`;
 
+    // Add the rest of inputs
     for (let i = 0; i < keys.length - 2; i++) {
       console.log(data.inputs[keys[i + 2]]);
       newSdf = `sdfSmooth${operation}(${data.inputs[keys[i + 2]]}, ${newSdf}, ${k})`;
@@ -47,7 +53,7 @@ export default function BooleanNode({ data, id }) {
 
 
   const handleChange = (ev, val) => {
-    setK(parseFloat(val).toFixed(4));
+    setK(parseFloat(val));
   }
 
   return (

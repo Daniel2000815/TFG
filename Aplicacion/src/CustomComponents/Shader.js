@@ -26,11 +26,11 @@ const myErrorHandler = (error, info) => {
 }
 
 export default function Shader(props) {
-  const [primitivesCode, setPrimitivesCode] = usePrimitivesHook();
+  const [primitivesCode] = usePrimitivesHook();
 
   useEffect(() => {}, [props.shader, props.uniforms]);
 
-  const [zoom, setZoom] = useState(10.0);
+  const [zoom, setZoom] = useState(1.5);
   const zoomIncrement = 0.5;
   return (
     <div style={props.style}>
