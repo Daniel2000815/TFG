@@ -31,6 +31,9 @@ export default function PrimitiveNode({ data, id }) {
   };
 
   useEffect(() => {
+    if (!storage[primitive])
+      return;
+
     const parameters = storage[primitive].parameters;
 
     console.log('TYPE: ' + typeof parameters[0].defaultVal);
@@ -48,10 +51,15 @@ export default function PrimitiveNode({ data, id }) {
     // setInputs(Array(parameters.length).fill().map((_, idx) => parameters[idx].defaultVal));
     console.log(parameters);
     console.log(primitive);
+
   }, [primitive]);
 
   useEffect(() => {
+    if (!storage[primitive])
+      return;
+
     const parameters = storage[primitive].parameters;
+    console.log(inputs);
     setSdf(
       `${primitive}(p ${parameters.length > 0 ? ',' : ''}${parameters
         .map((p, idx) => `${inputs[idx].toFixed(4)}`)

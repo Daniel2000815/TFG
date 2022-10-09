@@ -1,15 +1,30 @@
 import { useEffect, useState } from 'react';
 
-export const useLocalStorage = (key, initialValue) => {
+// torus: (x^2+y^2+z^2+R^2-a^2)^2 - 4R^2(x^2+y^2)
+
+const defaultStorage = {
+  sphere: {
+    id: 'sphere',
+    name: 'Sphere',
+    implicit: 'x^2 + y^2 + z^2 - r',
+    sdf: '|p|-r',
+    parsedSdf: 'length(p)-r',
+    fHeader: 'sphere(vec3 p, float r)',
+    parameters: [{ symbol: 'r', label: 'Radius', defaultVal: 1.0 }],
+  },
+
+}
+
+export const useLocalStorage = (key) => {
   const [storedValue, setStoredValue] = useState(() => {
     // localStorage.clear();
     try {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      return item ? JSON.parse(item) : defaultStorage;
     } catch (err) {
       console.error(err);
       window.dispatchEvent(new Event('storage'));
-      return initialValue;
+      return defaultStorage;
     }
   });
 
@@ -37,9 +52,9 @@ export const useLocalStorage = (key, initialValue) => {
           return JSON.parse(value);
         }
 
-        localStorage.setItem(key, JSON.stringify(initialValue));
+        localStorage.setItem(key, JSON.stringify(defaultStorage));
         window.dispatchEvent(new Event('storage'));
-        return initialValue;
+        return defaultStorage;
       });
     };
     window.addEventListener('storage', listenStorageChange);

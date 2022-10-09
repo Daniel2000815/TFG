@@ -54,13 +54,12 @@ export default function SurfaceDialog(props) {
   };
 
   const traverseTree = (node) => {
-    const parametersSymbols = Object.keys(parametersInput).map((val,key) => parametersInput[key].symbol);
-    console.log(parametersInput);
+    const parametersSymbols = Object.keys(parametersInput).map((val, key) => parametersInput[key].symbol);
 
     if (node) {
       if (node.type === 'VARIABLE_OR_LITERAL') {
-        const isVariable = [...parametersSymbols, 'x','y','z'].includes(node.value);
-        
+        const isVariable = [...parametersSymbols, 'x', 'y', 'z'].includes(node.value);
+
         return isVariable ? node.value : parseFloat(node.value).toFixed(4);
       }
       if (node.type === 'OPERATOR') {
@@ -147,7 +146,7 @@ export default function SurfaceDialog(props) {
         implicit: eqData.f.toString(),
         sdf: eqData.sdf.toString(),
         parsedSdf: eqData.parsedSdf,
-        fHeader: `${nameInput.toLowerCase()}(vec3 p ${parametersInput.length>0?',':''}${(parametersInput.map(p=>`float ${p.symbol}`)).join(',')})`,
+        fHeader: `${nameInput.toLowerCase()}(vec3 p ${parametersInput.length > 0 ? ',' : ''}${(parametersInput.map(p => `float ${p.symbol}`)).join(',')})`,
         parameters: parametersInput,
       };
 
@@ -158,7 +157,7 @@ export default function SurfaceDialog(props) {
   };
 
   useEffect(() => {
-    
+
     if (props.savedData) {
       setNameInput(props.savedData.name);
       setEqInput(props.savedData.implicit);
@@ -230,7 +229,7 @@ export default function SurfaceDialog(props) {
               handleNewParameters={(newParams) => setParametersInput(newParams)}
             />
           </Grid>
-          
+
         </Grid>
       </DialogContent>
       <DialogActions>

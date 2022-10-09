@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { useEffect, useRef } from 'react';
 import ReactFlow, {
   addEdge,
@@ -71,7 +71,7 @@ const initialNodes = [
   },
 ];
 
-export default function Graph() {
+function Graph() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [rfInstance, setRfInstance] = useState(null);
@@ -291,7 +291,7 @@ export default function Graph() {
 
   return (
     <>
-    {JSON.stringify(storage)}
+      {JSON.stringify(storage)}
       <ContextMenuTrigger id='contextmenu'>
         <div style={{ height: '100vh' }} tabIndex='0' onKeyDown={handleKey} onMouseMove={handleMouse}>
           <GraphProvider value={sharedFunctions}>
@@ -323,3 +323,5 @@ export default function Graph() {
     </>
   );
 }
+
+export default memo(Graph);

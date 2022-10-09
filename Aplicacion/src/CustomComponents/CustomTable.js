@@ -83,7 +83,7 @@ function EnhancedTableHead(props) {
         </StyledTableCell>
         {props.columns.map((headCell) => (
           <StyledTableCell
-            sx={{minWidth: headCell.minWidth}}
+            sx={{ minWidth: headCell.minWidth }}
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -95,7 +95,7 @@ function EnhancedTableHead(props) {
               onClick={createSortHandler(headCell.id)}
             >
               <Typography variant="subtitle1">{headCell.label}</Typography>
-              
+
             </TableSortLabel>
           </StyledTableCell>
         ))}
@@ -109,7 +109,7 @@ const EnhancedTableToolbar = (props) => {
 
   return (
     <Toolbar
-    style={{ background: '#222222' }}
+      style={{ background: '#222222' }}
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
@@ -133,7 +133,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       ) : (
         <Typography
-        color="white"
+          color="white"
           sx={{ flex: '1 1 100%' }}
           variant="h6"
           id="tableTitle"
@@ -146,13 +146,13 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton onClick={props.handleDelete}>
-            <DeleteIcon />
+            <DeleteIcon sx={{ color: "white" }} />
           </IconButton>
         </Tooltip>
       ) : (
         <Tooltip title="New Surface">
           <IconButton onClick={props.handleCreateRow}>
-            <AddIcon />
+            <AddIcon sx={{ color: "white" }} />
           </IconButton>
         </Tooltip>
       )}
@@ -176,19 +176,19 @@ export default function CustomTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = props.rows.map((n) => n.name);
+      const newSelected = props.rows.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -245,15 +245,15 @@ export default function CustomTable(props) {
                 return (
                   <StyledTableRow
                     hover
-                    onClick={(event) => props.handleRowClick(row.id)}
+
                     tabIndex={-1}
                     key={row.id}
                   >
                     <StyledTableCell padding="checkbox">
                       <Checkbox
-                      onClick={(event) => handleClick(event, row.name)}
+                        onClick={(event) => handleClick(event, row.id)}
                         color="primary"
-                        checked={isSelected(row.name)}
+                        checked={isSelected(row.id)}
                         inputProps={{
                           'aria-labelledby': { index },
                         }}
@@ -262,7 +262,7 @@ export default function CustomTable(props) {
                     {props.columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <StyledTableCell key={column.id} align={column.align}>
+                        <StyledTableCell onClick={(event) => props.handleRowClick(row.id)} key={column.id} align={column.align}>
                           {value}
                         </StyledTableCell>
                       );

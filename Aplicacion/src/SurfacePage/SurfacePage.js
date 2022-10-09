@@ -40,8 +40,7 @@ export default function SurfacePage() {
   }, [storage]);
 
   const handleDelete = (selectedList) => {
-    // Convert `obj` to a key/value array
-    // `[['name', 'Luke Skywalker'], ['title', 'Jedi Knight'], ...]`
+    console.log(selectedList);
     const asArray = Object.entries(storage);
     const filtered = asArray.filter(
       ([key, value]) => !selectedList.includes(key)
@@ -55,13 +54,13 @@ export default function SurfacePage() {
 
   return (
     <Box>
-      
+
       <CustomTable
         rows={tableRows}
         columns={tableCols}
         handleDelete={handleDelete}
-        handleCreateRow={() => {setEditedRow(""); setDialogOpen(true)}}
-        handleRowClick={(name)=>{setEditedRow(name); setDialogOpen(true)}}
+        handleCreateRow={() => { setEditedRow(""); setDialogOpen(true) }}
+        handleRowClick={(name) => { setEditedRow(name); setDialogOpen(true) }}
       />
 
       <SurfaceDialog
@@ -69,7 +68,7 @@ export default function SurfacePage() {
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
       />
-      
+
     </Box>
   );
 }
