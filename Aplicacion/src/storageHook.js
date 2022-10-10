@@ -8,10 +8,27 @@ const defaultStorage = {
     name: 'Sphere',
     implicit: 'x^2 + y^2 + z^2 - r',
     sdf: '|p|-r',
-    parsedSdf: 'length(p)-r',
+    parsedSdf: 'return length(p)-r',
     fHeader: 'sphere(vec3 p, float r)',
     parameters: [{ symbol: 'r', label: 'Radius', defaultVal: 1.0 }],
   },
+  // cube: {
+  //   id: 'cube',
+  //   name: 'Cube',
+  //   implicit: 'max(|x|,|y|,|z|)-1',
+  //   sdf: '|max((|x|,|y|,|z|),(sx,sy,sz))| + min(max(|x| - sx, max(|y|-sy, |z|-sz)), 0)',
+  //   parsedSdf: `
+  //     vec3 b = vec3(sx,sy,sz);
+  //     vec3 q = abs(p) - b;
+  //     return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+  //   `,
+  //   fHeader: 'cube(vec3 p, float sx, float sy, float sz)',
+  //   parameters: [
+  //     { symbol: 'sx', label: 'sx', defaultVal: 1.0 },
+  //     { symbol: 'sy', label: 'sz', defaultVal: 1.0 },
+  //     { symbol: 'sz', label: 'sz', defaultVal: 1.0 }
+  //   ],
+  // },
 
 }
 

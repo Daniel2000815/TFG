@@ -130,7 +130,7 @@ export default function SurfaceDialog(props) {
       dz: dfdz,
       norm: norm,
       sdf: sdf,
-      parsedSdf: traverseTree(x),
+      parsedSdf: `return ${traverseTree(x)}`,
     });
 
   };

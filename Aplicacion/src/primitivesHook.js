@@ -10,19 +10,19 @@ export const usePrimitivesHook = () => {
 
     console.log("RECALCULANDO PRIMITIVAS GLSL");
     for (let key in storage) {
-        console.log(key);
-        let p = storage[key];
-        res += 
+      console.log(key);
+      let p = storage[key];
+      res +=
         `float ${p.fHeader}{
             float x = p.r;
             float y = p.g;
             float z = p.b;
 
-            return ${p.parsedSdf};
+            ${p.parsedSdf};
         }\n`
-      }
+    }
 
-      setPrimitives(res);
+    setPrimitives(res);
   }, [storage]);
 
   return [primitives, setPrimitives];

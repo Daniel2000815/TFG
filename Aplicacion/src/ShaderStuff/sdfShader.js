@@ -1,7 +1,7 @@
 import { operators } from './operators';
 
 export const fs = (sdf, primitives) => {
-  return  `
+    return `
     #ifdef GL_ES
     precision mediump float;
     #endif
@@ -84,11 +84,15 @@ export const fs = (sdf, primitives) => {
     }
 
 
+    float sdf(vec3 p){
+        return ${sdf};
+    }
+
     Surface map(vec3 p){
         Material mat = Material(u_specular, u_diffuse, u_ambient, u_smoothness);
-        float sdf = ${sdf};
+        float d = sdf(p);
         
-        Surface co = Surface(sdf, mat);
+        Surface co = Surface(d, mat);
         
         return co;
     }
