@@ -54,19 +54,32 @@ export default function SurfaceDialog(props) {
   };
 
   const traverseTree = (node) => {
+    console.log("wh");
+    console.log(parametersInput);
     const parametersSymbols = Object.keys(parametersInput).map((val, key) => parametersInput[key].symbol);
 
     if (node) {
+      console.log("ES NO LO SE");
+      console.log(node);
       if (node.type === 'VARIABLE_OR_LITERAL') {
         const isVariable = [...parametersSymbols, 'x', 'y', 'z'].includes(node.value);
-
+        console.log("ES LITERAL");
+        console.log("SYMBOLS");
+        console.log(parametersSymbols);
+        console.log(isVariable);
+        console.log(node.value);
         return isVariable ? node.value : parseFloat(node.value).toFixed(4);
       }
       if (node.type === 'OPERATOR') {
         let left = traverseTree(node.left);
         let right = traverseTree(node.right);
+        console.log("RIGHT, LEFT");
+        console.log(right);
+        console.log(left);
 
         if (node.value === '^') {
+          console.log("ES OPERATOR");
+          console.log(node);
           return `pow(${left}, ${right})`;
         } else {
           if (right && left) return `(${left})${node.value}(${right})`;
@@ -81,6 +94,8 @@ export default function SurfaceDialog(props) {
         let right = traverseTree(node.right);
 
         if (node.value === '^') {
+          console.log("ES F");
+          console.log(node);
           return `pow(${left}, ${right})`;
         } else {
           if (right) return `${node.value}(${right})`;
@@ -181,6 +196,7 @@ export default function SurfaceDialog(props) {
 
       <DialogContent>
         <Grid container spacing={2}>
+          {parametersInput.toString()}
           <Grid item xs={12}>
             <TextField
               value={nameInput}
@@ -226,7 +242,7 @@ export default function SurfaceDialog(props) {
           <Grid item xs={12}>
             <CustomInputTable
               rows={parametersInput}
-              handleNewParameters={(newParams) => setParametersInput(newParams)}
+              handleNewParameters={(newParams) => {setParametersInput(newParams);console.log(newParams)}}
             />
           </Grid>
 

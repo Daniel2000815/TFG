@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
 import Slider from '@mui/material/Slider';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import FloatSlider from "../CustomComponents/FloatSlider";
 
 const theme = createTheme({
   palette: {
@@ -19,7 +20,7 @@ const DeformOperations = {
   Twist: "Twist",
 };
 
-export default function DeformNode({ data, id }) {
+function DeformNode({ data, id }) {
   const [operation, setOperation] = React.useState(DeformOperations.Bend);
   const [k, setK] = React.useState(0.0);
 
@@ -41,6 +42,10 @@ export default function DeformNode({ data, id }) {
     }
   }, [data, operation, k]);
 
+  const handleChange = (ev, val) => {
+    setK(parseFloat(val));
+  }
+
   return (
     <ThemeProvider theme={theme}>
     <CustomNode
@@ -55,19 +60,24 @@ export default function DeformNode({ data, id }) {
         <div style={{ margin: 10 }}>
             Amount
          
-            <Slider
+            <FloatSlider
+              handleChange={handleChange}
+              range={[0, 5]}
+            />
+            {/* <Slider
               size="small"
               value={k}
               label="k"
-              valueLabelDisplay="on"
               onChange={(e, v) => setK(parseFloat(v))}
               min={0}
               max={5}
               step={0.1}
-          />          
+          />           */}
         </div>
       }
     />
     </ThemeProvider>
   );
 }
+
+export default memo(DeformNode);

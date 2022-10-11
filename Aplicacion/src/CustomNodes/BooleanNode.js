@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, memo } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
 import FloatSlider from "../CustomComponents/FloatSlider";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -20,7 +20,7 @@ const BooleanOperations = {
   Intersection: "Intersection",
 };
 
-export default function BooleanNode({ data, id }) {
+function BooleanNode({ data, id }) {
   const [operation, setOperation] = React.useState(BooleanOperations.Union);
   const [smooth] = React.useState(true);
   const [k, setK] = React.useState(0.0);
@@ -82,3 +82,5 @@ export default function BooleanNode({ data, id }) {
     </ThemeProvider>
   );
 }
+
+export default memo(BooleanNode);

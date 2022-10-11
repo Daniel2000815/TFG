@@ -25,7 +25,7 @@ const myErrorHandler = (error, info) => {
   console.log("ERROR");
 }
 
-export default function Shader(props) {
+function Shader(props) {
   const [primitivesCode] = usePrimitivesHook();
 
   useEffect(() => {}, [props.shader, props.uniforms]);
@@ -67,3 +67,5 @@ export default function Shader(props) {
     </div>
   );
 }
+
+export default React.memo(Shader);

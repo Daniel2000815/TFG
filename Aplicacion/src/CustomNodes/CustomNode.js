@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { memo, useEffect, useContext } from 'react';
 import Shader from '../CustomComponents/Shader';
 import { useTheme } from '@mui/material/styles';
 import Dropdown from '../CustomComponents/Dropdown';
@@ -7,7 +7,7 @@ import GraphContext from '../GraphPage/GraphContext.js';
 import ToggleButton from '../CustomComponents/ToggleButton';
 import newId from '../uniqueIdHook';
 
-export default function CustomNode(props) {
+function CustomNode(props) {
   const [showMore, setShowMore] = React.useState(true);
   const [isHover, setIsHover] = React.useState(false);
 
@@ -157,3 +157,5 @@ export default function CustomNode(props) {
     </div>
   );
 }
+
+export default memo(CustomNode);

@@ -61,7 +61,7 @@ const layoutStyles = {
 };
 
 export default function App() {
-  const [tabVal, setTabVal] = React.useState(0);
+  const [tabVal, setTabVal] = React.useState(2);
 
   return (
     <div style={layoutStyles}>

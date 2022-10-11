@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {memo, useEffect } from 'react';
 import CustomNode from '../CustomNodes/CustomNode';
 import FloatInput from '../CustomComponents/FloatInput.js';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -16,7 +16,7 @@ const theme = createTheme({
   },
 });
 
-export default function PrimitiveNode({ data, id }) {
+function PrimitiveNode({ data, id }) {
   const [primitive, setPrimitive] = React.useState('sphere');
   const [sdf, setSdf] = React.useState('');
   const [inputs, setInputs] = React.useState([1.0, 1.0, 1.0]);
@@ -97,3 +97,5 @@ export default function PrimitiveNode({ data, id }) {
     </ThemeProvider>
   );
 }
+
+export default memo(PrimitiveNode);

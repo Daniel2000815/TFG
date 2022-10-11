@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {memo, useContext} from 'react';
 import { getBezierPath, getEdgeCenter } from 'react-flow-renderer';
 import GraphContext from "../GraphPage/GraphContext";
 
@@ -6,7 +6,7 @@ import '../styles.css';
 
 const foreignObjectSize = 40;
 
-export default function CustomEdge({
+function CustomEdge({
   id,
   sourceX,
   sourceY,
@@ -65,3 +65,5 @@ export default function CustomEdge({
     </>
   );
 }
+
+export default memo(CustomEdge);

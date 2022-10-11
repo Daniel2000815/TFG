@@ -1,9 +1,9 @@
-import React from "react";
+import React, {memo} from "react";
 import { Handle } from "react-flow-renderer";
 import { useTheme } from '@mui/material/styles';
 import newId from "../uniqueIdHook";
 
-export default function CustomHandle(props) {
+function CustomHandle(props) {
   const theme = useTheme();
   const radius = "10px";
   const margin = "-2px"
@@ -41,3 +41,5 @@ export default function CustomHandle(props) {
     </>
   );
 }
+
+export default memo(CustomHandle);

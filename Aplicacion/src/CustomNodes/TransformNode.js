@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {memo, useEffect } from "react";
 import CustomNode from "../CustomNodes/CustomNode";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Vector3Input from "../CustomComponents/Vector3Input";
@@ -20,7 +20,7 @@ const TransformOperations = {
   Rotate: "Rotate"
 };
 
-export default function TransformNode({ data, id }) {
+function TransformNode({ data, id }) {
   const [operation, setOperation] = React.useState(TransformOperations.Translate);
   const [sdf, setSdf] = React.useState("");
   const [transformVal, setTransformVal] = React.useState([0,0,0]);
@@ -65,3 +65,5 @@ export default function TransformNode({ data, id }) {
     </ThemeProvider>
   );
 }
+
+export default memo(TransformNode);
