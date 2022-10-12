@@ -12,6 +12,7 @@ import {
 import Graph from './GraphPage/Graph';
 import MaterialsPage from './MaterialPage/MaterialsPage';
 import SurfacePage from './SurfacePage/SurfacePage';
+import GrobnerPage from './GrobnerPage/GrobnerPage';
 import 'rsuite/dist/styles/rsuite-default.css';
 import { Box, Tab, Tabs } from '@mui/material';
 import './styles.css';
@@ -61,7 +62,7 @@ const layoutStyles = {
 };
 
 export default function App() {
-  const [tabVal, setTabVal] = React.useState(2);
+  const [tabVal, setTabVal] = React.useState(1);
 
   return (
     <div style={layoutStyles}>
@@ -70,13 +71,13 @@ export default function App() {
           <Box>
             <Tabs value={tabVal} onChange={(e, v) => setTabVal(v)}>
               <Tab label="Graph" />
-              <Tab label="Materials" />
+              <Tab label="Groebner" />
               <Tab label="Surfaces" />
             </Tabs>
           </Box>
           <Box sx={{ padding: 2 }}>
             {tabVal === 0 && <MainContent />}
-            {tabVal === 1 && <MaterialsPage />}
+            {tabVal === 1 && <GrobnerPage />}
             {tabVal === 2 && <SurfacePage />}
           </Box>
         </Box>
