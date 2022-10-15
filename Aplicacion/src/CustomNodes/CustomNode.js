@@ -88,7 +88,6 @@ function CustomNode(props) {
       <div className="nodeHeader" style={headerStyle}>
         {showMore ? props.title : props.currOption}
       </div>
-
       {showMore ? (
         <div
           className="nodeBody"

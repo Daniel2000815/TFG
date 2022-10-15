@@ -18,6 +18,7 @@ import '../styles.css';
 import { GraphProvider } from './GraphContext.js';
 import CustomContextMenu from '../CustomComponents/CustomContextMenu.js';
 import useLocalStorage from '../storageHook.js';
+import { Box, Tabs } from '@mui/material';
 
 import { ContextMenuTrigger } from 'react-contextmenu';
 
@@ -221,6 +222,10 @@ function Graph() {
     console.log(edges);
   }, [edges]);
 
+  useEffect(() => {
+    console.log('ME VUELVO A CARGAR:');
+  }, []);
+
   const onSave = () => {
     if (rfInstance) {
       const flow = rfInstance.toObject();
@@ -291,9 +296,8 @@ function Graph() {
 
   return (
     <>
-      {JSON.stringify(storage)}
       <ContextMenuTrigger id='contextmenu'>
-        <div style={{ height: '100vh' }} tabIndex='0' onKeyDown={handleKey} onMouseMove={handleMouse}>
+        <Box sx={{ height: '100vh' }} tabIndex='0' onKeyDown={handleKey} onMouseMove={handleMouse}>
           <GraphProvider value={sharedFunctions}>
             <ReactFlow
               ref={reactFlowRef}
@@ -317,7 +321,7 @@ function Graph() {
               <CustomControls save={onSave} load={onLoad} />
             </ReactFlow>
           </GraphProvider>
-        </div>
+        </Box>
       </ContextMenuTrigger>
       <CustomContextMenu newNode={createAddNodeMousePos} />
     </>
