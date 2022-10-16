@@ -18,12 +18,12 @@ require('nerdamer/Algebra');
 //     return [ v[degs.indexOf(max)] , max];
 // }
 
-function lexify(p){
+function lexify(p) {
     let simplified = '';
-    
-    try{
+
+    try {
         simplified = nerdamer(`expand(${p})`).toString();
-    }catch(error){
+    } catch (error) {
         console.log(error);
         return;
     }
@@ -31,22 +31,22 @@ function lexify(p){
     return simplified;
 }
 
-function expGrater(a,b){
-    return a[0]>b[0] || (a[0]==b[0] && a[1]>b[1]) || (a[0]==b[0] && a[1]==b[1] && a[2]>a[2]);
+function expGrater(a, b) {
+    return a[0] > b[0] || (a[0] == b[0] && a[1] > b[1]) || (a[0] == b[0] && a[1] == b[1] && a[2] > a[2]);
 }
 
-function exp(p){
+function exp(p) {
     const split = p.split(/[-+]+/); // separa por + o -
     let res = ['0', '0', '0'];
     console.log(split);
     split.forEach(element => {
         let degs = [
-            Number(nerdamer(`deg(${element}, x)`).toString()), 
+            Number(nerdamer(`deg(${element}, x)`).toString()),
             Number(nerdamer(`deg(${element}, y)`).toString()),
             Number(nerdamer(`deg(${element}, z)`).toString())
         ];
         console.log(degs);
-        if(expGrater(degs,res))
+        if (expGrater(degs, res))
             res = degs;
     });
 
@@ -54,25 +54,23 @@ function exp(p){
     return res;
 }
 
-function expEq(e1,e2){
-    return e1[0]==e2[0] && e1[1]==e2[1] && e1[2]==e2[2];
+function expEq(e1, e2) {
+    return e1[0] == e2[0] && e1[1] == e2[1] && e1[2] == e2[2];
 }
 
-function lc(f, variable){
+function lc(f, variable) {
     console.log(`CALCULANDO LC DE ${f} CON VARIABLE ${variable}`);
     let res = "0";
 
     const split = f.split(/[-+]+/);
     split.forEach(element => {
-        console.log(`COMPROBANDO ${element}`);
-        console.log(`${element} includes ${variable}: ${element.includes(variable)}`);
-        if(element.includes(variable)){
-            if(isNaN(element[0]))
+        if (element.includes(variable)) {
+            if (isNaN(element[0]))
                 res = '1';
             else
                 res = element.match(/\d+/);
             return;
-       }
+        }
     });
 
     console.log(`DEVOLVEMOS ${res}`);
@@ -104,42 +102,42 @@ function lc(f, variable){
 //     });
 // }
 
-function expMinus(a,b){
-    return [a[0]-b[0], a[1]-b[1], a[2]-b[2]];
+function expMinus(a, b) {
+    return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 }
 
 // monomio lider
-function lm(f){
+function lm(f) {
     return ''
 }
 
-function monomial(exp){
+function monomial(exp) {
     return nerdamer(`x^(${exp[0]})y^(${exp[1]})z^(${exp[2]})`).toString();
 }
 
-function division(f, dividers){
+function division(f, dividers) {
     console.log("INIT")
     const s = dividers.length;
     let p = f;
     let r = 0;
-    let q = new Array(s).fill(0);
-    
-    while(p!=='0'){
+    let q = new Array(s).fill('0');
+
+    while (p !== '0') {
         let i = 0;
         let step = 0;
 
-        while(i<s && step===0){
+        while (i < s && step === 0) {
             console.log(`ITERATION ${i}: ${p}`);
             const exp_p = exp(p);
             const exp_fi = exp(dividers[i]);
             const gamma = expMinus(exp_p, exp_fi);
-                console.log(gamma);
-            if( gamma.every(item => item >= 0) ){
-                console.log(`PODEMOS DIVIDIR POR ${dividers[i]}`); 
+            console.log(gamma);
+            if (gamma.every(item => item >= 0)) {
+                console.log(`PODEMOS DIVIDIR POR ${dividers[i]}`);
                 const xGamma = monomial(gamma);
                 const lcp = lc(p, monomial(exp_p));
                 const lcfi = lc(dividers[i], monomial(exp_fi));
-                
+
                 console.log(`X: ${xGamma}, LCP: ${lcp}, LCPFI: ${lcfi}`);
 
                 const coef = nerdamer(`(${lcp})/(${lcfi}) * ${xGamma}`).toString();
@@ -147,22 +145,22 @@ function division(f, dividers){
                 p = nerdamer(`${p} - ${coef} * ${dividers[i]}`).toString();
                 step = 1;
             }
-            else{
-                console.log(`NO PODEMOS DIVIDIR POR ${dividers[i]}`) 
+            else {
+                console.log(`NO PODEMOS DIVIDIR POR ${dividers[i]}`)
                 i++;
             }
         }
-        if(step === 0){
-            
+        if (step === 0) {
+
             const lt = nerdamer(`${lc(p)}*${monomial(exp(p))}`).toString();
 
-            console.log(`NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS LT: ${lt}`); 
+            console.log(`NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS LT: ${lt}`);
             r = nerdamer(`${r} + ${lt}`).toString();
             p = nerdamer(`${p} - ${lt}`).toString();
         }
     }
 
-    console.log(q,r);
+    console.log(q, r);
     return [...q, r];
 }
 
@@ -208,11 +206,11 @@ export default function GrobnerPage() {
         padding={2}
     >
         <Grid item xs={12}>
-        Hola:{exp('2x^2 + y^3').toString()}
-        coefs: {nerdamer.coeffs('x^2 -99x^2+6x-9x^6+y^3+ xy', 'x').toString()   }
-        lc: {lc('9x^9+6y^8', 'y')}
+            Hola:{exp('2x^2 + y^3').toString()}
+            coefs: {nerdamer.coeffs('x^2 -99x^2+6x-9x^6+y^3+ xy', 'x').toString()}
+            lc: {lc('9x^9+6y^8', 'y')}
 
-        AL ESCRIBIR POLINOMIOS INDICAR TODAS LAS MULTIPLICACIONES: NO xy, SINO x*y
+            AL ESCRIBIR POLINOMIOS INDICAR TODAS LAS MULTIPLICACIONES: NO xy, SINO x*y
         </Grid>
         <Grid item xs={6}>
             <PolynomialInput label={`f`} val={dividendo} handleChange={(v) => handleDividendoChange(v)} />
@@ -228,9 +226,9 @@ export default function GrobnerPage() {
             })}
 
             <Grid item>
-                <Button 
-                    variant="contained" 
-                    onClick={()=>division(dividendo,divisores)}
+                <Button
+                    variant="contained"
+                    onClick={() => division(dividendo, divisores)}
                 >
                     Divide
                 </Button>
