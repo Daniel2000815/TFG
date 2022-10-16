@@ -4,6 +4,7 @@ import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import newId from '../uniqueIdHook';
+import Button from '@mui/material/Button';
 
 const nerdamer = require('nerdamer');
 require('nerdamer/Algebra');
@@ -30,22 +31,81 @@ function lexify(p){
     return simplified;
 }
 
+function expGrater(a,b){
+    return a[0]>b[0] || (a[0]==b[0] && a[1]>b[1]) || (a[0]==b[0] && a[1]==b[1] && a[2]>a[2]);
+}
+
 function exp(p){
-    return [
-        Number(nerdamer(`deg(${p}, x)`).toString()), 
-        Number(nerdamer(`deg(${p}, y)`).toString()),
-        Number(nerdamer(`deg(${p}, z)`).toString())
-    ];
+    const split = p.split(/[-+]+/); // separa por + o -
+    let res = ['0', '0', '0'];
+    console.log(split);
+    split.forEach(element => {
+        let degs = [
+            Number(nerdamer(`deg(${element}, x)`).toString()), 
+            Number(nerdamer(`deg(${element}, y)`).toString()),
+            Number(nerdamer(`deg(${element}, z)`).toString())
+        ];
+        console.log(degs);
+        if(expGrater(degs,res))
+            res = degs;
+    });
+
+    console.log(`exp(${p}) = ${res}`);
+    return res;
+}
+
+function expEq(e1,e2){
+    return e1[0]==e2[0] && e1[1]==e2[1] && e1[2]==e2[2];
 }
 
 function lc(f, variable){
-    const coeffs = nerdamer.coeffs(`${f}`, `${variable}`);
-    let lc = '';
-    coeffs.each(function(e, i) {
-        lc = e.toString();
-     });
+    console.log(`CALCULANDO LC DE ${f} CON VARIABLE ${variable}`);
+    let res = "0";
 
-     return lc;
+    const split = f.split(/[-+]+/);
+    split.forEach(element => {
+        console.log(`COMPROBANDO ${element}`);
+        console.log(`${element} includes ${variable}: ${element.includes(variable)}`);
+        if(element.includes(variable)){
+            if(isNaN(element[0]))
+                res = '1';
+            else
+                res = element.match(/\d+/);
+            return;
+       }
+    });
+
+    console.log(`DEVOLVEMOS ${res}`);
+    return res;
+
+
+
+
+
+    console.log(`CALCULANDO LC DE ${f} CON VARIABLE ${variable}`);
+    // const coeffs = nerdamer.coeffs(`${f}`, `${variable}`);
+    // let lc = '';
+    // coeffs.each(function(e, i) {
+    //     console.log(`(${variable})^${i}: ${e.toString()}`);
+    //     lc = e.toString();
+    //  });
+
+    //  return lc;
+}
+
+// function lc(p){
+//     const split = p.split(/[-+]+/); // separa por + o -
+//     const expP = exp(p);
+
+//     split.forEach(element => {
+//         let expI = exp(nerdamer(`${element}`).toString());
+//         if(expEq(expP, expI))
+//             return 
+//     });
+// }
+
+function expMinus(a,b){
+    return [a[0]-b[0], a[1]-b[1], a[2]-b[2]];
 }
 
 // monomio lider
@@ -53,38 +113,57 @@ function lm(f){
     return ''
 }
 
+function monomial(exp){
+    return nerdamer(`x^(${exp[0]})y^(${exp[1]})z^(${exp[2]})`).toString();
+}
+
 function division(f, dividers){
+    console.log("INIT")
     const s = dividers.length;
     let p = f;
     let r = 0;
     let q = new Array(s).fill(0);
     
     while(p!=='0'){
-        let i = 1;
+        let i = 0;
         let step = 0;
 
         while(i<s && step===0){
+            console.log(`ITERATION ${i}: ${p}`);
             const exp_p = exp(p);
             const exp_fi = exp(dividers[i]);
-            const gamma = exp_p[1] - exp_fi[1];
+            const gamma = expMinus(exp_p, exp_fi);
+                console.log(gamma);
+            if( gamma.every(item => item >= 0) ){
+                console.log(`PODEMOS DIVIDIR POR ${dividers[i]}`); 
+                const xGamma = monomial(gamma);
+                const lcp = lc(p, monomial(exp_p));
+                const lcfi = lc(dividers[i], monomial(exp_fi));
+                
+                console.log(`X: ${xGamma}, LCP: ${lcp}, LCPFI: ${lcfi}`);
 
-            if(gamma > 0){ 
-                const lcp = lc(p, exp_p[0]);
-                const lcfi = lc(dividers[i], exp_fi[0]);
-
-                const coef = nerdamer(`(${lcp})/(${lcfi}) * ${exp_fi[0]}^${gamma}`).toString();
+                const coef = nerdamer(`(${lcp})/(${lcfi}) * ${xGamma}`).toString();
                 q[i] = nerdamer(`${q[i]} + ${coef}`).toString();
-                p += nerdamer(`${p} - ${coef} * ${dividers[i]}`).toString();
+                p = nerdamer(`${p} - ${coef} * ${dividers[i]}`).toString();
+                step = 1;
             }
             else{
+                console.log(`NO PODEMOS DIVIDIR POR ${dividers[i]}`) 
                 i++;
             }
         }
         if(step === 0){
-            r = nerdamer(`${r} + `).toString();
-            p = nerdamer(`${p} - `).toString();
+            
+            const lt = nerdamer(`${lc(p)}*${monomial(exp(p))}`).toString();
+
+            console.log(`NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS LT: ${lt}`); 
+            r = nerdamer(`${r} + ${lt}`).toString();
+            p = nerdamer(`${p} - ${lt}`).toString();
         }
     }
+
+    console.log(q,r);
+    return [...q, r];
 }
 
 
@@ -106,8 +185,8 @@ function PolynomialInput(props) {
 }
 
 export default function GrobnerPage() {
-    const [dividendo, setDividendo] = useState("");
-    const [divisores, setDivisores] = useState(["2x", "3x"]);
+    const [dividendo, setDividendo] = useState("x^2*y + x*y^2 + y^2");
+    const [divisores, setDivisores] = useState(["x*y-1", "y^2-1"]);
 
     const handleDivisoresChange = (idx, val) => {
         let newDivisores = [...divisores];
@@ -132,6 +211,8 @@ export default function GrobnerPage() {
         Hola:{exp('2x^2 + y^3').toString()}
         coefs: {nerdamer.coeffs('x^2 -99x^2+6x-9x^6+y^3+ xy', 'x').toString()   }
         lc: {lc('9x^9+6y^8', 'y')}
+
+        AL ESCRIBIR POLINOMIOS INDICAR TODAS LAS MULTIPLICACIONES: NO xy, SINO x*y
         </Grid>
         <Grid item xs={6}>
             <PolynomialInput label={`f`} val={dividendo} handleChange={(v) => handleDividendoChange(v)} />
@@ -145,6 +226,16 @@ export default function GrobnerPage() {
                     </div>
                 );
             })}
+
+            <Grid item>
+                <Button 
+                    variant="contained" 
+                    onClick={()=>division(dividendo,divisores)}
+                >
+                    Divide
+                </Button>
+
+            </Grid>
 
         </Grid>
         <Grid item xs={6}>TODO</Grid>
