@@ -114,6 +114,9 @@ function monomial(exp) {
 
 function division(f, dividers) {
   console.log('INIT');
+  let nSteps = 0;
+  let steps = {};
+  let step = [];
 
   const s = dividers.length;
   let p = f;
@@ -121,15 +124,17 @@ function division(f, dividers) {
   let q = new Array(s).fill('0');
 
   while (p !== '0') {
+    nSteps++;
     let i = 0;
-    let step = 0;
+    let divFound = 0;
     console.log(`========= p = ${p} ==============`);
     const exp_p = exp(p);
 
-    while (i < s && step === 0) {
+    while (i < s && divFound === 0) {
       const exp_fi = exp(dividers[i]);
       const gamma = expMinus(exp_p, exp_fi);
 
+      step = [];
       console.log(`PROBANDO DIVISION POR ${dividers[i]}`);
       console.log(`\texp(p)-exp(fi) = (${exp_p}) - (${exp_fi}) = (${gamma})`);
       if (gamma.every((item) => item >= 0)) {
@@ -142,15 +147,23 @@ function division(f, dividers) {
 
         console.log(`\t\tRESTAMOS (${coef}) * (${dividers[i]})`);
 
-        q[i] = nerdamer(`${q[i]} + ${coef}`).expand().toString();
-        p = nerdamer(`${p} - (${coef}) * (${dividers[i]})`).expand().toString();
-        step = 1;
+        let newQi = nerdamer(`${q[i]} + ${coef}`).expand().toString();
+        let newP = nerdamer(`${p} - (${coef}) * (${dividers[i]})`).expand().toString();
+
+        step.push(`f = ${p}`);
+        step.push(`exp(f) - exp(f_i)= (${exp_p[0]}, ${exp_p[1]}, ${exp_p[2]}) - (${exp_fi[0]}, ${exp_fi[1]}, ${exp_fi[2]}) => We can divide`);
+        step.push(`q_i = (${q[i]}) + (${coef}) = ${newQi}`);
+        step.push(`p = (${p}) - (${coef} * (${dividers[i]}) ) = ${newP}`);
+
+        q[i] = newQi;
+        p = newP;
+        divFound = 1;
       } else {
         console.log(`\tNO PODEMOS`);
         i++;
       }
     }
-    if (step === 0) {
+    if (divFound === 0) {
       const LC = nerdamer(`${lc(p, monomial(exp_p))}`).toString();
       const MON = nerdamer(`${monomial(exp_p)}`).toString();
 
@@ -159,9 +172,19 @@ function division(f, dividers) {
       console.log(
         `NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS lt(p)= (${LC}) * (${MON}) = ${lt}`
       );
-      r = nerdamer(`${r} + ${lt}`).toString();
-      p = nerdamer(`${p} - ${lt}`).toString();
+      const newR = nerdamer(`${r} + ${lt}`).toString();
+      const newP = nerdamer(`${p} - ${lt}`).toString();
+
+      step.push("No division posible:")
+      step.push(`lt(p) = (${LC})*(${MON}) = ${lt}`);
+      step.push(`r = (${r}) + lt(p) = ${newR}`);
+      step.push(`p = (${p}) - lt(p) = ${newP}`);
+
+      r = newR;
+      p = newP;
     }
+
+    steps[`step${nSteps}`] = step;
   }
 
   console.log(`Qs: ${q}`);
@@ -169,18 +192,30 @@ function division(f, dividers) {
 
   console.log('COMPROBANDO...');
 
+  step = [];
+
   let mult = '';
+  step.push(`r = ${r}`);
   q.forEach((qi, i) => {
+    step.push(`q_i = ${qi}`);
     mult += nerdamer(`(${qi})*(${dividers[i]})`).toString();
     if (i < q.length - 1) mult += '+';
   });
+
+  steps["result"] = step;
 
   console.log(`q1f1 + ··· + qsfs = ${mult}`);
   const check = nerdamer(`(${mult})-(${f}) + ${r}`).expand().toString();
   console.log(`(${mult})-(${f}) + ${r} = ${check}`);
 
   console.log([...q, r]);
-  return [...q, r];
+  console.log(steps);
+
+  return {
+    quotients: [...q],
+    remainder: r, 
+    steps: steps
+  };
 }
 
 function PolynomialInput(props) {
@@ -215,6 +250,11 @@ export default function GrobnerPage() {
     lexify(val);
   };
 
+  const handleDivision = () => {
+    const res = division(dividendo, divisores);
+
+    console.log(res.quotients);
+  }
   return (
     <Grid
       container
@@ -262,13 +302,13 @@ export default function GrobnerPage() {
         <Grid item>
           <Button
             variant="contained"
-            onClick={() => setDivisores(divisores.concat(''))}
+            onClick={() => setDivisores(divisores.push(''))}
           >
             Add divider
           </Button>
           <Button
             variant="contained"
-            onClick={() => division(dividendo, divisores)}
+            onClick={() => handleDivision()}
             disabled={!divisores.every((item) => item !== '' && item !== '0')}
           >
             Divide
