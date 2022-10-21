@@ -7,6 +7,7 @@ import newId from '../uniqueIdHook';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
+import { Maximize, SignalCellularNoSimOutlined } from '@mui/icons-material';
 
 const nerdamer = require('nerdamer');
 require('nerdamer/Algebra');
@@ -44,6 +45,7 @@ function expGrater(a, b) {
 function exp(p) {
   const split = p.split(/[-+]+/); // separa por + o -
   let res = ['0', '0', '0'];
+
   split.forEach((element) => {
     if (element === '') return;
 
@@ -113,7 +115,7 @@ function monomial(exp) {
 }
 
 function division(f, dividers) {
-  console.log('INIT');
+  console.log(`INIT DIVISION ${f} / (${dividers})`);
   let nSteps = 0;
   let steps = {};
   let step = [];
@@ -127,7 +129,7 @@ function division(f, dividers) {
     nSteps++;
     let i = 0;
     let divFound = 0;
-    console.log(`========= p = ${p} ==============`);
+    // console.log(`========= p = ${p} ==============`);
     const exp_p = exp(p);
 
     while (i < s && divFound === 0) {
@@ -135,8 +137,8 @@ function division(f, dividers) {
       const gamma = expMinus(exp_p, exp_fi);
 
       step = [];
-      console.log(`PROBANDO DIVISION POR ${dividers[i]}`);
-      console.log(`\texp(p)-exp(fi) = (${exp_p}) - (${exp_fi}) = (${gamma})`);
+      // console.log(`PROBANDO DIVISION POR ${dividers[i]}`);
+      // console.log(`\texp(p)-exp(fi) = (${exp_p}) - (${exp_fi}) = (${gamma})`);
       if (gamma.every((item) => item >= 0)) {
         console.log(`\tPODEMOS`);
         const xGamma = monomial(gamma);
@@ -145,13 +147,17 @@ function division(f, dividers) {
 
         const coef = nerdamer(`(${lcp})/(${lcfi}) * ${xGamma}`).toString();
 
-        console.log(`\t\tRESTAMOS (${coef}) * (${dividers[i]})`);
+        // console.log(`\t\tRESTAMOS (${coef}) * (${dividers[i]})`);
 
         let newQi = nerdamer(`${q[i]} + ${coef}`).expand().toString();
-        let newP = nerdamer(`${p} - (${coef}) * (${dividers[i]})`).expand().toString();
+        let newP = nerdamer(`${p} - (${coef}) * (${dividers[i]})`)
+          .expand()
+          .toString();
 
         step.push(`f = ${p}`);
-        step.push(`exp(f) - exp(f_i)= (${exp_p[0]}, ${exp_p[1]}, ${exp_p[2]}) - (${exp_fi[0]}, ${exp_fi[1]}, ${exp_fi[2]}) => We can divide`);
+        step.push(
+          `exp(f) - exp(f_i)= (${exp_p[0]}, ${exp_p[1]}, ${exp_p[2]}) - (${exp_fi[0]}, ${exp_fi[1]}, ${exp_fi[2]}) => We can divide`
+        );
         step.push(`q_i = (${q[i]}) + (${coef}) = ${newQi}`);
         step.push(`p = (${p}) - (${coef} * (${dividers[i]}) ) = ${newP}`);
 
@@ -159,7 +165,7 @@ function division(f, dividers) {
         p = newP;
         divFound = 1;
       } else {
-        console.log(`\tNO PODEMOS`);
+        // console.log(`\tNO PODEMOS`);
         i++;
       }
     }
@@ -170,12 +176,12 @@ function division(f, dividers) {
       const lt = nerdamer(`(${LC})*(${MON})`).toString();
 
       console.log(
-        `NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS lt(p)= (${LC}) * (${MON}) = ${lt}`
+        // `NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS lt(p)= (${LC}) * (${MON}) = ${lt}`
       );
       const newR = nerdamer(`${r} + ${lt}`).toString();
       const newP = nerdamer(`${p} - ${lt}`).toString();
 
-      step.push("No division posible:")
+      step.push('No division posible:');
       step.push(`lt(p) = (${LC})*(${MON}) = ${lt}`);
       step.push(`r = (${r}) + lt(p) = ${newR}`);
       step.push(`p = (${p}) - lt(p) = ${newP}`);
@@ -202,7 +208,7 @@ function division(f, dividers) {
     if (i < q.length - 1) mult += '+';
   });
 
-  steps["result"] = step;
+  steps['result'] = step;
 
   console.log(`q1f1 + ··· + qsfs = ${mult}`);
   const check = nerdamer(`(${mult})-(${f}) + ${r}`).expand().toString();
@@ -213,8 +219,8 @@ function division(f, dividers) {
 
   return {
     quotients: [...q],
-    remainder: r, 
-    steps: steps
+    remainder: r,
+    steps: steps,
   };
 }
 
@@ -233,6 +239,73 @@ function PolynomialInput(props) {
       }}
     />
   );
+}
+
+function arrayCombinations(array) {
+  var result = array.flatMap((v, i) => array.slice(i + 1).map((w) => [v, w]));
+  return result;
+}
+
+function lcm(alfa, beta) {
+  console.log(`lcm(${alfa}, ${beta})`);
+  console.log(typeof(alfa));
+  console.log(alfa.length);
+  console.log(alfa[1]);
+  if(alfa.length !== beta.length){
+    console.log("ERROR");
+    return -1;
+  }
+
+  let res = [];
+
+  for(let i=0; i<alfa.length; i++){
+    console.log(Math.max(alfa[i], beta[i]));
+    res.push(Math.max(alfa[i], beta[i]));
+  }
+
+  console.log(res);
+  return res;
+}
+
+function sPol(f, g) {
+  const alpha = exp(f);
+  const beta = exp(g);
+  const gamma = lcm(alpha, beta);
+  console.log(`lcm(f,g) = ${gamma}`);
+  console.log(`lc(g) = ${lc(g, beta)}`);
+  const res = nerdamer(`
+  (${lc(g, monomial(beta))})*(${monomial(expMinus(gamma, alpha))})*(${f}) 
+  - 
+  (${lc(f, monomial(alpha))})*(${monomial(expMinus(gamma, beta))})*(${g})`)
+    .expand()
+    .toString();
+
+  console.log(`S(${f}, ${g}) = ${res}`);
+  return res;
+}
+
+function Bucherberg(F) {
+  const maxIt = 10;
+  let currIt = 0;
+  let G = F;
+  let added;
+
+  do {
+    currIt++;
+    let newG = G;
+    const fgPairs = arrayCombinations(newG);
+
+    for (let i = 0; i < fgPairs.length; i++) {
+      const r = division(sPol(fgPairs[i][0], fgPairs[i][1]), newG).remainder;
+      if (r !== '0') {
+        G.concat(r);
+        added = true;
+      }
+    }
+  } while (added && currIt<maxIt);
+
+  console.log(G);
+  return G;
 }
 
 export default function GrobnerPage() {
@@ -254,7 +327,12 @@ export default function GrobnerPage() {
     const res = division(dividendo, divisores);
 
     console.log(res.quotients);
-  }
+  };
+
+  const handleBase = () => {
+    Bucherberg(divisores);
+  };
+
   return (
     <Grid
       container
@@ -288,12 +366,15 @@ export default function GrobnerPage() {
                 />
               </Grid>
               <Grid item xs={2}>
-                {/* <IconButton
-                  onClick={() => {setDivisores(divisores.splice(idx, 1)); console.log(divisores);}}
+                <IconButton
+                  onClick={() => {
+                    setDivisores(divisores.splice(idx, 1));
+                    console.log(divisores);
+                  }}
                   aria-label="delete"
                 >
                   <DeleteIcon />
-                </IconButton> */}
+                </IconButton>
               </Grid>
             </div>
           );
@@ -302,7 +383,7 @@ export default function GrobnerPage() {
         <Grid item>
           <Button
             variant="contained"
-            onClick={() => setDivisores(divisores.push(''))}
+            onClick={() => setDivisores(divisores.concat(''))}
           >
             Add divider
           </Button>
@@ -313,8 +394,16 @@ export default function GrobnerPage() {
           >
             Divide
           </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleBase()}
+            disabled={!divisores.every((item) => item !== '' && item !== '0')}
+          >
+            Groebner Base
+          </Button>
         </Grid>
       </Grid>
+
       <Grid item xs={6}>
         TODO
       </Grid>
