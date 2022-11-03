@@ -8,9 +8,11 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { Maximize, SignalCellularNoSimOutlined } from '@mui/icons-material';
+import Polynomial from '../Polynomial';
 
 const nerdamer = require('nerdamer');
 require('nerdamer/Algebra');
+
 
 // [variable, exponent] both strings
 // function exp (p) {
@@ -65,30 +67,50 @@ function expEq(e1, e2) {
   return e1[0] == e2[0] && e1[1] == e2[1] && e1[2] == e2[2];
 }
 
-function lc(f, variable) {
-  let res = '0';
-
-  const split = f.split(/[-+]+/);
-  split.forEach((element) => {
-    if (element.includes(variable)) {
-      if (isNaN(element[0])) res = '1';
-      else res = element.match(/\d+/);
-      return;
-    }
-  });
-
-  return res;
-
-  console.log(`CALCULANDO LC DE ${f} CON VARIABLE ${variable}`);
-  // const coeffs = nerdamer.coeffs(`${f}`, `${variable}`);
-  // let lc = '';
-  // coeffs.each(function(e, i) {
-  //     console.log(`(${variable})^${i}: ${e.toString()}`);
-  //     lc = e.toString();
-  //  });
-
-  //  return lc;
+function lc(f, variable){
+  console.log(Polynomial("(4+a)*x+3xy"));
 }
+// function lc(f, variable) {
+//   let res = '0';
+
+//   // const split = f.split(/[-+]+/);
+//   // console.log(split);
+
+//   let split = '';
+
+//   for(let i=0; i<f.length; i++){
+//     let c = f[i];
+
+//     if(c==='-' || c==='+'){
+//       res.push(split);
+//       split = c;
+
+//     }
+
+//     split += c;
+    
+//   }
+
+//   split.forEach((element) => {
+//     if (element.includes(variable)) {
+//       if (isNaN(element[0])) res = '1';
+//       else res = element.match(/\d+/);
+//       return;
+//     }
+//   });
+//   console.log("lc:" + res);
+//   return res;
+
+//   console.log(`CALCULANDO LC DE ${f} CON VARIABLE ${variable}`);
+//   // const coeffs = nerdamer.coeffs(`${f}`, `${variable}`);
+//   // let lc = '';
+//   // coeffs.each(function(e, i) {
+//   //     console.log(`(${variable})^${i}: ${e.toString()}`);
+//   //     lc = e.toString();
+//   //  });
+
+//   //  return lc;
+// }
 
 // function lc(p){
 //     const split = p.split(/[-+]+/); // separa por + o -
@@ -129,7 +151,7 @@ function division(f, dividers) {
     nSteps++;
     let i = 0;
     let divFound = 0;
-    // console.log(`========= p = ${p} ==============`);
+    console.log(`========= p = ${p} ==============`);
     const exp_p = exp(p);
 
     while (i < s && divFound === 0) {
@@ -137,8 +159,8 @@ function division(f, dividers) {
       const gamma = expMinus(exp_p, exp_fi);
 
       step = [];
-      // console.log(`PROBANDO DIVISION POR ${dividers[i]}`);
-      // console.log(`\texp(p)-exp(fi) = (${exp_p}) - (${exp_fi}) = (${gamma})`);
+      console.log(`PROBANDO DIVISION POR ${dividers[i]}`);
+      console.log(`\texp(p)-exp(fi) = (${exp_p}) - (${exp_fi}) = (${gamma})`);
       if (gamma.every((item) => item >= 0)) {
         console.log(`\tPODEMOS`);
         const xGamma = monomial(gamma);
@@ -147,7 +169,7 @@ function division(f, dividers) {
 
         const coef = nerdamer(`(${lcp})/(${lcfi}) * ${xGamma}`).toString();
 
-        // console.log(`\t\tRESTAMOS (${coef}) * (${dividers[i]})`);
+        console.log(`\t\tRESTAMOS (${coef}) * (${dividers[i]})`);
 
         let newQi = nerdamer(`${q[i]} + ${coef}`).expand().toString();
         let newP = nerdamer(`${p} - (${coef}) * (${dividers[i]})`)
@@ -165,7 +187,7 @@ function division(f, dividers) {
         p = newP;
         divFound = 1;
       } else {
-        // console.log(`\tNO PODEMOS`);
+        console.log(`\tNO PODEMOS`);
         i++;
       }
     }
@@ -176,7 +198,7 @@ function division(f, dividers) {
       const lt = nerdamer(`(${LC})*(${MON})`).toString();
 
       console.log(
-        // `NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS lt(p)= (${LC}) * (${MON}) = ${lt}`
+        `NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS lt(p)= (${LC}) * (${MON}) = ${lt}`
       );
       const newR = nerdamer(`${r} + ${lt}`).toString();
       const newP = nerdamer(`${p} - ${lt}`).toString();
@@ -324,14 +346,20 @@ export default function GrobnerPage() {
   };
 
   const handleDivision = () => {
-    const res = division(dividendo, divisores);
+    // const res = division(dividendo, divisores);
 
-    console.log(res.quotients);
+    // console.log(res.quotients);
+
+    lc(2,2);
   };
 
   const handleBase = () => {
     Bucherberg(divisores);
   };
+
+  const p = new Polynomial('(x-2)');
+  const q = new Polynomial('(x+2)');
+  p.multiply(q);
 
   return (
     <Grid
@@ -341,6 +369,7 @@ export default function GrobnerPage() {
       spacing={10}
       padding={2}
     >
+      
       <Grid item xs={12}>
         {/* Hola:{exp('2x^2 + y^3').toString()}
         coefs: {nerdamer.coeffs('x^2 -99x^2+6x-9x^6+y^3+ xy', 'x').toString()   }
