@@ -11,7 +11,7 @@
 \documentclass{scrbook}
 
 \KOMAoptions{%
-  fontsize=10pt,        % Tamaño de fuente
+  fontsize=11pt,        % Tamaño de fuente
   paper=a4,             % Tamaño del papel
   headings=normal,      % Tamaño de letra para los títulos: small, normal, big
   % parskip=half,         % Espacio entre párrafos: full (una línea) o half (media línea)
@@ -89,6 +89,8 @@
 % Si el paquete cabin da error usar el siguiente comando en su lugar
 % \renewcommand{\sfdefault}{iwona} 
 \usepackage{inconsolata}
+
+\usepackage[ruled]{algorithm2e}
 
 
 % Selecciona el tipo de fuente para los títulos (capítulo, sección, subsección) del documento.
@@ -199,17 +201,17 @@
 
 % \pagestyle{plain} % No imprime cabeceras
 
-\input{preliminares/portada}                    
-\input{preliminares/titulo}                     
-\input{preliminares/declaracion-originalidad}   
+\input{preliminares/portada}
+\input{preliminares/titulo}
+\input{preliminares/declaracion-originalidad}
 \input{preliminares/dedicatoria}                % Opcional
-\input{preliminares/tablacontenidos}            
+\input{preliminares/tablacontenidos}
 \input{preliminares/agradecimientos}            % Opcional
 
 % \pagestyle{scrheadings} % A partir de ahora sí imprime cabeceras
 
-\input{preliminares/summary}                    
-\input{preliminares/introduccion}               
+\input{preliminares/summary}
+\input{preliminares/introduccion}
 
 % --------------------------------------------------------------------
 % MAINMATTER
@@ -217,7 +219,7 @@
 \mainmatter % activa la numeración de capítulos, resetea la numeración de las páginas y usa números arábigos
 
 \setpartpreamble[c][0.75\linewidth]{%
-	\bigskip % Deja un espacio vertical en la parte superior
+  \bigskip % Deja un espacio vertical en la parte superior
   Si el trabajo se divide en diferentes partes es posible incluir al inicio de cada una de ellas un breve resumen que indique el contenido de la misma. Esto es opcional.
 }
 % \part{Primera parte} % Dividir un libro en partes OPCIONAL
@@ -230,7 +232,8 @@
 \cleardoublepage
 % \part{Segunda parte}
 \chapter{Bases de Groebner}
-% \input{capitulos/capitulo02}
+\input{capitulos/2_Implicitacion}
+
 
 % --------------------------------------------------------------------
 % APPENDIX: Opcional
@@ -246,7 +249,7 @@
 % GLOSARIO: Opcional
 % --------------------------------------------------------------------
 
-\input{glosario} 
+\input{glosario}
 
 % -------------------------------------------------------------------
 % BACKMATTER
@@ -259,9 +262,9 @@
 %-------------------------------------------------------------------
 
 \setbibpreamble{Las referencias se listan por orden alfabético. Aquellas referencias con más de un autor están ordenadas de acuerdo con el primer autor.\par\bigskip}
-\bibliographystyle{alpha} 
+\bibliographystyle{alpha}
 \begin{small} % Normalmente la bibliografía se imprime en un tamaño de letra más pequeño.
-\bibliography{library.bib}
+  \bibliography{library.bib}
 \end{small}
 
 

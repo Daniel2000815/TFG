@@ -1,0 +1,110 @@
+% !TeX root = ../libro.tex
+% !TeX encoding = utf8
+
+Durante todo el capítulo fijamos $A$ anillo conmutativo y $X=\{x_1, \dots, x_n\}$ conjunto de variables distintas.
+
+\section{Polinomios en varias variables}
+
+\begin{definicion}
+  Llamamos \textbf{monomio} en $X$ a cualquier producto de la forma:
+  $$X^{\alpha} = x_1^{\alpha_1} \cdots x_n^{\alpha_n}\quad, \alpha_i \in \N\ \forall 0\le i \le n$$
+  Lo denotaremos como $X^{\alpha}$, con $\alpha\in \N^n$.
+\end{definicion}
+
+\begin{definicion}
+  Definimos un \textbf{polinomio multivariable} a cualquier combinación lineal finita de monomios $\sum_{\alpha\in\Nn} a_{\alpha} X^{\alpha}$. Puede comprobarse que el conjunto de polinomios forma un cuerpo, que denotaremos $A[X] = A[x1,\dots, x_n]$.
+\end{definicion}
+
+Tras esta definición nos surge la pregunta de si hay alguna forma "natural" de ordenar los monomios de un polinomio. Vamos a ver que no hay una única forma, sino que hay muchas igual de válidas.
+
+\begin{definicion}
+  Un \textbf{orden admisible} es un orden total $\le$ sobre $\N^n$ cumpliendo:
+  \begin{enumerate}
+    \item $(0,\dots ,0) \le \alpha,\ \forall \alpha \in \N^n$.
+    \item $\alpha < \beta \implies \alpha + \gamma < \beta + \gamma,\ \forall \alpha,\beta,\gamma \in \N^n$.
+  \end{enumerate}
+\end{definicion}
+
+Hay muchos órdenes admisibles, pero nosotros usaremos uno en particular:
+
+\begin{definicion}
+  Definimos el \textbf{orden lexicográfico} $\le_{\text{lex}}$ como:
+  \begin{equation*}
+    \alpha \lex \beta \iff \begin{cases}
+      \alpha  = \beta \\
+      \quad\text{ó}   \\
+      \alpha_i < \beta_i \text{, donde $i$ es el primer índice tal que } \alpha_i \neq \beta_i
+    \end{cases}
+  \end{equation*}
+\end{definicion}
+
+Ahora ya estamos en disposición de definir varios conceptos que nos resultarán imprescindibles:
+
+\begin{definicion}
+  Sea $f= \sum_{\alpha\in \Nn} a_{\alpha} X^{\alpha}$. Definimos:
+  \begin{itemize}
+    \item \textbf{Exponente:} $exp(f) = \max_{\lex}(\alpha)$.
+    \item \textbf{Monomio líder:} $\lmf = X^{\expf}$
+    \item \textbf{Coeficiente líder:} $\lcf = a_{\expf}$.
+    \item \textbf{Término líder:} $\ltf = \lcf \cdot \lmf$.
+  \end{itemize}
+\end{definicion}
+
+Estudiamos ahora las operaciones que podemos realizar sobre $A[X]$.
+
+\begin{proposicion}
+  Sean $f,g\in A[X]$.
+  \begin{itemize}
+    \item $(f+g)(\alpha) = f(\alpha) + f(\alpha)$.
+    \item $(fg)(\alpha) = \sum_{\beta+\gamma=\alpha} f(\beta)g(\gamma)$.
+  \end{itemize}
+\end{proposicion}
+
+\begin{teorema}
+  Sea $F=\{f_1,\dots, f_s\} \subset A[X]$. Entonces todo polinomio $f\in A[X]$ se puede expresar como:
+  \begin{equation*}
+    f = q_1f_1 + \cdots + q_sf_s + r
+  \end{equation*}
+
+  donde $q_i, r\in A[X]$ y $r$ no se puede expresar como combinación lineal de ningún elemento de $F$ o es $0$.
+\end{teorema}
+
+En otras palabras, podemos dividir $f$ entre los polinomios $f_1, \dots, f_s$. Para realizar la demostración primero presentamos un algoritmo que dados $f,f_1,\dots, f_s \in A[X]$, expresa $f$ de la forma vista en el teorema, para después comprobar que funciona correctamente siempre.
+
+\SetKwComment{Comment}{/* }{ */}
+\begin{algorithm}[hbt!]
+  \caption{División polinomios varias variables}\label{alg:two}
+  \KwData{$f$, $F = \left[ f_1, \dots, f_S\right]$}
+  $p\gets f$\;
+  $\left[q_1,\dots, q_s\right] \gets \left[0,\dots, 0\right]$\;
+  $r\gets 0$\;
+
+  \While{$p \neq 0$}{
+    $\text{divisorEncontrado} \gets false$\;
+    \For{$f_i \in F$} {
+      \If{$\text{exp}(p) = \text{exp}(f_i) + \alpha$}{
+        $q_i\gets q_i + \frac{\text{lc}(p)}{\text{lc}(f_i)} X^{\alpha}$\;
+        $p \gets p - f_i \cdot \frac{\text{lc}(p)}{\text{lc}(f_i)} X^{\alpha}$\;
+        $\text{divisorEncontrado} \gets true$\;
+      }
+    }
+    \If{$!\text{divisorEncontrado}$}{
+      $r \gets r + \text{lt}(p)$\;
+      $p \gets p - \text{lt}(p)$\;
+    }
+  }
+  \Return{$\left[r,q_1,\dots, q_s\right]$}
+\end{algorithm}
+
+\begin{proof}
+
+\end{proof}
+\section{Bases de Groebner}
+
+\begin{definicion}
+  Dado un anillo conmutativo $R$, decimos que $\emptyset \neq I \subseteq R$ es un \textbf{ideal} si:
+  \begin{enumerate}
+    \item $a+b\in I,\ \forall a,b\in I$.
+    \item $ab\in I,\ \forall a\in I,\ \forall b\in R$.
+  \end{enumerate}
+\end{definicion}

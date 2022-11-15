@@ -357,9 +357,18 @@ export default function GrobnerPage() {
     Bucherberg(divisores);
   };
 
-  const p = new Polynomial('(x-2)');
-  const q = new Polynomial('(x+2)');
+  const p = new Polynomial('x^2 - x*y');
+  const q = new Polynomial('(x*y^2)');
+  p.plus(q);
+  console.log(`POL P+Q = ${p}`);
   p.multiply(q);
+  console.log(`POL P*Q = ${p}`);
+  console.log(`LC: ${p.lc()}`);
+  console.log(`LM: ${p.lm()}`);
+  console.log(`LT: ${p.lt()}`);
+  console.log(`EXP: ${p.exp()}`);
+  console.log(`OTRO EXP: ${Polynomial.exp('2x^2*z')}`);
+ 
 
   return (
     <Grid
