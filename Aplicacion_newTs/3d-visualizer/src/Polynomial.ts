@@ -5,7 +5,7 @@ import { Console } from "console";
 export default class Polynomial {
   private coefMap: Map<string, string> = new Map();
   private varOrder: string[] = [];
-
+  public vars: string[] = ["x", "y", "z"];
   constructor(p: string) {
     var pol = "";
     try {
@@ -34,10 +34,7 @@ export default class Polynomial {
       });
     });
 
-    console.log("MULT ", this.coefMap, q.coefMap, product);
     product = nerdamer(product).expand().toString();
-    console.log(product);
-    console.log("res muLT ", new Polynomial(product));
     return new Polynomial(product);
   }
 
@@ -55,7 +52,6 @@ export default class Polynomial {
       sum += `+ (${value}*${key})`;
     });
 
-    console.log("su,m", sum);
     sum = nerdamer(sum).expand().toString();
     return new Polynomial(sum);
 
@@ -64,7 +60,6 @@ export default class Polynomial {
   /** Substract q to this polynomial */
   minus(q: Polynomial) {
     let sum = "0";
-    console.log("RESTANDO", this.coefMap, q.coefMap);
     
     this.coefMap.forEach((value: string, key: string) => {
       sum += `${sum.length > 0 ? "+" : ""} (${value}*${key})`;
@@ -105,11 +100,7 @@ export default class Polynomial {
 
   isZero() {
     const n = this.coefMap.size;
-    // console.log("CHECK KEYS", this.coefMap);
-    console.log(typeof(this.coefMap.values().next().value));
-    console.log(this.coefMap);
-    console.log("comprobando si ",  this.coefMap.values().next().value, " es 0",
-    (n === 1 && this.coefMap.values().next().value === "0"));
+
     return (
       n === 0 ||
       (n === 1 && this.coefMap.values().next().value === "0")
@@ -189,10 +180,14 @@ export default class Polynomial {
     return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
   }
 
+  static arrayCombinations(array: Polynomial[]) {
+    var result = array.flatMap((v, i) => array.slice(i + 1).map((w) => [v, w]));
+    return result;
+  }
+
   static divide(f: Polynomial, fs: Polynomial[], maxIter: number = 1000) {
-    console.log(`INIT DIVISION ${f} / (${fs})`);
-    console.log(f);
-    console.log(fs[0], fs[1]);
+    console.log("INIT DIVISION",f, fs);
+
     let nSteps = 0;
     var steps: { [k: string]: any } = {};
     let step = [];
@@ -202,16 +197,14 @@ export default class Polynomial {
 
     let p = f;
     let r = new Polynomial("0");
-    let coefs = [new Polynomial("0"), new Polynomial("0")];
+    let coefs = Array(s).fill(new Polynomial("0"));
 
     while (!p.isZero() && currIt<maxIter) {
-      console.log("CHECK0 ", p, p.isZero());
       nSteps++;
       currIt++;
       let i = 0;
       let divFound = 0;
-      console.log(p);
-      console.log(`========= p = ${p} ==============`);
+      console.log("\t========= p = ", p, "==============");
       const exp_p = p.exp();
 
       // console.log("NUEVA ITERACION");
@@ -219,25 +212,20 @@ export default class Polynomial {
       // console.log("coefss", coefs);
       // console.log("R", r);
       while (i < s && divFound === 0) {
-        console.log(fs[i].toString());
         const exp_fi = fs[i].exp();
         const gamma = this.expMinus(exp_p, exp_fi);
 
         step = [];
-        console.log(`PROBANDO DIVISION POR ${fs[i]}`);
-        console.log(`\texp(p)-exp(fi) = (${exp_p}) - (${exp_fi}) = (${gamma})`);
+        
         if (gamma.every((item) => item >= 0)) {
-          console.log(`\tPODEMOS`);
           const xGamma = this.monomial(gamma);
-          console.log("MONOMIAL ", xGamma);
           const lcp = p.lc();
           const lcfi = fs[i].lc();
 
           const coef = xGamma.multiply(new Polynomial(`${lcp/lcfi}`)); 
-          console.log(`\t\tRESTAMOS (${coef}) * (${fs[i]})`, xGamma);
 
           let newQi = coefs[i].plus(coef);
-          console.log(fs[i].multiply(coef));
+
           let newP = p.minus(
             fs[i].multiply(coef)
           );
@@ -250,10 +238,10 @@ export default class Polynomial {
           step.push(`p = (${p}) - (${coef} * (${fs[i]}) ) = ${newP}`);
           step.push(p);
           coefs[i] = newQi;
-          console.log("change", coefs[0].toString(), coefs[1].toString());
+
           p = newP;
           divFound = 1;
-          console.log(newP);
+          console.log("\tchange", newP.coefMap);
         } else {
           console.log(`\tNO PODEMOS`);
           i++;
@@ -262,43 +250,32 @@ export default class Polynomial {
       if (divFound === 0) {
         const LC = p.lc();
         const MON = this.monomial(exp_p);
-
         const lt = MON.multiply(new Polynomial(LC.toString()));
-
-        console.log(
-          `NO HEMOS PODIDO DIVIDIR POR NADA, QUITAMOS lt(p)= (${LC}) * (${MON}) = ${lt}`
-        );
 
         const newR = r.plus(lt);
         const newP = p.minus(lt);
-          console.log(newP.coefMap);
+        
+        console.log("\tchange", newP.coefMap);
+        
         step.push("No division posible:");
         step.push(`lt(p) = (${LC})*(${MON}) = ${lt}`);
         step.push(`r = (${r}) + lt(p) = ${newR}`);
         step.push(`p = (${p}) - lt(p) = ${newP}`);
 
         r = newR;
-        
         p = newP;
       }
 
       steps[`step${nSteps}`] = step;
     }
 
-    console.log(`Qs: ${coefs}`);
-    console.log(`R: ${r}`);
-
-    console.log("COMPROBANDO...", coefs, r);
-
     step = [];
 
     let mult = new Polynomial("0");
     step.push(`r = ${r}`);
     coefs.forEach((qi, i) => {
-      console.log("SUMANDO ", qi.multiply(fs[i]));
       step.push(`q_${i} = ${qi}`);
       mult = mult.plus(qi.multiply(fs[i]));
-      console.log(mult);
     });
 
     mult = mult.plus(r);
@@ -306,17 +283,88 @@ export default class Polynomial {
 
     steps["result"] = step;
 
-   
-    console.log("CHECK RESULT: " , mult.isZero());
+    console.log("\tCHECK RESULT: " , mult.isZero());
 
-    console.log("RES", [...coefs, r]);
-    console.log(steps);
+    console.log("\tRES", [...coefs, r, steps]);
 
     return {
       quotients: [...coefs],
       remainder: r,
       steps: steps,
     };
+  }
+
+  /**
+   * 
+   * @param alfa in N^n
+   * @param beta in N^n
+   * @returns lcm(alfa,beta) = ( max(alfa_1,beta_1), ··· , max(alfa_n, beta_n) )
+   */
+  static lcm(alfa: number[], beta: number[]) {
+    if(alfa.length !== beta.length){
+      return [-1];
+    }
+  
+    let res = [];
+  
+    for(let i=0; i<alfa.length; i++){
+      res.push(Math.max(alfa[i], beta[i]));
+    }
+  
+    return res;
+  }
+
+  /**
+   * 
+   * @returns S-Polynomial of f and g
+   */
+  static sPol(f: Polynomial, g: Polynomial) {
+    const alpha = f.exp();
+    const beta = g.exp();
+    const gamma = this.lcm(alpha, beta);
+ 
+    return this.monomial(this.expMinus(gamma,alpha)).multiply(f).minus(
+      this.monomial(this.expMinus(gamma,beta)).multiply(g)
+    );
+
+  }
+
+  /**
+   * 
+   * @param F Generator of the ideal I = <F>
+   * @param maxIter maximum iterations
+   * @returns Groebner base of I
+   */
+  static bucherberg(F: Polynomial[], maxIter: number = 1000) {
+    let currIt = 0;
+    let G = F;
+    let added;
+
+    console.log("BUCHERBERG", F);
+
+    do {
+      currIt++;
+      let newG = Array.from(G);
+      const fgPairs = this.arrayCombinations(newG);
+
+      added = false;
+
+      console.log("\tG=", G);
+      for (let i = 0; i < fgPairs.length && !added; i++) {
+        const r = this.divide(this.sPol(fgPairs[i][0], fgPairs[i][1]), newG).remainder;
+        console.log("\t\tSPOL", this.sPol(fgPairs[i][0], fgPairs[i][1]));
+        if (!r.isZero()) {
+          
+          G.push(r);
+          added = true;
+          console.log("\t\tAÑADIMOS ", r);
+          
+        }
+      }
+    } while (added && currIt<maxIter);
+
+  console.log("FINAL");
+    return G;
   }
 
   // === PRIVATE INSTANCE METHODS ===
@@ -329,110 +377,6 @@ export default class Polynomial {
     return false;
   }
 
-  // computeCoefficients(node: any, firstIt = false) {
-  //   if (firstIt) this.coefMap.clear();
-
-  //   const pol = this.nodeToString(node);
-  //   const vars = ["x", "y", "z"];
-  //   var pattern = /[+-]/;
-  //   console.log("pol ", pol);
-  //   if (node === null || node === undefined) return;
-
-  //   if (!node.left && !node.right) {
-  //     console.log(node.value);
-  //     if (vars.includes(node.value)){
-  //       console.log("ES VAR");
-  //       this.coefMap.set(node.value, "1");
-  //       console.log(this.coefMap);
-  //     }
-  //     else {
-  //       console.log("AQUI: ", pol);
-  //       console.log(typeof(pol));
-  //       this.coefMap.set("1", pol.toString());
-  //     }
-
-  //     console.log("CHANGES:", this.coefMap);
-  //   }
-
-    
-  //   if (!this.strContainsChar(pol, vars)) {
-  //     console.log('AÑADO ' + pol);
-  //     this.coefMap.set('1', pol);
-  //     console.log(this.coefMap);
-  //     // return;
-  //   }
-
-  //   // // console.log(pol);
-  //   // if (!this.strContainsChar(pol, vars)) {
-  //   //   // console.log("AÑADO " + pol);
-  //   //   this.coefMap.set("1", pol);
-  //   // }
-
-  //   // console.log(pol);
-    
-  //   console.log(!pattern.test(pol));
-  //   if (!pattern.test(pol) && pol !== "" && !(!node.left && !node.right)) {
-  //     // console.log("SA");
-  //     // const coef = this.nodeToString(node.left);
-  //     // const variable = this.nodeToString(node.right);
-  //     // console.log("ALA ", pol);
-  //     // console.log(node.left);
-  //     // console.log(node.right);
-  //     let coef = "";
-  //     let variable = "";
-  //     let writingCoef = true;
-  //     console.log(pol);
-  //     for (let i = 0; i < pol.length; i++) {
-  //       if (["x", "y", "z"].includes(pol[i])) {
-  //         writingCoef = false;
-
-  //         if (coef.length === 0) coef = "1";
-
-  //         console.log('HOLA:' + coef[coef.length - 1]);
-  //         if (coef[coef.length - 1] === "*") coef = coef.slice(0, -1);
-  //       }
-
-  //       if (!["(", ")"].includes(pol[i])) {
-  //         if (writingCoef) coef += pol[i];
-  //         else variable += pol[i];
-  //       }
-  //     }
-      
-        
-  //     console.log(variable==="" , "!");
-  //     if(variable==="")
-  //       variable = "1";
-
-  //     this.coefMap.set(variable, coef === "-" ? "-1" : coef);
-  //     console.log("CHANGES:", this.coefMap);
-  //     console.log(`COEF: ${coef}, VAR: ${variable}`);
-  //   } else {
-  //     console.log("TYPEEEE", node.type, node.value);
-  //     this.computeCoefficients(node.left);
-  //     this.computeCoefficients(node.right);
-  //   }
-
-  //   if (node !== null && node !== undefined) {
-  //     if (node.type === "OPERATOR" && node.value === "*") {
-  //       console.log('PRODUC');
-  //       console.log(node.left);
-  //       console.log(node.right);
-  //     }
-  //   }
-
-  //   // console.log(this.coefMap);
-  //   let monomials = Array.from(this.coefMap.keys());
-  //   monomials.sort(function (a, b) {
-  //     return Polynomial.expGreater(Polynomial.exp(a), Polynomial.exp(b))
-  //       ? -1
-  //       : 1;
-  //   });
-
-  //   // console.log("mon", monomials);
-  //   this.varOrder = monomials;
-  //   // console.log("RESSS ", this.coefMap);
-  //   // console.log("aqui2 ", this.varOrder);
-  // }
 
   computeCoefficients(pol: string, firstIt = false) {
     if (firstIt){
@@ -440,9 +384,6 @@ export default class Polynomial {
     }
     if (!pol) return;
     const node = nerdamer.tree(pol);
-
-    console.log("comprobando ", pol);
-    const vars = ["x", "y", "z"];
     const nMinus = (pol.match(/-/g)||[]).length;
     const nPlus = (pol.match(/\+/g)||[]).length;
 
@@ -452,7 +393,6 @@ export default class Polynomial {
 
     // === NO ES MONOMIO -> SEGUIMOS SEPARANDO
     if(!isMonomial){
-      console.log("NO MONOMIO", node.left, node.right);
       if(node.left)   this.computeCoefficients(this.nodeToString(node.left));
       if(node.right)  node.value==="-" ? this.computeCoefficients(`-${this.nodeToString(node.right)}`) : this.computeCoefficients(this.nodeToString(node.right));
     }
@@ -468,7 +408,7 @@ export default class Polynomial {
         // Si nos encontramos con una variable, dejamos de escribir en coef. Si no encontramos
         // ningun coeficiente, significa que es 1, y si el coeficiente es -, significa que es -1
 
-        if (vars.includes(pol[i])) {
+        if (this.vars.includes(pol[i])) {
           writingCoef = false;
 
           if (coef.length === 0)  coef = "1";

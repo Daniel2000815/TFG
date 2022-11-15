@@ -365,6 +365,13 @@ export default function GrobnerPage() {
   const t5 = new Polynomial("y^2-1");
   const t6 = new Polynomial("-1 - x+x*y^2+y^2");
 
+  const t7 = new Polynomial("x^2 + 2*y^2 - 3");
+  const t8 = new Polynomial("x^2 + x*y + y^2 - 3");
+
+  // const t9 = new Polynomial("-t+x");
+  // const t10 = new Polynomial("-t^2+y");
+  // const t11 = new Polynomial("-t^3+z");
+
   // console.log("XERO",z,t1,t2,t3,t4,t5,t6);
 
   // const two = new Polynomial("2*x");
@@ -376,7 +383,8 @@ export default function GrobnerPage() {
   // console.log("F1 ", f1);
   const f2 = new Polynomial('y^2-1');
 
-  Polynomial.divide(t6, [t5,t1], 100);
+  // Polynomial.divide(t6, [t5,t1,z,t2], 100);
+  console.log(Polynomial.bucherberg([t7,t8]));
   // console.log([new Polynomial("0"), new Polynomial("0")]);
 
   // const t1 = new Polynomial("2*x*y - x*z + y*z");
