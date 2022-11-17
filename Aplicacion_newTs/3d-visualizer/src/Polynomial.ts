@@ -5,7 +5,8 @@ import { Console } from "console";
 export default class Polynomial {
   private coefMap: Map<string, string> = new Map();
   private varOrder: string[] = [];
-  public vars: string[] = ["x", "y", "z"];
+  static vars: string[] = ["t", "x", "y", "z"];
+
   constructor(p: string) {
     var pol = "";
     try {
@@ -20,6 +21,7 @@ export default class Polynomial {
 
     // console.log("POL CREADO ", this.toString());
   }
+
 
   // === PUBLIC INSTANCE METHODS ===
   /** Multiply this polynomial by q */
@@ -76,6 +78,8 @@ export default class Polynomial {
     return new Polynomial(sum);
   }
 
+  
+
   /** Leader coefficient */
   lc() {
     // console.log(this.coefMap, this.varOrder);
@@ -93,9 +97,26 @@ export default class Polynomial {
     return `${coefNull ? this.lc() : ""}${coefNull ? "*" : ""}${this.lm()}`;
   }
 
-  exp() {
-    // console.log("a ", this.varOrder[0]);
-    return Polynomial.exp(this.varOrder[0]);
+  exp(vars: string[] = Polynomial.vars) : number[] {
+    const split = this.toString().split(/[-+]+/); // separa por + o -
+    let res = Array(vars.length).fill(0);
+
+    split.forEach((element) => {
+      if (element === "") return;
+
+      // console.log("uno", element);
+      
+      const degs = vars.map(function(v){ return Number(nerdamerjs(`deg(${element}, ${v})`))});
+      // let degs = [
+      //   Number(nerdamerjs(`deg(${element}, x)`)),
+      //   Number(nerdamerjs(`deg(${element}, y)`)),
+      //   Number(nerdamerjs(`deg(${element}, z)`)),
+      // ];
+
+      if (Polynomial.expGreater(degs, res)) res = degs;
+    });
+
+    return res;
   }
 
   isZero() {
@@ -112,54 +133,35 @@ export default class Polynomial {
 
     for (var i = 0; i < this.varOrder.length; i++) {
       const mon = this.varOrder[i];
-      const coef = this.coefMap.get(mon);
+      let coef = this.coefMap.get(mon);
 
-      // console.log(i < this.varOrder.length - 1);
-      // console.log("kk", typeof i);
-      const nextMon =
-        i < this.varOrder.length - 1 ? this.varOrder[i + 1] : null;
-      const nextCoef = nextMon ? this.coefMap.get(nextMon) : "";
+      const hideCoef = (coef==="1" || coef==="-1");
+      const hideMon  = (mon==="1" && !hideCoef);
+      let sign = " ";
+      
+      if(coef?.charAt(0)==="-"){
+        coef = coef.slice(1);
+        sign = "- ";
+      }
+      else if(i>0){
+        sign = "+ ";
+      }
 
-      const coefNeg = coef === "-1";
-      // const needParentheses = coef !== "1" && !coefNeg;
+      res += `${sign}${hideCoef ? "" : coef}${hideMon ? "" : mon}`;
 
-      // console.log("next", nextCoef![0] !== "-");
-
-      const sign = `${
-        coef === "-1"
-          ? `${mon!=="1" ? "-" : ""}`
-          : `${coef![0] === "-" ? nextCoef : `${i > 0 ? "+" : ""}`}`
-      }`;
-
-      res += `${sign}${coef!=="1" ? coef : ""}${mon!=="1" ? mon : `${coef!=="1" ? "" : mon}`}`;
+      if(i<this.varOrder.length && this.varOrder.length>1) res += " ";
     }
 
     return res;
   }
 
   // === PUBLIC STATIC METHODS ===
+  static setVars(vars: string[]){
+    this.vars = vars;
+  }
 
-  /** Exponent */
-  static exp(p: string): number[] {
-    // console.log(p);
-    const split = p.split(/[-+]+/); // separa por + o -
-    let res = [0, 0, 0];
-
-    // console.log("as", split);
-    split.forEach((element) => {
-      if (element === "") return;
-
-      // console.log("uno", element);
-      let degs = [
-        Number(nerdamerjs(`deg(${element}, x)`)),
-        Number(nerdamerjs(`deg(${element}, y)`)),
-        Number(nerdamerjs(`deg(${element}, z)`)),
-      ];
-
-      if (Polynomial.expGreater(degs, res)) res = degs;
-    });
-
-    return res;
+  static getVars(){
+    return this.vars;
   }
 
   /** Builds a monomial with the given exponent and lc=1 */
@@ -169,11 +171,15 @@ export default class Polynomial {
 
   // === PRIVATE STATIC METHODS (not private yet) ===
   static expGreater(a: number[], b: number[]) {
-    return (
-      a[0] > b[0] ||
-      (a[0] == b[0] && a[1] > b[1]) ||
-      (a[0] == b[0] && a[1] == b[1] && a[2] > a[2])
-    );
+    if(a.length !== b.length)
+      return false;
+
+    for(let i=0; i<a.length; i++){
+      if(a[i] > b[i]) return true;
+      else if(a[i] < b[i])  return false;
+    }
+
+    return false;
   }
 
   static expMinus(a: number[], b: number[]) {
@@ -408,7 +414,7 @@ export default class Polynomial {
         // Si nos encontramos con una variable, dejamos de escribir en coef. Si no encontramos
         // ningun coeficiente, significa que es 1, y si el coeficiente es -, significa que es -1
 
-        if (this.vars.includes(pol[i])) {
+        if (Polynomial.vars.includes(pol[i])) {
           writingCoef = false;
 
           if (coef.length === 0)  coef = "1";
@@ -434,7 +440,7 @@ export default class Polynomial {
     // Aplicamos LEX
     let monomials = Array.from(this.coefMap.keys());
     monomials.sort(function (a, b) {
-      return Polynomial.expGreater(Polynomial.exp(a), Polynomial.exp(b))
+      return Polynomial.expGreater(new Polynomial(a).exp(Polynomial.vars), new Polynomial(b).exp(Polynomial.vars))
         ? -1
         : 1;
     });
@@ -495,3 +501,4 @@ export default class Polynomial {
     return "";
   }
 }
+

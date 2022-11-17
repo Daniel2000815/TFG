@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { Maximize, SignalCellularNoSimOutlined } from '@mui/icons-material';
 import Polynomial from '../Polynomial';
+import { variables } from 'nerdamer-ts/dist/Core/Utils';
 
 const nerdamer = require('nerdamer');
 require('nerdamer/Algebra');
@@ -376,15 +377,21 @@ export default function GrobnerPage() {
 
   // const two = new Polynomial("2*x");
   // // console.log("2x", two, two.toString());
+  console.log(t1);
   const f = new Polynomial('x^2*y + x*y^2 + y^2');
   
   const f1 = new Polynomial('x*y - 1');
   // console.log("AQUISSS ", f1.toString());
   // console.log("F1 ", f1);
   const f2 = new Polynomial('y^2-1');
+  const f3 = new Polynomial("x^(10) + y^2 -z^(30)*y - t");
+  const e = nerdamer('x^(10) + y^2 -z^(30)*y - t -1');
+  // console.log("BARS:", e.variables());
 
+  // console.log(f3);
+  console.log(`TEST: ${t7}, ${t8}, ${f}, ${f1}, ${f3} `);
   // Polynomial.divide(t6, [t5,t1,z,t2], 100);
-  console.log(Polynomial.bucherberg([t7,t8]));
+  // console.log(Polynomial.bucherberg([t7,t8]));
   // console.log([new Polynomial("0"), new Polynomial("0")]);
 
   // const t1 = new Polynomial("2*x*y - x*z + y*z");

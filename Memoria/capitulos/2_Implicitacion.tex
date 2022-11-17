@@ -12,7 +12,7 @@ Durante todo el capítulo fijamos $A$ anillo conmutativo y $X=\{x_1, \dots, x_n\
 \end{definicion}
 
 \begin{definicion}
-  Definimos un \textbf{polinomio multivariable} a cualquier combinación lineal finita de monomios $\sum_{\alpha\in\Nn} a_{\alpha} X^{\alpha}$. Puede comprobarse que el conjunto de polinomios forma un cuerpo, que denotaremos $A[X] = A[x1,\dots, x_n]$.
+  Definimos un \textbf{polinomio multivariable} a cualquier combinación lineal finita de monomios $\sum_{\alpha\in\Nn} a_{\alpha} X^{\alpha}$. Puede comprobarse que el conjunto de polinomios forma un cuerpo, que denotaremos $A[X] = A[x_1,\dots, x_n]$.
 \end{definicion}
 
 Tras esta definición nos surge la pregunta de si hay alguna forma "natural" de ordenar los monomios de un polinomio. Vamos a ver que no hay una única forma, sino que hay muchas igual de válidas.
@@ -41,14 +41,16 @@ Hay muchos órdenes admisibles, pero nosotros usaremos uno en particular:
 Ahora ya estamos en disposición de definir varios conceptos que nos resultarán imprescindibles:
 
 \begin{definicion}
-  Sea $f= \sum_{\alpha\in \Nn} a_{\alpha} X^{\alpha}$. Definimos:
+  Sea $f= \sum_{\alpha\in \Nn} a_{\alpha} X^{\alpha}$ y $\le$ admisible. Definimos:
   \begin{itemize}
-    \item \textbf{Exponente:} $exp(f) = \max_{\lex}(\alpha)$.
+    \item \textbf{Exponente:} $exp(f) = \max_{\le}(\alpha)$.
     \item \textbf{Monomio líder:} $\lmf = X^{\expf}$
     \item \textbf{Coeficiente líder:} $\lcf = a_{\expf}$.
     \item \textbf{Término líder:} $\ltf = \lcf \cdot \lmf$.
   \end{itemize}
 \end{definicion}
+
+A partir de ahora siempre que usemos un orden supondremos que es admisible, y si no se especifica, que es $\lex$.
 
 Estudiamos ahora las operaciones que podemos realizar sobre $A[X]$.
 
@@ -66,7 +68,7 @@ Estudiamos ahora las operaciones que podemos realizar sobre $A[X]$.
     f = q_1f_1 + \cdots + q_sf_s + r
   \end{equation*}
 
-  donde $q_i, r\in A[X]$ y $r$ no se puede expresar como combinación lineal de ningún elemento de $F$ o es $0$.
+  donde $q_i, r\in A[X]$ y $r$ no se puede expresar como combinación lineal de ningún elemento de $F$ o es $0$. Notaremos $\rem(f, [F]) = r$.
 \end{teorema}
 
 En otras palabras, podemos dividir $f$ entre los polinomios $f_1, \dots, f_s$. Para realizar la demostración primero presentamos un algoritmo que dados $f,f_1,\dots, f_s \in A[X]$, expresa $f$ de la forma vista en el teorema, para después comprobar que funciona correctamente siempre.
@@ -97,7 +99,7 @@ En otras palabras, podemos dividir $f$ entre los polinomios $f_1, \dots, f_s$. P
 \end{algorithm}
 
 \begin{proof}
-
+  TODO
 \end{proof}
 \section{Bases de Groebner}
 
@@ -107,4 +109,48 @@ En otras palabras, podemos dividir $f$ entre los polinomios $f_1, \dots, f_s$. P
     \item $a+b\in I,\ \forall a,b\in I$.
     \item $ab\in I,\ \forall a\in I,\ \forall b\in R$.
   \end{enumerate}
+
+  Lo denotaremos como $I\le R$.
 \end{definicion}
+
+\begin{definicion}
+  Dado $F\subseteq A$, el \textbf{ideal generado} por $F$ es:
+  \begin{equation*}
+    \langle F \rangle = \{a_1f_1 + \cdots + a_sf_s : a_1,\dots, a_s\in A,\ f_1,\dots, f_s\in F\}
+  \end{equation*}
+\end{definicion}
+
+\begin{definicion}
+  Dado $I\le A[X]$, diremos que $G = \{g_1,\dots, g_s\}\subseteq I$ es una \textbf{base de Groebner} para $I$ si $\langle \lt(I)\rangle = \langle \lt(g_1),\dots, \lt(g_t) \rangle$.
+\end{definicion}
+
+\begin{definicion}
+  $G$ se dirá una \textbf{base de Groebner reducida} para $I$ si cumple:
+  \begin{itemize}
+    \item $\lcg=1,\ \forall g\in G$.
+    \item $g\in \langle \lt(g) \setminus \{g\} \rangle,\ \forall g\in G$.
+  \end{itemize}
+\end{definicion}
+
+La base de Groebner es a un ideal lo que un sistema de generadores a un espacio vectorial: un subconjunto a partir del cual podemos obtener el total. Si ademças la base es reducida, esta será el equivalente a la base del espacio vectorial. Por tanto, resulta de gran interés saber si dado un ideal $I$ siempre existirá una base de Groebner asociada, y de ser así, si podemos calcularla.
+
+\begin{definicion}
+  Dados $\alpha,\beta \in \Nn$, definimos su \textbf{mínimo común múltiplo} como
+  \begin{equation*}
+    \lcm(\alpha,\beta) = \{\max(\alpha_1, \beta_1),\dots, \max(\alpha_s, \beta_s)\}
+  \end{equation*}
+\end{definicion}
+
+\begin{definicion}
+  Sean $f,g \in A[X]$ donde $\alpha=\exp(f),\ \beta=\exp(g),\ \gamma = \lcm(\alpha,\beta)$. Definimos el \textbf{S-polinomio} de $f$ y $g$ como
+  \begin{equation*}
+    S(f,g) = \lc(g)X^{\gamma-\alpha}f - \lc(f)X^{\gamma-\beta}g
+  \end{equation*}
+\end{definicion}
+
+\begin{teorema}[Criterio de Buchberger]
+  Sean $I\le A[X]$ y $G=\{g_1,\dots, g_t\}$ conjunto de generadores de $I$. Entonces:
+  \begin{equation*}
+    G \text{ es base de Groebner para } I \iff \rem(S(g_i,g_j), G)=0,\ \forall 1\le i<j\le t
+  \end{equation*}
+\end{teorema}
