@@ -385,15 +385,38 @@ export default function GrobnerPage() {
   // console.log("F1 ", f1);
   const f2 = new Polynomial('y^2-1');
   const f3 = new Polynomial("x^(10) + y^2 -z^(30)*y - t");
-  const e = nerdamer('x^(10) + y^2 -z^(30)*y - t -1');
+  const e = new Polynomial('x^(10) + y^2 -z^(30)*y - t -1');
+  const e2 = new Polynomial('y^2 -z^(30)*y - t + x^(10)  -1');
+
+  // console.log("EQ1: ", t1.equals(t2));
+  // console.log("EQ1: ", t1.equals(t3));
+  // console.log("EQ1: ", t1.equals(t4));
+  // console.log("EQ1: ", t1.equals(t5));
+  // console.log("EQ1: ", t1.equals(t1));
+  // console.log("EQ1: ", e.equals(e2));
+
   // console.log("BARS:", e.variables());
+  const h1 = new Polynomial("x^2*y-1");
+  const h2 = new Polynomial("x*y^2-x");
+
+  const h3 = new Polynomial("-x*y^3 -z +x*y +x^2*y*z");
+
+  Polynomial.setVars(["x","y","z","w"]);
+  const g1 = new Polynomial("3x-6y-2z");
+  const g2 = new Polynomial("2x-4y+4w");
+  const g3 = new Polynomial("x-2y-z-w");
+
+
+  // console.log(Polynomial.divide(h3, [h1,h2],10));
 
   // console.log(f3);
-  console.log(`TEST: ${t7}, ${t8}, ${f}, ${f1}, ${f3} `);
+  // console.log(`TEST: ${t7}, ${t8}, ${f}, ${f1}, ${f3} `);
   // Polynomial.divide(t6, [t5,t1,z,t2], 100);
-  // console.log(Polynomial.bucherberg([t7,t8]));
+  // console.log(Polynomial.bucherberg([h1,h2]));
+  console.log(Polynomial.bucherbergReduced([g1,g2,g3]), 5);
   // console.log([new Polynomial("0"), new Polynomial("0")]);
 
+  // console.log(Number("4/3"));
   // const t1 = new Polynomial("2*x*y - x*z + y*z");
   // const t2 = new Polynomial("x*y*z + x*y - 7");
   // const t3 = new Polynomial("y*z  - 1 - 7*z");

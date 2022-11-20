@@ -148,9 +148,35 @@ La base de Groebner es a un ideal lo que un sistema de generadores a un espacio 
   \end{equation*}
 \end{definicion}
 
-\begin{teorema}[Criterio de Buchberger]
+\begin{teorema}[Criterios de Buchberger]
   Sean $I\le A[X]$ y $G=\{g_1,\dots, g_t\}$ conjunto de generadores de $I$. Entonces:
-  \begin{equation*}
-    G \text{ es base de Groebner para } I \iff \rem(S(g_i,g_j), G)=0,\ \forall 1\le i<j\le t
-  \end{equation*}
+  \begin{enumerate}
+    \item $G \text{ es base de Groebner para } I \iff \rem(S(g_i,g_j), G)=0,\ \forall 1\le i<j\le t$.
+    \item $\lcm(\exp(g_i),\exp(g_j)) = \exp(g_i)\exp(g_j) \implies \rem(S(g_i,g_j), G) = 0$.
+    \item $\exists g_t\neq g_i,g_j,\ \alpha\in \N^n : \lcm(\exp(g_i), \exp(g_j)) = \alpha \exp(g_t) \implies \rem(S(g_i,g_j), G)$ si $S(g_i,g_t)$ y $S(g_j,g_t)$ ya han sido considerados.
+  \end{enumerate}
 \end{teorema}
+
+El algoritmo del cálculo de la base de Groebner se basará en el primer criterio, mientras que los otros nos servirán para evitar cálculos innecesarios de S-polinomios.
+
+\SetKwComment{Comment}{/* }{ */}
+\begin{algorithm}[hbt!]
+  \caption{Cálculo de base de Groebner reducida}\label{alg:two}
+  \KwData{$f$, $F = \left[ f_1, \dots, f_S\right]$}
+
+  $G\gets F$\;
+
+  \Repeat{$G' = G$}{
+    $G'\gets G$\;
+    \For{each pair $\{f,g\} \subseteq G'$} {
+      \If{$\text{Criterio 2}(f,g) \textbf{ AND } !\text{Criterio 3}(\{f,g\}, G, G')$}{
+        $r\gets \rem(S(f,g), G')$\;
+        \If{$r\neq 0$}{
+          $G\gets G\cup \{r\}$\;
+        }
+      }
+    }
+  }
+
+  \Return{$G$}
+\end{algorithm}
