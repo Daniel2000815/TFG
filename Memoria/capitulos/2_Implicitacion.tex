@@ -125,10 +125,14 @@ En otras palabras, podemos dividir $f$ entre los polinomios $f_1, \dots, f_s$. P
 \end{definicion}
 
 \begin{definicion}
-  $G$ se dirá una \textbf{base de Groebner reducida} para $I$ si cumple:
+  Dada $f\in A[X]$, definimos su \textbf{soporte} como $$\supp(f) = \{ \alpha\in\Nn : f(\alpha) \neq 0\}$$
+\end{definicion}
+
+\begin{definicion}
+  $G$ se dirá una \textbf{base de Groebner reducida} para $I$ si para todo $g\in G$ se cumple:
   \begin{itemize}
-    \item $\lcg=1,\ \forall g\in G$.
-    \item $g\in \langle \lt(g) \setminus \{g\} \rangle,\ \forall g\in G$.
+    \item $\lcg=1$.
+    \item $\supp(g) \cap \left(\exp(G\setminus\{g\}) + \Nn \right) = \emptyset$.
   \end{itemize}
 \end{definicion}
 

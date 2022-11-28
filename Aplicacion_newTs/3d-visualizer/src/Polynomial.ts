@@ -443,7 +443,7 @@ export default class Polynomial {
         const f = fgPairs[i][0];
         const g = fgPairs[i][1];
 
-        if (this.criterion1(f, g) && !this.criterion2()) {
+        if (this.criterion1(f, g) /*&& this.criterion2(f,g,G)*/) {
           const r = this.divide(
             this.sPol(fgPairs[i][0], fgPairs[i][1]),
             newG,
@@ -484,8 +484,40 @@ export default class Polynomial {
     return true;
   }
 
-  static criterion2(): boolean {
-    return false;
+  /**
+   * Cheacks if a is an integer multiple of b
+   */
+  static expIsMultiple(a: number[], b: number[]){
+    if(a.length !== b.length)
+      return false;
+
+    let res = true;
+    let mult =Math.round(a[0] / b[0]);
+
+    a.forEach((val, idx)=>{
+      if(b[idx] * mult !== val){
+        res = false;
+        return;
+      }
+    });
+
+    return res;
+  }
+
+
+  static criterion2(gi: Polynomial, gj: Polynomial, G: Polynomial[]): boolean {
+    // return false;
+
+    const a = this.lcm(gi.exp(), gj.exp());
+    const startIndex = Math.max(G.indexOf(gi), G.indexOf(gj)) + 1;
+    let res = false;
+
+    for(let i=startIndex; i<G.length && !res; i++){
+      if(this.expIsMultiple(a, G[i].exp()))
+        res = true;
+    }
+
+    return res;
   }
 
   // === PRIVATE INSTANCE METHODS ===

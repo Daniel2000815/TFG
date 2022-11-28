@@ -413,8 +413,19 @@ export default function GrobnerPage() {
   // console.log(`TEST: ${t7}, ${t8}, ${f}, ${f1}, ${f3} `);
   // Polynomial.divide(t6, [t5,t1,z,t2], 100);
   // console.log(Polynomial.bucherberg([h1,h2]));
-  console.log(Polynomial.bucherbergReduced([g1,g2,g3]), 5);
+  console.log(Polynomial.bucherbergReduced([g1,g2,g3]));
+  console.log(Polynomial.bucherbergReduced([t1,t2,t4]));
+  console.log(Polynomial.bucherbergReduced([t1,t5,t2]));
+  console.log(Polynomial.bucherbergReduced([t1,t4,t5]));
+  console.log(Polynomial.bucherbergReduced([t1,t3,t4]));
+  console.log(Polynomial.bucherbergReduced([t1,t2,t6]));
+
   // console.log([new Polynomial("0"), new Polynomial("0")]);
+
+  // console.log(Polynomial.expIsMultiple([2,2,4], [1,1,2]));
+  // console.log(Polynomial.expIsMultiple([3,2,9], [1,1,3]));
+  // console.log(Polynomial.expIsMultiple([0,0,0], [0,0,1]));
+  // console.log(Polynomial.expIsMultiple([1,1,1], [1,1,1]));
 
   // console.log(Number("4/3"));
   // const t1 = new Polynomial("2*x*y - x*z + y*z");
