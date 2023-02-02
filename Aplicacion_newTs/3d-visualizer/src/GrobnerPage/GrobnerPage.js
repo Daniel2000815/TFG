@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { Maximize, SignalCellularNoSimOutlined } from '@mui/icons-material';
 import Polynomial from '../Polynomial';
+import { variables } from 'nerdamer-ts/dist/Core/Utils';
 
 const nerdamer = require('nerdamer');
 require('nerdamer/Algebra');
@@ -365,20 +366,68 @@ export default function GrobnerPage() {
   const t5 = new Polynomial("y^2-1");
   const t6 = new Polynomial("-1 - x+x*y^2+y^2");
 
+  const t7 = new Polynomial("x^2 + 2*y^2 - 3");
+  const t8 = new Polynomial("x^2 + x*y + y^2 - 3");
+
+  // const t9 = new Polynomial("-t+x");
+  // const t10 = new Polynomial("-t^2+y");
+  // const t11 = new Polynomial("-t^3+z");
+
   // console.log("XERO",z,t1,t2,t3,t4,t5,t6);
 
   // const two = new Polynomial("2*x");
   // // console.log("2x", two, two.toString());
+  console.log(t1);
   const f = new Polynomial('x^2*y + x*y^2 + y^2');
   
   const f1 = new Polynomial('x*y - 1');
   // console.log("AQUISSS ", f1.toString());
   // console.log("F1 ", f1);
   const f2 = new Polynomial('y^2-1');
+  const f3 = new Polynomial("x^(10) + y^2 -z^(30)*y - t");
+  const e = new Polynomial('x^(10) + y^2 -z^(30)*y - t -1');
+  const e2 = new Polynomial('y^2 -z^(30)*y - t + x^(10)  -1');
 
-  Polynomial.divide(t6, [t5,t1], 100);
+  // console.log("EQ1: ", t1.equals(t2));
+  // console.log("EQ1: ", t1.equals(t3));
+  // console.log("EQ1: ", t1.equals(t4));
+  // console.log("EQ1: ", t1.equals(t5));
+  // console.log("EQ1: ", t1.equals(t1));
+  // console.log("EQ1: ", e.equals(e2));
+
+  // console.log("BARS:", e.variables());
+  const h1 = new Polynomial("x^2*y-1");
+  const h2 = new Polynomial("x*y^2-x");
+
+  const h3 = new Polynomial("-x*y^3 -z +x*y +x^2*y*z");
+
+  Polynomial.setVars(["x","y","z","w"]);
+  const g1 = new Polynomial("3x-6y-2z");
+  const g2 = new Polynomial("2x-4y+4w");
+  const g3 = new Polynomial("x-2y-z-w");
+
+
+  // console.log(Polynomial.divide(h3, [h1,h2],10));
+
+  // console.log(f3);
+  // console.log(`TEST: ${t7}, ${t8}, ${f}, ${f1}, ${f3} `);
+  // Polynomial.divide(t6, [t5,t1,z,t2], 100);
+  // console.log(Polynomial.bucherberg([h1,h2]));
+  console.log(Polynomial.bucherbergReduced([g1,g2,g3]));
+  console.log(Polynomial.bucherbergReduced([t1,t2,t4]));
+  console.log(Polynomial.bucherbergReduced([t1,t5,t2]));
+  console.log(Polynomial.bucherbergReduced([t1,t4,t5]));
+  console.log(Polynomial.bucherbergReduced([t1,t3,t4]));
+  console.log(Polynomial.bucherbergReduced([t1,t2,t6]));
+
   // console.log([new Polynomial("0"), new Polynomial("0")]);
 
+  // console.log(Polynomial.expIsMultiple([2,2,4], [1,1,2]));
+  // console.log(Polynomial.expIsMultiple([3,2,9], [1,1,3]));
+  // console.log(Polynomial.expIsMultiple([0,0,0], [0,0,1]));
+  // console.log(Polynomial.expIsMultiple([1,1,1], [1,1,1]));
+
+  // console.log(Number("4/3"));
   // const t1 = new Polynomial("2*x*y - x*z + y*z");
   // const t2 = new Polynomial("x*y*z + x*y - 7");
   // const t3 = new Polynomial("y*z  - 1 - 7*z");

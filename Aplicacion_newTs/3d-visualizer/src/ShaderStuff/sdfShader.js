@@ -173,8 +173,10 @@ export const fs = (sdf, primitives) => {
     void main()
     {
         vec2 uv = (gl_FragCoord.xy - 0.5*iResolution.xy) / iResolution.y;
-        
-        vec2 mouseUV = iMouse.x>=0.0 ? iMouse.xy/iResolution.xy : vec2(0.5);  // [0,1]
+        vec2 mouseUV = vec2(0.5);
+
+        if(iMouse.x > 0.0 || iMouse.y > 0.0)
+            mouseUV = iMouse.xy/iResolution.xy;  // [0,1]
 
         vec3 backgroundColor = vec3(.835, 1.0, 1.0);
         vec3 col    = vec3(0.0);

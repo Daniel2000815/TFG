@@ -69,6 +69,7 @@ function PrimitiveNode({ data, id }) {
 
   return (
     <ThemeProvider theme={theme}>
+      {sdf}
       <CustomNode
         title={'Primitive'}
         id={id}

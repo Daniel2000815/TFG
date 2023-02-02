@@ -17,6 +17,7 @@ export default function Dropdown(props) {
         onChange={(ev) => props.onChange(ev.target.value)}
         autoWidth
         size="small"
+        label={props.label}
         open={open}
       >
         {props.items.map((item) => (

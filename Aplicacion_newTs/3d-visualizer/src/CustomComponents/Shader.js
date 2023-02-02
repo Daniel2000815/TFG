@@ -9,6 +9,7 @@ import { fs } from '../ShaderStuff/sdfShader';
 import usePrimitivesHook from '../primitivesHook';
 import { ErrorBoundary } from 'react-error-boundary';
 
+
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
     <div role="alert">
@@ -25,33 +26,36 @@ const myErrorHandler = (error, info) => {
   console.log("ERROR");
 }
 
+
 function Shader(props) {
   const [primitivesCode] = usePrimitivesHook();
 
-  useEffect(() => {}, [props.shader, props.uniforms]);
+  useEffect(() => {}, [props.shader, props.uniforms, primitivesCode]);
 
   const [zoom, setZoom] = useState(1.5);
+  const [explode, setExplode] = React.useState(false)
+
   const zoomIncrement = 0.5;
   return (
     <div style={props.style}>
       <ReactScrollWheelHandler
         timeout="0"
         wheelConfig={[100, 1000, 0.05]}
-        preventScroll="true "
+        preventScroll="true"
         upHandler={(e) => setZoom(zoom + zoomIncrement)}
         downHandler={(e) => setZoom(zoom - zoomIncrement)}
       >
         <Ratio ratio={1}>
+          {props.sdf}
+          {explode.toString()}
           <ErrorBoundary
-            FallbackComponent={ErrorFallback}
-            onError={myErrorHandler}
-            onReset={() => {
-              // reset the state of your app so the error doesn't happen again
-            }}
-          >
+        FallbackComponent={ErrorFallback}
+        onReset={() => setExplode(false)}
+        resetKeys={[explode]}
+      >
             <ShadertoyReact
               fs={props.sdf ? fs(props.sdf, primitivesCode) : defaultShader()}
-              key={props.sdf}
+              key={props.sdf+primitivesCode}
               uniforms={{
                 ...props.uniforms,
                 u_zoom: { type: '1f', value: zoom },
@@ -61,7 +65,7 @@ function Shader(props) {
                 u_smoothness: { type: '1f', value: 10.0 },
               }}
             />
-          </ErrorBoundary>
+            </ErrorBoundary>
         </Ratio>
       </ReactScrollWheelHandler>
     </div>

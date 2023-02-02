@@ -97,6 +97,7 @@ function CustomNode(props) {
         >
           {props.dropdownOptions ? (
             <Dropdown
+            labelId="demo-simple-select-label"
               defaultValue={props.dropdownOptions[0]}
               onChange={props.onChangeOption}
               items={props.dropdownOptions}
@@ -116,6 +117,7 @@ function CustomNode(props) {
               <p>{`SDF: ${props.sdf}`}</p> */}
 
               {props.body}
+              {props.sdf}
               <Shader
                 sdf={props.sdf}
                 style={{ margin: '10px', height: '100%' }}

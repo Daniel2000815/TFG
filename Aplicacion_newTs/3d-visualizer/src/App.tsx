@@ -9,7 +9,6 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Graph from './GraphPage/Graph';
 import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
 
 import MaterialsPage from './MaterialPage/MaterialsPage';
 import SurfacePage from './SurfacePage/SurfacePage';
@@ -78,7 +77,7 @@ function Footer() {
 const main = <MainContent />;
 
 function App() {
-  const [tabVal, setTabVal] = React.useState(1);
+  const [tabVal, setTabVal] = React.useState(2);
   const tabs = [main, <GrobnerPage />, <SurfacePage />];
 
   return (

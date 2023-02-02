@@ -4,6 +4,8 @@ import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import Box from '@mui/material/Box';
+
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,6 +19,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { alpha } from '@mui/material/styles';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { styled } from '@mui/material/styles';
+import MathJax from 'react-mathjax';
+import 'katex/dist/katex.min.css';
+import "@fontsource/fira-code"
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -37,6 +43,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
+const codeTextTheme = createTheme({
+  typography: {
+    fontFamily: [
+      'Fira Code',
+    ].join(','),
+ },});
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -218,6 +231,27 @@ export default function CustomTable(props) {
     setPage(0);
   };
 
+  const DrawCell = (val, colId) => {
+    if(colId === "name"){
+      return val;
+    }
+    else if(colId === "implicit"){
+      return <MathJax.Provider> <MathJax.Node inline formula={val} /></MathJax.Provider>;
+    }
+    else if(colId === "sdf" ){
+      return(
+        
+      <Typography theme={codeTextTheme}>
+        {val}
+      </Typography>
+      )
+      
+    }
+    else{
+      return "ERROR";
+    }
+  }
+
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <EnhancedTableToolbar
@@ -245,7 +279,6 @@ export default function CustomTable(props) {
                 return (
                   <StyledTableRow
                     hover
-
                     tabIndex={-1}
                     key={row.id}
                   >
@@ -262,8 +295,8 @@ export default function CustomTable(props) {
                     {props.columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <StyledTableCell onClick={(event) => props.handleRowClick(row.id)} key={column.id} align={column.align}>
-                          {value}
+                        <StyledTableCell onDoubleClick={(event) => props.handleRowClick(row.id)} key={column.id} align={column.align}>
+                          {DrawCell(value, column.id)}
                         </StyledTableCell>
                       );
                     })}

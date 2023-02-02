@@ -21,7 +21,7 @@ export default function SurfacePage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [tableRows, setTableRows] = useState([]);
   const [editedRow, setEditedRow] = useState('');
-
+  const [sdf, setSdf] = useState("sphere(p, 1.5000)");
   useEffect(() => {
     let newRows = [];
 
@@ -31,7 +31,7 @@ export default function SurfacePage() {
       newRows.push({
         id: item.id,
         name: item.name,
-        implicit: latexEq(nerdamer.convertToLaTeX(item.implicit)),
+        implicit: nerdamer.convertToLaTeX(item.implicit),
         sdf: item.sdf,
       });
     });
@@ -54,7 +54,6 @@ export default function SurfacePage() {
 
   return (
     <Box>
-
       <CustomTable
         rows={tableRows}
         columns={tableCols}
