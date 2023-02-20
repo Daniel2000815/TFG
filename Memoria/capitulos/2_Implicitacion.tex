@@ -165,7 +165,7 @@ El algoritmo del cálculo de la base de Groebner se basará en el primer criteri
 
 \SetKwComment{Comment}{/* }{ */}
 \begin{algorithm}[hbt!]
-  \caption{Cálculo de base de Groebner reducida}\label{alg:two}
+  \caption{Cálculo de base de Groebner reducida}\label{alg:div}
   \KwData{$f$, $F = \left[ f_1, \dots, f_S\right]$}
 
   $G\gets F$\;
@@ -186,14 +186,26 @@ El algoritmo del cálculo de la base de Groebner se basará en el primer criteri
 \end{algorithm}
 
 \section{Implicitación Polinomial}
-Una vez definido un método para el cómputo de bases de Groebner estamos en disposición de realizar nuestro cometido.
-
 
 \begin{definicion}Dado $F \subseteq A[X]$, llamamos \textbf{variedad afín} definida por $F$ al conjunto:
   \begin{equation*}
     \mathbb{V}(F) = \{(a_1,\dots, a_n)\in A^n : f_i(a_1,\dots, a_n)=0 \ \forall 1\le i \le s\}
   \end{equation*}
 \end{definicion}
+
+\begin{definicion}
+  Dado $I\le A[x_1,\dots,x_n]$, diremos que su \textbf{ideal de $l$-eliminación} es:
+  \begin{equation*}
+    I_l = I \cap A[x_{l+1}, \dots, x_n] \le A[x_{l+1}, \dots, x_n]
+  \end{equation*}
+\end{definicion}
+
+\begin{teorema}[Eliminación]
+  Sea $I\le A[x_1,\dots,x_n]$ y $G$ una base de Groebner suya respecto al orden \textit{lex} con $x_1 > x_2 > \cdots > x_n$. Entonces, una base de Groebner de $I_l$ es:
+  \begin{equation*}
+    G_l = G\cap A[x_{l+1},\dots, x_n]
+  \end{equation*}
+\end{teorema}
 
 \begin{teorema}[Implicitación Polinomial]
   Dados $f_1,\dots, f_n \in A[t_1, \dots, t_r]$ con $A$ cuerpo infinito, sea
@@ -206,8 +218,8 @@ Una vez definido un método para el cómputo de bases de Groebner estamos en dis
 
   Tomamos los ideales:
   \begin{itemize}
-    \item $I = \langle x_1-f_1,\dots,  x_1-f_1\rangle \subseteq A[t_1,\dots, t_r,x_1\dots, x_n]$
-    \item $J = I\cap A[x_1,\dots, x_n]$
+    \item $I = \langle x_1-f_1,\dots,  x_1-f_1\rangle \le A[t_1,\dots, t_r,x_1\dots, x_n]$
+    \item $J = I\cap A[x_1,\dots, x_n]$ el ideal de $r$-eliminación de $I$
   \end{itemize}
 
   Entonces, $\mathbb{V}(J)$ es la menor variedad que contiene a $\phi(A^r)$.

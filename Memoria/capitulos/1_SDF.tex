@@ -49,24 +49,70 @@ De los vectores anteriores, $L_m$ y $V$ se calculan trivialmente, y $R_m$ se pue
     R_m = 2(L_m\cdot N)N - L_m
 \end{equation*}
 
-Sin embargo, dado que la superficie viene dada por un SDF, no podemos calcular $N$ de forma analítica.
+Sin embargo, dado que la superficie viene dada por un SDF, no podemos calcular $N$ de forma analítica, y deberemos buscar un método que únicamente haga uso de evaluaciones de $\phi$.
 
 \begin{definicion}
     El \textbf{gradiente} de una función implícita $\phi$ es $\nabla\phi = \left(\frac{\partial \phi}{\partial x}, \frac{\partial \phi}{\partial y}, \frac{\partial \phi}{\partial z}\right)$
 \end{definicion}
 
-\begin{proposicion}
-    $\nabla\phi$ es perpendicular al isocontorno de $\phi$.
+\begin{definicion}
+    Dada una función $\phi(x,y,z)\colon \R^3 \to \R^3$, llamamos \textbf{isosuperfice} a la superficie $S_\phi$ dada por $\phi(x,y,z)=k,\ k\in \R$. Tomaremos $k=0$.
+\end{definicion}
+
+
+\begin{proposicion}\label{p:gradient_perp}
+    $\nabla\phi$ es perpendicular a $S_\phi$.
 \end{proposicion}
+
 \begin{proof}
-    TODO
+    Sea $s\in S_\phi$ arbitrario. Tomamos una curva parametrizada:
+    \begin{align*}
+        \alpha \colon [0,1] & \to S_\phi                             \\
+        t                   & \mapsto \left(x(t), y(t), z(t) \right)
+    \end{align*}
+
+    cumpliendo $\alpha(0)=s$. Veamos que $\nabla\phi \perp s$:
+
+    \begin{align*}
+        \alpha(t)\subset S_\phi & \implies \phi(\alpha(t))=0                                                                                                                                                      \\
+                                & \implies \nabla\phi(\alpha(t)) = \frac{\partial{F}}{\partial{x}}\frac{dx}{dt} + \frac{\partial{F}}{\partial{y}}\frac{dy}{dt} + \frac{\partial{F}}{\partial{z}}\frac{dz}{dt} = 0 \\
+                                & \implies \langle \nabla\phi(x,y,z), \alpha'(t)\rangle = 0
+    \end{align*}
+
+    Evaluando en $t=0$ obtenemos el resultado.
 \end{proof}
 
-\begin{itemize}
-    \item $k_s$: factor de reflexión especular.
-    \item $k_d$: factor de reflexión difusa.
-    \item $k_a$: factor de reflexi
-\end{itemize}
+Para obtener el vector normal en un punto $p$, tomaremos un conjunto de puntos cercanos a dicho punto y haremos un promedio de la derivada en dichos puntos. La elección de estos puntos puede hacerse según una gran variedad de criterios. En nuestro caso, usaremos el \textbf{método del tetraedro}.
+
+\begin{definicion}
+    Dada $f:\R^3\to \R$ diferenciable, $p = (x,y,z)$, $v\in \R^3$, definimos la \textbf{derivada direccional} en $p$ con dirección $v$ a:
+    \begin{equation*}
+        \nabla_v f(x) = \nabla f(x) \cdot v = \frac{\partial{f}}{\partial{x}}v_x + \frac{\partial{f}}{\partial{y}}v_y + \frac{\partial{f}}{\partial{z}}v_z
+    \end{equation*}
+\end{definicion}
+
+Para el cálculo de cada parcial de $f$ podemos utilizar la definición de derivada. Por ejemplo, para la primera componente:
+\begin{equation*}
+    \frac{\partial{f}}{\partial{x}}(p) v_x = \lim_{h\to 0}\frac{f(p + (h,0,0)) - f(p)}{h} v_x
+\end{equation*}
+
+\begin{proposicion}
+    Dado $p\in S_\phi$ su vector normal $N$ puede obtenerse como
+    \begin{equation*}
+        N = \sum_{i=0}^3 k_i\cdot f(p + hk_i)
+    \end{equation*}
+    donde $k_0 = (1,-1,-1), k_1 = (-1,-1,1), k_2=(-1,1,-1), k_3=(1,1,1)$.
+\end{proposicion}
+
+\begin{proof}
+    Por la proposicion , basta comprobar que el vector $N$ definido es $\nabla \phi(p)$.
+
+    \begin{align*}
+        N & = \sum_{i=0}^3 k_i\cdot f(p + hk_i) = \sum_{i=0}^3\left[ k_i\cdot f(p + hk_i) + k_i\cdot f(p) \right] \\
+          & = \sum_{i=0}^3 \left[k_i\left( f(p+hk_i - f(p)) \right) \right] = \sum_{i=0}^3(f_i \nabla_{k_i}f(x))
+    \end{align*}
+\end{proof}
+
 \section{Operadores}
 \subsection{Transformaciones afines}
 \subsection{Booleanos}
