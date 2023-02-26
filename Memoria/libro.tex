@@ -11,7 +11,7 @@
 \documentclass{scrbook}
 
 \KOMAoptions{%
-  fontsize=11pt,        % Tamaño de fuente
+  fontsize=10pt,        % Tamaño de fuente
   paper=a4,             % Tamaño del papel
   headings=normal,      % Tamaño de letra para los títulos: small, normal, big
   % parskip=half,         % Espacio entre párrafos: full (una línea) o half (media línea)
@@ -72,6 +72,7 @@
 \mathtoolsset{showonlyrefs=true}      % sólo se numeran las ecuaciones que se usan
 \usepackage[mathscr]{eucal} 					% Proporciona el comando \mathscr para
                                       % fuentes de tipo manuscrito en modo matemático sin sobreescribir el comando \mathcal
+\usepackage[ruled]{algorithm2e}
 
 % TIPOGRAFÍA 
 % ---------------------------------------------------------------------
@@ -90,8 +91,6 @@
 % \renewcommand{\sfdefault}{iwona} 
 \usepackage{inconsolata}
 
-\usepackage[ruled]{algorithm2e}
-
 
 % Selecciona el tipo de fuente para los títulos (capítulo, sección, subsección) del documento.
 \setkomafont{disposition}{\sffamily\bfseries}
@@ -107,6 +106,7 @@
 \usepackage{booktabs}
 % \renewcommand{\arraystretch}{1.5} % Aumenta el espacio vertical entre las filas de un entorno tabular
 
+\usepackage{textcmds}   % para poder poner ""
 \usepackage{xcolor, graphicx}
 % Carpeta donde buscar los archivos de imagen por defecto
 \graphicspath{{img/}}
@@ -169,20 +169,19 @@
 % --------------------------------------------------------------------
 \usepackage{xspace} % Para problemas de espaciado al definir comandos
 
-\newcommand{\miTitulo}{Visualización de superficies en 3D\xspace}
-\newcommand{\miNombre}{Daniel Zufrí quesada\xspace}
+\newcommand{\miTitulo}{Visualización de Superficies 3D\xspace}
+\newcommand{\miNombre}{Daniel Zufrí Quesada\xspace}
 \newcommand{\miGrado}{Doble Grado en Ing. Informática y Matemáticas}
 \newcommand{\miFacultad}{ETSIIT, Facultad de Ciencias}
 \newcommand{\miUniversidad}{Universidad de Granada}
 % Añadir tantos tutores como sea necesario separando cada uno de ellos
 % mediante el comando `\medskip` y una línea en blanco
 \newcommand{\miTutor}{
-  Carlos Ureña Almagro \\ \emph{Lenguajes y Sistemas Informáticos} 
-
-  % Añadir tantos tutores como sea necesario. 
-
+  Carlos Ureña Almagro \\ \emph{Departamento de Lenguajes y Sistemas Informáticos}
+  
   \medskip
-  Pedro Abelardo García Sánchez \\ \emph{Álgebra}
+  
+  Pedro A. García Sánchez \\ \emph{Departamento de Álgebra}
 }
 \newcommand{\miCurso}{2022-2023\xspace}
 
@@ -202,38 +201,24 @@
 % \pagestyle{plain} % No imprime cabeceras
 
 \input{preliminares/portada}
-\input{preliminares/titulo}
-\input{preliminares/declaracion-originalidad}
-\input{preliminares/dedicatoria}                % Opcional
+%\input{preliminares/titulo}
+%\input{preliminares/declaracion-originalidad}
+%\input{preliminares/dedicatoria}                % Opcional
 \input{preliminares/tablacontenidos}
-\input{preliminares/agradecimientos}            % Opcional
+%\input{preliminares/agradecimientos}            % Opcional
 
 % \pagestyle{scrheadings} % A partir de ahora sí imprime cabeceras
 
-\input{preliminares/summary}
-\input{preliminares/introduccion}
+%\input{preliminares/summary}
+%\input{preliminares/introduccion}
 
 % --------------------------------------------------------------------
 % MAINMATTER
 % --------------------------------------------------------------------
 \mainmatter % activa la numeración de capítulos, resetea la numeración de las páginas y usa números arábigos
 
-\setpartpreamble[c][0.75\linewidth]{%
-  \bigskip % Deja un espacio vertical en la parte superior
-  Si el trabajo se divide en diferentes partes es posible incluir al inicio de cada una de ellas un breve resumen que indique el contenido de la misma. Esto es opcional.
-}
-% \part{Primera parte} % Dividir un libro en partes OPCIONAL
-
-\chapter{Función distancia con signo}
-\input{capitulos/1_SDF}
-% \input{capitulos/capitulo01}
-% Añadir tantos capítulos como sea necesario
-
-\cleardoublepage
-% \part{Segunda parte}
-\chapter{Implicitación de ecuaciones paramétricas}
-\input{capitulos/2_Implicitacion}
-
+\input{capitulos/capitulo01}
+\input{capitulos/capitulo02}
 
 % --------------------------------------------------------------------
 % APPENDIX: Opcional
@@ -242,14 +227,14 @@
 \appendix % Reinicia la numeración de los capítulos y usa letras para numerarlos
 \pdfbookmark[-1]{Apéndices}{appendix} % Alternativamente podemos agrupar los apéndices con un nuevo \part{Apéndices}
 
-\input{apendices/apendice01}
+%\input{apendices/apendice01}
 % Añadir tantos apéndices como sea necesario 
 
 % --------------------------------------------------------------------
 % GLOSARIO: Opcional
 % --------------------------------------------------------------------
 
-\input{glosario}
+%\input{glosario}
 
 % -------------------------------------------------------------------
 % BACKMATTER
@@ -260,11 +245,10 @@
 
 % BIBLIOGRAFÍA
 %-------------------------------------------------------------------
-
-\setbibpreamble{Las referencias se listan por orden alfabético. Aquellas referencias con más de un autor están ordenadas de acuerdo con el primer autor.\par\bigskip}
 \bibliographystyle{alpha}
 \begin{small} % Normalmente la bibliografía se imprime en un tamaño de letra más pequeño.
-  \bibliography{library.bib}
+
+  \bibliography{./library.bib}
 \end{small}
 
 
