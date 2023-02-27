@@ -45,5 +45,5 @@ Se pueden elegir diferentes pestañas desde la barra superior:
 - [ ] Añadir soporte para introducir ecuaciones
 
 ## Memoria
-- El archivo compilado se encuentra en [./Memoria/libro.pdf](./Memoria/libro.pdf). De momento solo tiene puestos los datos básicos y algunos títulos de apartados.
+- El archivo compilado se encuentra en [./Memoria/libro.pdf](./Memoria/libro.pdf).
 
