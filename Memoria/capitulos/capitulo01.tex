@@ -2,42 +2,56 @@
 % !TeX encoding = utf8
 
 \chapter{Función Distancia con Signo}
+Tenemos como objetivo representar superficies en $\R^3$. En general, estas pueden estar definidas de multitud de formas, siendo una de las más usuales a través de una función implícita. Nosotros nos centraremos en un tipo especial de funciones implícitas, que introducimos a continuación.
 
 \begin{definicion}
-  Sea $\Omega \subseteq \R^3$ un espacio métrico. Una \textbf{función distancia} $d(x)$ es aquella que a cada punto de $\R^3$ le asigna su menor distancia a la frontera de $\Omega$:
-  \begin{equation*}
-    d(x) = \min(|x-x_i|),\ \forall x_i \in \delta\Omega
-  \end{equation*}
-\end{definicion}
+  Sea $\Omega \subseteq \R^3$. Una \textbf{función distancia} es aquella que a cada punto de $\R^3$ le asigna su menor distancia a la frontera de $\Omega$:
+    \begin{align*}
+          d_{\Omega} \colon \R^3 &\to \R_0^+\\
+          x &\mapsto \inf\{\Vert x-y\Vert) \colon y \in \delta\Omega\}
+    \end{align*}
 
+    Cuando $\Omega$ sea cerrado, podremos usar el mínimo en lugar del ínfimo.
+\end{definicion}
+ 
 \begin{definicion}[SDF]\label{d:sdf}
-  Una \textbf{función distancia con signo} es una función implícita ${\phi(x)\colon \R^3 \to \R}$ de forma que:
-  \begin{equation*}
-    \phi(x) = \begin{cases}
-      d(x)  & , x\in \R^3\setminus \mathring{\Omega} \\
-      -d(x) & , x\in \mathring{\Omega}
+  Sea $\Omega \subseteq \R^3$. Una \textbf{función distancia con signo} es una función implícita de la forma:
+  \begin{align*}
+          \phi_{\Omega} \colon \R^3 &\to \R\\
+          x &\mapsto \begin{cases}
+      d_{\Omega}(x),  &x\in \R^3\setminus \mathring{\Omega} \\
+      -d_{\Omega}(x), &x\in \mathring{\Omega}
     \end{cases}
-  \end{equation*}
+    \end{align*}
 
-  De forma general nos referiremos a esta función por sus siglas en inglés SDF (\textit{Signed Distance Function}).
+  En general, nos referiremos a esta función por sus siglas en inglés SDF (\textit{Signed Distance Function}), y la denotaremos simplemente $\phi$ siempre que no haya confusión.
 \end{definicion}
 
 \begin{definicion}
-  Dada una función $\phi\colon \R^3 \to \R^3$, llamamos \textbf{isosuperficie} al conjunto:
+  Dada una función $\phi\colon \R^3 \to \R$ y $k\in\R$, llamamos \textbf{isosuperficie} al conjunto:
   \begin{equation*}
-      S_\phi = \{(x,y,z) :  \phi(x,y,z)=k,\ k\in \R\}
+      S_{\phi,k} = \{(x,y,z) :  \phi(x,y,z)=k\}
   \end{equation*}
-  Tomaremos $k=0$.
+  Sin pérdida de generalidad podemos suponer $k=0$, pues de no ser el caso, tomamos la función $\phi'(x,y,z)=\phi(x,y,z)-k$ y tenemos que $S_{\phi',0} = S_{\phi,k}$. Por tanto, la denotaremos como $S_\phi$.
 \end{definicion}
 
 Nuestra intención será entonces construir una escena definida como la isosuperficie generada por un SDF.
 
 \begin{ejemplo}
-    Algunos ejemplos simples de SDF para un punto $p$ son:
+    Ejemplos simples de SDF $\phi$ para un punto $p=(x,y,z)$ en diferentes conjuntos $\Omega$ son:
     \begin{itemize}
-        \item Esfera de radio $r$: $\vert p\vert - r$.
-        \item Plano con vector normal $n$: $p\cdot n$.
-        \item Toro de radios $R>r$: $\left\Vert (\Vert(p_x,0,p_z)\Vert - R, p_y) \right\Vert - r$.
+        \item \textbf{Esfera de radio $\boldsymbol{r}$ centrada en el origen.}
+        \begin{equation*}
+            \Omega=\{x\in \R^3 : \Vert x\Vert = r\},\quad \phi(p) = \Vert p\Vert - r
+        \end{equation*}
+        \item \textbf{Plano con vector normal $\boldsymbol{n=(a,b,c)}$ pasando por el origen}.
+        \begin{equation*}
+            \Omega=\{p\in\R^3 : ax+by+cz = 0\},\quad \phi(p) = p\cdot n
+        \end{equation*}
+        \item \textbf{Toro de radios $\boldsymbol{R>r}$}:
+        \begin{equation*}
+            \Omega=\left\{p\in \R^3 : \left(R-\sqrt{x^2+y^2}\right)^2 + z^2 = r^2\right\},\quad \phi(p)= \bigg\Vert (\Vert(x,0,z)\Vert - R, y) \bigg\Vert - r
+        \end{equation*}
     \end{itemize}
 \end{ejemplo}
 
@@ -47,9 +61,9 @@ Si bien estas primitivas son fáciles de generar, también son muy simples y nos
 \begin{proposicion}[Operaciones Booleanas]
     Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente. Entonces:
     \begin{itemize}
-        \item $\sdf(A\cup B) = \min(\phi, \gamma)$.
-        \item $\sdf(A\cap B) = \max(\phi, \gamma)$.
-        \item $\sdf(A\setminus B) = \max(\phi, -\gamma)$.
+        \item $\sdf_{A\cup B} = \min(\phi, \gamma)$,
+        \item $\sdf_{A\cap B} = \max(\phi, \gamma)$,
+        \item $\sdf_{A\setminus B} = \max(\phi, -\gamma)$.
     \end{itemize}
 \end{proposicion}
 
@@ -118,9 +132,13 @@ El algoritmo sería por tanto el descrito en \autoref{a:spheretracing}.
     }
 \end{algorithm}
 
+\section{Aproximación de implícitas}
+Empezábamos el capítulo diciendo que una de las representaciones más comunes de superficies es a través de implícitas, pero hasta ahora nos hemos centrado en estudiar un tipo particular de este tipo de ecuaciones. Si intentásemos aplicar los algoritmos anteriores a una función implícita cualquiera, observaríamos que el resultado tiene ciertos defectos, tales como deformaciones. Vamos a introducir una técnica que dada una función implícita $\phi$, nos permitirá obtener un SDF aproximado de $S_\phi$. Esto nos será útil cuando no conozcamos o no podamos calcular explícitamente el SDF de una superficie pero sí su representación implícita.
+
+TODO
 
 \section{Iluminación}
-Ya sabemos qué píxeles pertenecen a la superficie, pero no de qué color debe ser dicho pixel. Para ello utilizaremos el modelo de reflexión de Phong. En él trabajaremos con los siguientes parámetros:
+Ya sabemos qué píxeles pertenecen a la superficie, pero no de qué color deben dibujarse. Para ello utilizaremos el modelo de reflexión de Phong. En él trabajaremos con los siguientes parámetros:
 \begin{itemize}
   \item Luz ambiente $i_a$: vector RGB suma de las contribuciones de todas las fuentes de luz de la escena. Contiene un valor por defecto que será el color del fondo.
   \item Lista de fuentes de luz $(l_1, \dots, l_m, \dots, l_n)$.
@@ -219,3 +237,6 @@ Procedemos a calcular $N$ aplicaremos el \textbf{método del tetraedro}, el cual
 
   donde hemos usado que $\sum_{i=0}^3 k_i = (0,0,0)$, $\sum_{i=0}^3 k_i\cdot k_i = (1,1,1)$, y que el producto escalar es un operador lineal.
 \end{proof}
+
+
+

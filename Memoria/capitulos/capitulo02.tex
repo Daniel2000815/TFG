@@ -1,7 +1,10 @@
 % !TeX root = ../libro.tex
 % !TeX encoding = utf8
 
-\chapter{Polinomios en varias variables}
+\chapter{Implicitación}
+Ahora que sabemos representar las superficies generadas por una función implícita cualquiera, nos proponemos ser capaces de representar también superficies definidas paramétricamente. Para ello haremos uso de la teoría de bases de Groebner, pero antes debemos introducir una serie de definiciones y resultados previos que nos pongan en contexto.
+
+\section{Polinomios en varias variables}
 Fijamos $A$ cuerpo y $X=\{x_1, \dots, x_n\}$ un conjunto de variables distintas.
 
 \begin{definicion}
@@ -20,7 +23,7 @@ Fijamos $A$ cuerpo y $X=\{x_1, \dots, x_n\}$ un conjunto de variables distintas.
 \begin{proposicion}
     El conjunto de polinomios, que denotaremos $A[X] = A[x_1,\dots, x_n]$, es un cuerpo con las operaciones:
     \begin{itemize}
-        \item Suma heredada de $A$: (f+g)(\alpha) = f(\alpha) + f(\alpha),\ \forall f,g\in A[X]$.
+        \item Suma heredada de $A$: $(f+g)(\alpha) = f(\alpha) + f(\alpha),\ \forall f,g\in A[X]$.
         \item Producto de convolución: $(fg)(\alpha) = \sum_{\alpha} \sum_{\beta+\gamma=\alpha} f(\beta)g(\gamma),\ \forall f,g\in A[X]$.
     \end{itemize}
 
