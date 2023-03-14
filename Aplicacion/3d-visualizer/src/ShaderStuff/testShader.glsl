@@ -214,17 +214,30 @@ float line(in vec3 p,in vec3 start,in vec3 end,in float thickness){
   return length(pa-h*ba)-thickness;
 }
 
+float infCylinder(vec3 p,vec3 c)
+{
+  return length(p.xz-c.xy)-c.z;
+}
+
+float plane(vec3 p,vec3 n,float h)
+{
+  // n must be normalized
+  return dot(p,n)+h;
+}
+
 Surface map(vec3 p){
   Material mat=Material(u_specular,u_diffuse,u_ambient,u_smoothness);
   float sphere=sphere(p-vec3(.5),1.);
   float box=box(p+vec3(.5),vec3(1.));
   
-  Surface co=Surface(sdfSmoothUnion(sphere,box,.5),mat);
-  co=Surface(sdfUnion(box,sphere),mat);
-  co=Surface(sdfSmoothIntersection(sphere,box,.2),mat);
-  co=Surface(sdfIntersection(box,sphere),mat);
-  co=Surface(sdfSmoothDifference(box,sphere,.1),mat);
+  // Surface co=Surface(sdfSmoothUnion(sphere,box,.5),mat);
+  // co=Surface(sdfUnion(box,sphere),mat);
+  // co=Surface(sdfSmoothIntersection(sphere,box,.2),mat);
+  // co=Surface(sdfIntersection(box,sphere),mat);
+  // co=Surface(sdfSmoothDifference(box,sphere,.1),mat);
   // co=Surface(sdfDifference(box,sphere),mat);
+  
+  Surface co=Surface(plane(p,vec3(0.,1.,0.),0.),mat);
   
   return co;
 }

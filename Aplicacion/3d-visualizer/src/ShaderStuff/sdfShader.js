@@ -85,6 +85,10 @@ export const fs = (sdf, primitives) => {
 
 
     float sdf(vec3 p){
+        float x = p.x;
+        float y = p.y;
+        float z = p.z;
+        
         return ${sdf};
     }
 

@@ -17,7 +17,7 @@ import CustomControls from '../CustomComponents/CustomControls.js';
 import '../styles.css';
 import { GraphProvider } from './GraphContext.js';
 import CustomContextMenu from '../CustomComponents/CustomContextMenu.js';
-import useLocalStorage from '../storageHook.js';
+import useLocalStorage from '../storageHook.ts';
 import { Box, Tabs } from '@mui/material';
 
 import { ContextMenuTrigger } from 'react-contextmenu';

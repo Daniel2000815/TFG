@@ -4,8 +4,8 @@ import CustomTable from '../CustomComponents/CustomTable';
 import nerdamer from 'nerdamer';
 import 'katex/dist/katex.min.css';
 import Latex from 'react-latex-next';
-import useLocalStorage from '../storageHook.js';
-import SurfaceDialog from './SurfaceDialog';
+import useLocalStorage from '../storageHook.ts';
+import SurfaceDialog from '../Components/SurfaceDialog';
 
 const latexEq = (eq) => {
   return <Latex>{`$ ${eq} $`}</Latex>;
@@ -54,18 +54,19 @@ export default function SurfacePage() {
 
   return (
     <Box>
+      {dialogOpen ? "ABT": "CER"}
       <CustomTable
         rows={tableRows}
         columns={tableCols}
         handleDelete={handleDelete}
         handleCreateRow={() => { setEditedRow(""); setDialogOpen(true) }}
-        handleRowClick={(name) => { setEditedRow(name); setDialogOpen(true) }}
+        handleRowClick={(name) => {console.log("click"); setEditedRow(name); setDialogOpen(true) }}
       />
 
       <SurfaceDialog
-        savedData={editedRow ? storage[editedRow] : null}
-        open={dialogOpen}
+        data={null} 
         handleClose={() => setDialogOpen(false)}
+        open={dialogOpen}
       />
 
     </Box>

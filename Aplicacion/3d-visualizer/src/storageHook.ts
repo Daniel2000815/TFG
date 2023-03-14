@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { InputMode } from './Types/InputMode';
 
 // torus: (x^2+y^2+z^2+R^2-a^2)^2 - 4R^2(x^2+y^2)
 
@@ -6,11 +7,11 @@ const defaultStorage = {
   sphere: {
     id: 'sphere',
     name: 'Sphere',
-    implicit: 'x^2 + y^2 + z^2 - r',
-    sdf: '|p|-r',
-    parsedSdf: 'return length(p)-r',
-    fHeader: 'sphere(vec3 p, float r)',
+    inputMode: InputMode.Implicit,
+    input: 'x^2 + y^2 + z^2 - r',
+    parsedInput: '|p|-r',
     parameters: [{ symbol: 'r', label: 'Radius', defaultVal: 1.0 }],
+    fHeader: 'sphere(vec3 p, float r)',
   },
   // cube: {
   //   id: 'cube',
@@ -32,7 +33,7 @@ const defaultStorage = {
 
 }
 
-export const useLocalStorage = (key) => {
+export const useLocalStorage = (key: string) => {
   const [storedValue, setStoredValue] = useState(() => {
     // localStorage.clear();
     try {
@@ -45,10 +46,9 @@ export const useLocalStorage = (key) => {
     }
   });
 
-  const setValue = (value) => {
+  const setValue = (value: EquationData) => {
     try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       localStorage.setItem(key, JSON.stringify(valueToStore));
       window.dispatchEvent(new Event('storage'));
@@ -66,7 +66,7 @@ export const useLocalStorage = (key) => {
       setStoredValue(() => {
         const value = localStorage.getItem(key);
         if (value !== null) {
-          return JSON.parse(value);
+          return JSON.parse(value) as EquationData;
         }
 
         localStorage.setItem(key, JSON.stringify(defaultStorage));

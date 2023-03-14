@@ -38,20 +38,7 @@ function Shader(props) {
 
   const zoomIncrement = 0.5;
   return (
-    <div style={{...props.style, borderColor:"red"}}>
-      <ReactScrollWheelHandler
-        timeout="0"
-        wheelConfig={[100, 1000, 0.05]}
-        preventScroll="true"
-        upHandler={(e) => setZoom(zoom + zoomIncrement)}
-        downHandler={(e) => setZoom(zoom - zoomIncrement)}
-      >
-          <ErrorBoundary
-        FallbackComponent={ErrorFallback}
-        onReset={() => setExplode(false)}
-        resetKeys={[explode]}
-      >
-            <ShadertoyReact
+    <ShadertoyReact
               fs={props.sdf ? fs(props.sdf, primitivesCode) : defaultShader()}
               key={props.sdf+primitivesCode}
               uniforms={{
@@ -63,9 +50,6 @@ function Shader(props) {
                 u_smoothness: { type: '1f', value: 10.0 },
               }}
             />
-            </ErrorBoundary>
-      </ReactScrollWheelHandler>
-    </div>
   );
 }
 
