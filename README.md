@@ -45,5 +45,5 @@ Se pueden elegir diferentes pestañas desde la barra superior:
 - [ ] Añadir soporte para introducir ecuaciones
 
 ## Memoria
-- El archivo compilado se encuentra en [./Memoria/libro.pdf](./Memoria/libro.pdf).
+- El archivo compilado se encuentra en [./Memoria/TFG.pdf](./Memoria/TFG.pdf).
 
