@@ -4,35 +4,43 @@ import nerdamerTS from "nerdamer-ts";
 require("nerdamer/Calculus");
 
 function StringToSDF (node: any, parametersInput: any) : string {
-    console.log(parametersInput);
+    // console.log(parametersInput);
     const parametersSymbols = Object.keys(parametersInput).map(
       (val, key) => parametersInput[key].symbol
     );
 
     if (node) {
-      console.log("ES NO LO SE");
-      console.log(node);
+      // console.log("ES NO LO SE");
+      // console.log(node);
       if (node.type === "VARIABLE_OR_LITERAL") {
         const isVariable = [...parametersSymbols, "x", "y", "z"].includes(
           node.value
         );
-        console.log("ES LITERAL");
-        console.log("SYMBOLS");
-        console.log(parametersSymbols);
-        console.log(isVariable);
-        console.log(node.value);
-        return isVariable ? node.value : parseFloat(node.value).toFixed(4);
+        // console.log("ES LITERAL");
+        // console.log("SYMBOLS");
+        // console.log(parametersSymbols);
+        // console.log(isVariable);
+        // console.log(node.value);
+
+        
+        if(isVariable){
+        return node.value}
+        else if(!isNaN(node.value)){
+          return parseFloat(node.value).toFixed(4);}
+        else{
+          throw new Error(`${node.value} is not a symbol`);
+        }
       }
       if (node.type === "OPERATOR") {
         let left = StringToSDF(node.left, parametersInput);
         let right = StringToSDF(node.right, parametersInput);
-        console.log("RIGHT, LEFT");
-        console.log(right);
-        console.log(left);
+        // console.log("RIGHT, LEFT");
+        // console.log(right);
+        // console.log(left);
 
         if (node.value === "^") {
-          console.log("ES OPERATOR");
-          console.log(node);
+          // console.log("ES OPERATOR");
+          // console.log(node);
           return `pow(${left}, ${right})`;
         } else {
           if (right && left) return `(${left})${node.value}(${right})`;
@@ -47,8 +55,8 @@ function StringToSDF (node: any, parametersInput: any) : string {
         let right = StringToSDF(node.right, parametersInput);
 
         if (node.value === "^") {
-          console.log("ES F");
-          console.log(node);
+          // console.log("ES F");
+          // console.log(node);
           return `pow(${left}, ${right})`;
         } else {
           if (right) return `${node.value}(${right})`;
@@ -65,31 +73,31 @@ export default function ImplicitToSDF(implicit: string, parameters: Parameter[])
   let res = "";
 
   try {
-    console.log("WTF_ ");
+    // console.log("WTF_ ");
     f = nerdamerTS(implicit).toString();
-    console.log("WTF_ "+ f.toString());
+    // console.log("WTF_ "+ f.toString());
   } catch (error: any) {
     error = error.message.split("at ")[0];
 
-    console.log(`ERROR PARSING EQUATION ${implicit}`);
+    // console.log(`ERROR PARSING EQUATION ${implicit}`);
     throw new Error(`ERROR PARSING EQUATION ${implicit}`);
   }
 
-  console.log("WTF");
+  // console.log("WTF");
   const dfdx = nerdamer.diff(f, "x", 1);
   const dfdy = nerdamer.diff(f, "y", 1);
   const dfdz = nerdamer.diff(f, "z", 1);
   const norm = nerdamer(`sqrt((${dfdx})^2 + (${dfdy})^2 + (${dfdz})^2)`);
-  console.log("DECIMAL", norm.toDecimal());
+  // console.log("DECIMAL", norm.toDecimal());
   if (norm.toString() === "0") {
-    console.log("ZERO")
+    // console.log("ZERO")
     throw new Error("NORM CAN'T BE 0");
   }
   else{
-    console.log("NORM: ", norm.toString())
+    // console.log("NORM: ", norm.toString())
     let sdf = nerdamer(`(${f})/(${norm})`);
     var x = nerdamerTS.tree(sdf.toString());
-    console.log("TEST,", sdf.toString());
+    // console.log("TEST,", sdf.toString());
     res = StringToSDF(x, parameters);
   }
 

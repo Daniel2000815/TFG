@@ -194,13 +194,13 @@ export default function SurfaceDialog(props : {
   const displayInput = () => {
     switch (eqInputMode) {
       case InputMode.Implicit:
-        return ImplicitInput(inputMath1, handleNewEquation, mathErrorMsg[0]);
+        return ImplicitInput([inputMath1], (inputs: string[],)=>handleNewEquation(inputs[0],0), mathErrorMsg[0]);
 
       case InputMode.Parametric:
-        return ParametricInput([inputMath1, inputMath2, inputMath3], handleNewEquation, mathErrorMsg)
+        return ParametricInput([inputMath1, inputMath2, inputMath3], (inputs: string[],)=>{handleNewEquation(inputs[0],0); handleNewEquation(inputs[1],1); handleNewEquation(inputs[2],2);}, mathErrorMsg)
 
       case InputMode.SDF:
-        return SDFInput(inputMath1, handleNewEquation, mathErrorMsg[0])
+        return SDFInput([inputMath1], (inputs: string[],)=>handleNewEquation(inputs[0],0), mathErrorMsg[0])
 
       default:
         break;

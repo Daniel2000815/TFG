@@ -19,5 +19,6 @@ declare global {
     label: string; 
     defaultVal: number
   }
+
 }
 

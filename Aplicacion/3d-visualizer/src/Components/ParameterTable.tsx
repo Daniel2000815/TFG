@@ -9,6 +9,7 @@ import {
   FormElement,
 } from "@nextui-org/react";
 import {Delete} from "react-iconly";
+import { set } from "nerdamer-ts/dist/Functions/Core";
 
 const defaultParameter = {
   symbol: "",
@@ -77,11 +78,12 @@ export default function ParameterTable(props: {
 
         break;
       case 1:
-        if (val === "") newErrors[idx][1] = "Introduce label";
+        newErrors[idx][1] =  val === "" ? "Introduce label" : "";
         newParams[idx].label = val;
         break;
       case 2:
-        if (val === "") newErrors[idx][2] = "Introduce default value";
+        console.log("CHECIING ", val, " : ", val==="");
+        newErrors[idx][2] = val === "" ? "Introduce default value" : "";
         newParams[idx].defaultVal = Number(val);
         break;
       default:
@@ -93,10 +95,15 @@ export default function ParameterTable(props: {
     // setParams(newParams);
     setErrorMsgs(newErrors);
 
-    const error = newErrors.some((e) => e.some((ee) => ee === ""));
+    const error = newErrors.some((e) => e.some((ee) => ee !== ""));
 
-    // if (!error) 
-    //props.onEditParams(params);
+    if (!error){
+      console.log("EDIT PARAMS");
+      props.onEditParams(params);
+    }
+    else{
+      console.log("PARAM ERROR: ", newErrors);
+    }
   };
 
   const handleCreateParam = () => {
@@ -107,6 +114,8 @@ export default function ParameterTable(props: {
       label: "",
       defaultVal: 0,
     }));
+
+    setErrorMsgs([...errorMsgs, ["Introduce symbol", "Introduce label", ""]]);
   };
 
   const handleDeleteParam = (idx: number) => {
@@ -116,22 +125,23 @@ export default function ParameterTable(props: {
     console.log("AFTER DELETE ", idx, ": ", params.filter((val,i) => i!==idx));
   }
 
-  function ParamInput(i: number,field: 0 | 1 | 2,value: string,label: string) {
+  function ParamInput(i: number,field: 0 | 1 | 2,value: string,label: string, type: "number"|"default" = "default") {
     console.log("RENDERING ", i);
     console.log(errorMsgs);
     const color = errorMsgs[i][field] === "" ? "default" : "error";
 
     return (
       <Input
-          bordered
-          onChange={(e) => editParam(i, field, e.target.value)}
+          onChange={(e) => editParam(i, field, e.target.value.toString())}
           color={color}
           helperColor={
             color
           }
+          type={type}
           value={value}
           aria-label={label}
           fullWidth
+          status={errorMsgs[i][field] === "" ? "default" : "error"}
           helperText={errorMsgs[i][field]}
       />
     );
@@ -173,7 +183,7 @@ export default function ParameterTable(props: {
             <>
             <Grid xs={3}>{ParamInput(i, 0, p.symbol, "Symbol")}</Grid>
             <Grid xs={5}>{ParamInput(i, 1, p.label, "Label")}</Grid>
-            <Grid xs={3}>{ParamInput(i, 2, p.defaultVal.toString(), "Default Value")}</Grid>
+            <Grid xs={3}>{ParamInput(i, 2, p.defaultVal.toString(), "Default Value", "number")}</Grid>
             <Grid xs={1}><Button onClick={()=>handleDeleteParam(i)} icon={"x"} auto/>
               </Grid>
               </>

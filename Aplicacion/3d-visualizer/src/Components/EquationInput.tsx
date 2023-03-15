@@ -1,5 +1,4 @@
-import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
+import React, { useEffect } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import { Input } from "@nextui-org/react";
@@ -8,27 +7,32 @@ import { Input } from "@nextui-org/react";
 //   return <Input onChange={(e) => setVal(e.target.value, idx)} placeholder="Next UI" />;
 // }
 
-export default function EquationInput(val: string,
+export default function EquationInput(
+  idx: number,
+  val: string,
   label: string,
   setVal: Function,
   errorMsg: string,
   adornmentPos: "right" | "left",
-  adornment: string){
-  return (<Input 
-    value={val}
-    defaultValue=""
-    onChange={(e) => setVal(e.target.value)}
+  adornment: string
+) {
+  return (
+    <Input
+      initialValue={val}
+      defaultValue=""
+      onChange={(e) => setVal(e.target.value, idx)}
       id={label}
-      status={errorMsg!=="" ? "error" : "default"}
-      color={errorMsg!=="" ? "error" : "default"}
+      status={errorMsg !== "" ? "error" : "default"}
+      color={errorMsg !== "" ? "error" : "default"}
       helperText={errorMsg}
-    labelRight={adornmentPos==="right" ? adornment : null} 
-    helperColor={errorMsg!=="" ? "error" : "default"}
-    labelLeft={adornmentPos==="left" ? adornment : null} 
-    placeholder={label}
-    fullWidth
-    aria-label={label}
-  />)
+      labelRight={adornmentPos === "right" ? adornment : null}
+      helperColor={errorMsg !== "" ? "error" : "default"}
+      labelLeft={adornmentPos === "left" ? adornment : null}
+      placeholder={label}
+      fullWidth
+      aria-label={label}
+    />
+  );
 }
 // export default function EquationInput(
 //   val: string,
@@ -58,14 +62,15 @@ export default function EquationInput(val: string,
 // }
 
 export function ImplicitInput(
-  value: string,
-  handleNewEquation: Function,
+  value: string[],
+  onChange: Function,
   errorMsg: string
 ) {
   return EquationInput(
-    value,
+    0,
+    value[0],
     "Implicit",
-    (e:string) => handleNewEquation(e,0),
+    (e: string) => onChange([e, value[1], value[2]]),
     errorMsg,
     "right",
     "=0"
@@ -73,14 +78,15 @@ export function ImplicitInput(
 }
 
 export function SDFInput(
-  value: string,
-  handleNewEquation: Function,
+  value: string[],
+  onChange: Function,
   errorMsg: string
 ) {
   return EquationInput(
-    value,
+    0,
+    value[0],
     "Surface SDF",
-    (e:string) => handleNewEquation(e,0),
+    (e: string) => onChange([e, value[1], value[2]]),
     errorMsg,
     "left",
     ""
@@ -89,16 +95,18 @@ export function SDFInput(
 
 export function ParametricInput(
   value: string[],
-  handleNewEquation: Function,
+  onChange: Function,
   errorMsg: string[]
 ) {
+
   return (
-    <Grid container gap={1}>
+    <Grid container gap={4}>
       <Grid xs={12}>
         {EquationInput(
+          0,
           value[0],
           "Equation x",
-          (e: string)=>handleNewEquation(e,0),
+          (e: string, idx: number) => onChange([e, value[1], value[2]], idx),
           errorMsg[0],
           "left",
           "x="
@@ -106,9 +114,10 @@ export function ParametricInput(
       </Grid>
       <Grid xs={12}>
         {EquationInput(
+          1,
           value[1],
           "Equation y",
-          (e: string)=>handleNewEquation(e,1),
+          (e: string, idx: number) => onChange([value[0], e, value[2]], idx),
           errorMsg[1],
           "left",
           "y="
@@ -116,9 +125,10 @@ export function ParametricInput(
       </Grid>
       <Grid xs={12}>
         {EquationInput(
+          2,
           value[2],
           "Equation z",
-          (e: string)=>handleNewEquation(e,2),
+          (e: string, idx: number) => onChange([value[0], value[1], e], idx),
           errorMsg[2],
           "left",
           "z="

@@ -35,6 +35,8 @@ export default function App(props: {
   handleClose: Function;
   open: boolean;
 }) {
+  const [storage, setStorage] = useLocalStorage("user_implicits");
+
   const [eqData, setEqData] = useState({
     id: "",
     name: "",
@@ -45,21 +47,37 @@ export default function App(props: {
     fHeader: "",
   });
 
-  const [storage, setStorage] = useLocalStorage("user_implicits");
+  const [exampleSDF, setExampleSDF] = useState("");
 
   // INPUT FROM DIALOG
-  const [inputMath1, setInputMath1] = useState("5*t^2 + 2*s^2 - 10");
-  const [inputMath2, setInputMath2] = useState("t");
-  const [inputMath3, setInputMath3] = useState("s");
+  const [inputMath, setInputMath] = useState(["5*t^2 + 2*s^2 - 10", "s", "t"]);
   const [inputName, setInputName] = useState("");
   const [inputParameters, setInputParameters] = useState<Parameter[]>([]);
 
   // VALIDATION OS INPUT FROM DIALOG
-  const [validName, setValidName] = useState(false);
   const [mathErrorMsg, setMathErrorMsg] = useState(["", "", ""]);
   const [nameErrorMsg, setNameErrorMsg] = useState("");
 
   const [eqInputMode, setEqInputMode] = useState(InputMode.Implicit);
+  const [visible, setVisible] = React.useState(false);
+
+  useEffect(() => {
+    // if (!props.data) return;
+    // setEqInputMode(props.data.inputMode);
+    // setInputMath([...props.data.input]);
+    // setInputParameters(props.data.parameters);
+    // handleNewName(props.data.name);
+    // computeExampleSDF();
+  }, [props.data]);
+
+  useEffect(() => {
+    console.log("INPUT MATH NEW ", inputMath);
+    handleNewEquation();
+  }, [eqInputMode, inputParameters, inputMath]);
+
+  useEffect(() => {
+    computeExampleSDF();
+  }, [eqData, inputParameters]);
 
   // const latexInfo = () => {
   //   const implicit =
@@ -87,53 +105,88 @@ export default function App(props: {
   //       \\end{align*}`;
   // };
 
-  const handleNewEquation = (newEq: string, eqIndex: number) => {
-    let f: string | null = null; // Parsed string by nerdamer
-    let newErrorMsg = [...mathErrorMsg];
-    newErrorMsg[eqIndex] = newEq === "" ? "Introduce equation" : "";
+  const handleNewEquationParam = (): [string | null, string[]] => {
+    console.log("HANDLING PARAMETRIC ", mathErrorMsg);
+    let implicit = "";
+    let newErrorMsg = ["", "", ""];
+    let fs: Polynomial[] = [];
 
-    let res: string | null = null;
 
-    // Modificamos el texto que se ve en el campo de texto correspondiente
-    if (eqIndex === 0) setInputMath1(newEq);
-    else if (eqIndex === 1) setInputMath2(newEq);
-    else if (eqIndex === 2) setInputMath3(newEq);
-    else throw new Error("EQUATION INDEX OUT OF RANGE");
-
-    // Si es un SDF no hace falta parsear
-    if (eqInputMode === InputMode.SDF) {
-      res = newEq;
-    } else {
-      let implicit = newEq;
-
-      if (eqInputMode === InputMode.Parametric) {
-        const fx = new Polynomial(inputMath1, ["s", "t"]);
-        const fy = new Polynomial(inputMath2, ["s", "t"]);
-        const fz = new Polynomial(inputMath3, ["s", "t"]);
-        implicit = Polynomial.implicitateR3(fx, fy, fz).toString();
-        console.log("IMPLICIT: ", implicit);
-      }
-
-      // try {
-      //   res = ImplicitToSDF(implicit, inputParameters);
-      //   console.log("SDF: ", res);
-      // } catch (error: any) {
-      //   console.log("ERRORES:" + error.msg);
-      //   newErrorMsg[eqIndex] = error.msg;
-      // }
-
+    // SPELL CHECK
+    newErrorMsg = inputMath.map((input) => input==="" ? "Introduce equation" : "");
+    
+    inputMath.forEach((input, idx) => {
       try {
-        res = ImplicitToSDF(implicit, inputParameters);
-      } catch (error: any) {
-        console.log(error);
-        newErrorMsg[eqIndex] = Error(error).message;
+        fs.push(new Polynomial(input, ["s", "t"]));
+      } catch (e: any) {
+        newErrorMsg[idx] = Error(e).message;
+        return [null, newErrorMsg];
       }
+    });
+
+    // PARAM -> IMPLICIT
+    try {
+      implicit = Polynomial.implicitateR3(fs[0], fs[1], fs[2]).toString();
+    } catch (error: any) {
+      newErrorMsg.fill(Error(error).message);
+      return [null, newErrorMsg];
     }
 
-    if (res !== null) setEqData({ ...eqData, parsedInput: res });
-    console.log(res);
-    setMathErrorMsg(newErrorMsg);
-    console.log("ERRORS ", newErrorMsg);
+    // IMPLICIT -> SDF
+    try {
+      return [ImplicitToSDF(implicit, inputParameters), newErrorMsg];
+    } catch (error: any) {
+      newErrorMsg.fill(Error(error).message);
+      return [null, newErrorMsg];
+    }
+  };
+
+  const handleNewEquationImp = (): [string | null, string[]] => {
+    console.log("HANDLING IMPLICIT ", inputMath[0]);
+    let newErrorMsg = ["","",""];
+
+    // SPELL CHECK
+    try {
+      new Polynomial(inputMath[0]);
+    } catch (e: any) {
+      newErrorMsg[0] = Error(e).message;
+      return [null, newErrorMsg];
+    }
+
+    try {
+      return [ImplicitToSDF(inputMath[0], inputParameters), newErrorMsg];
+    } catch (error: any) {
+      newErrorMsg.fill(Error(error).message);
+      return [null, newErrorMsg];
+    }
+  };
+
+  const handleNewEquationSDF = (): [string, string[]] => {
+    return [inputMath[0], ["", "", ""]];
+  };
+
+  const handleNewEquation = () => {
+    let res: [string | null, string[]] = [null, ["", "", ""]];
+    switch (eqInputMode) {
+      case InputMode.Parametric:
+        res = handleNewEquationParam();
+        break;
+      case InputMode.Implicit:
+        res = handleNewEquationImp();
+        break;
+      case InputMode.SDF:
+        res = handleNewEquationSDF();
+        break;
+      default:
+        break;
+    }
+
+    if (res[0] !== null) {
+      setEqData({ ...eqData, parsedInput: res[0] });
+    }
+
+    setMathErrorMsg(res[1]);
+    console.log("FINISH HANDLING ", res[0], res[1]);
   };
 
   const handleSave = () => {
@@ -160,41 +213,62 @@ export default function App(props: {
     // }
   };
 
-  useEffect(() => {
-    if (!props.data) return;
-
-    setEqInputMode(props.data.inputMode);
-    setInputMath1(props.data.parsedInput);
-    setInputParameters(props.data.parameters);
-
-    if (props.data.inputMode === InputMode.Parametric) {
-      handleNewEquation(props.data.input[0], 0);
-      handleNewEquation(props.data.input[1], 1);
-      handleNewEquation(props.data.input[2], 2);
-    } else handleNewEquation(props.data.input, 0);
-
-    handleNewName(props.data.name);
-  }, [props.data]);
+  const computeExampleSDF = () => {
+    console.log("PARANUEVOS ", inputParameters);
+    let newExampleSDF = eqData.parsedInput;
+    inputParameters.forEach((param: Parameter) => {
+      newExampleSDF = newExampleSDF?.replaceAll(
+        param.symbol,
+        param.defaultVal.toFixed(4).toString()
+      );
+    });
+    console.log("EXXXXX ", newExampleSDF);
+    setExampleSDF(newExampleSDF);
+  };
 
   const displayInput = () => {
     switch (eqInputMode) {
       case InputMode.Implicit:
-        return ImplicitInput(inputMath1, handleNewEquation, mathErrorMsg[0]);
+        return ImplicitInput(
+          inputMath,
+          (newInputMath: string[]) => setInputMath(newInputMath),
+          mathErrorMsg[0]
+        );
 
       case InputMode.Parametric:
         return ParametricInput(
-          [inputMath1, inputMath2, inputMath3],
-          handleNewEquation,
+          inputMath,
+          (newInputMath: string[]) => setInputMath(newInputMath),
           mathErrorMsg
         );
 
       case InputMode.SDF:
-        return SDFInput(inputMath1, handleNewEquation, mathErrorMsg[0]);
+        return SDFInput(
+          inputMath,
+          (newInputMath: string[]) => setInputMath(newInputMath),
+          mathErrorMsg[0]
+        );
 
       default:
         break;
     }
   };
+  
+  const displayInputHelp = () =>{
+    switch (eqInputMode) {
+      case InputMode.Implicit:
+        return "Write the implicit equation using variables x,y,z";
+
+      case InputMode.Parametric:
+        return "Write the parametrization of each component x,y,z using s,t as parameters"
+
+      case InputMode.SDF:
+        return "Write the SDF of the surface at a point p=(x,y,z)"
+
+      default:
+        break;
+    }
+  }
 
   function handleNewName(name: string) {
     setInputName(name);
@@ -207,15 +281,9 @@ export default function App(props: {
     }
   }
 
-  const [visible, setVisible] = React.useState(false);
-  const handler = () => setVisible(true);
-  const closeHandler = () => {
-    setVisible(false);
-    console.log("closed");
-  };
   return (
     <div>
-      <Button auto color="warning" shadow onPress={handler}>
+      <Button auto color="warning" shadow onPress={() => setVisible(true)}>
         Open modal
       </Button>
       <Modal
@@ -223,52 +291,55 @@ export default function App(props: {
         blur
         aria-labelledby="modal-title"
         open={visible}
-        onClose={closeHandler}
+        onClose={() => setVisible(false)}
         width="75%"
-        css={{ minHeight: "80vh" }}
+        css={{ minHeight: "90vh" }}
       >
         <Modal.Header>
-          <Text id="modal-title" size={18}>
-            <Text b size={18}>
-              New Surface
+            <Text id="modal-title" size={18}>
+              <Text b size={18}>
+                New Surface
+              </Text>
             </Text>
-          </Text>
+            
         </Modal.Header>
         <Modal.Body>
-          <Grid.Container alignItems="center" alignContent="space-between" justify="space-between" direction="row">
-            <Grid xs={8}>
-              <Grid.Container gap={1} direction="row">
-                <Grid xs={2}>
-                  <Button.Group
-                    color="primary"
-                    bordered
-                    vertical
-                    auto
-                  >
-                    <Button onClick={() => setEqInputMode(InputMode.Implicit)}>
-                      Implicit
-                    </Button>
-                    <Button
-                      onClick={() => setEqInputMode(InputMode.Parametric)}
-                    >
-                      Parametric
-                    </Button>
-                    <Button onClick={() => setEqInputMode(InputMode.SDF)}>
-                      SDF
-                    </Button>
-                  </Button.Group>
-                </Grid>
-                <Grid xs={10}>
+          <Grid.Container
+            alignItems="center"
+            alignContent="space-between"
+            justify="space-between"
+            direction="row"
+          >
+            <Row align="center" justify="flex-start">
+              <Button.Group color="primary" bordered auto>
+                <Button onClick={() => setEqInputMode(InputMode.Implicit)}>
+                  Implicit
+                </Button>
+                <Button onClick={() => setEqInputMode(InputMode.Parametric)}>
+                  Parametric
+                </Button>
+                <Button onClick={() => setEqInputMode(InputMode.SDF)}>
+                  SDF
+                </Button>
+              </Button.Group>
+              <Text id="modal-title" size={18}>
+                <Text size={16} >{displayInputHelp()}</Text>
+              </Text>
+            </Row>
+            <Grid  xs={8}>
+              <Grid.Container gap={1} direction="row" >
+                <Grid xs={12}>
                   <Grid.Container gap={2} direction="column">
                     <Grid>
-                      {EquationInput(
+                      {/* {EquationInput(
+                        0,
                         inputName,
                         "Name",
                         (n: string) => handleNewName(n),
                         nameErrorMsg,
                         "left",
                         "Name"
-                      )}
+                      )} */}
                     </Grid>
                     <Grid>{displayInput()}</Grid>
                   </Grid.Container>
@@ -277,8 +348,8 @@ export default function App(props: {
                   <ParameterTable
                     params={inputParameters}
                     onEditParams={(newParams: Parameter[]) => {
-                      setInputParameters(newParams);
-                      console.log("QHWTWYSWGYSWGYSW", newParams);
+                      setInputParameters(newParams.map((p) => p));
+                      console.log("EDIT PARAMS", newParams);
                     }}
                   />
                 </Grid>
@@ -286,7 +357,7 @@ export default function App(props: {
             </Grid>
             <Grid xs={4}>
               <Shader
-                sdf={eqData.parsedInput}
+                sdf={exampleSDF}
                 style={{ width: "100%", margin: "10px" }}
               />
             </Grid>
@@ -294,16 +365,15 @@ export default function App(props: {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            disabled={mathErrorMsg.some((m) => m !== "") || nameErrorMsg !== ""}
             auto
             flat
             color="error"
-            onPress={closeHandler}
+            onPress={() => setVisible(false)}
           >
-            Close
+            Discard
           </Button>
-          <Button auto onPress={closeHandler}>
-            Sign in
+          <Button auto onPress={() => setVisible(false)} disabled={mathErrorMsg.some((m) => m !== "") || nameErrorMsg !== ""}>
+            Save
           </Button>
         </Modal.Footer>
       </Modal>

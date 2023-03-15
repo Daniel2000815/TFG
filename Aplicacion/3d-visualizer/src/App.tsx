@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import MaterialsPage from './MaterialPage/MaterialsPage';
 import SurfacePage from './SurfacePage/SurfacePage';
 import GrobnerPage from './GrobnerPage/GrobnerPage';
+import ErrorBoundary from './MyErrorBoundary';
 import 'rsuite/dist/styles/rsuite-default.css';
 import { Box, Tabs } from '@mui/material';
 import './styles.css';
@@ -78,7 +79,7 @@ const main = <MainContent />;
 
 function App() {
   const [tabVal, setTabVal] = React.useState(2);
-  const tabs = [main, <GrobnerPage />, <SurfacePage />];
+  const tabs = [main, <ErrorBoundary children={<Shader sdf="length(p)-r"/>}/>, <SurfacePage />];
 
   return (
     <ThemeProvider theme={theme}>
