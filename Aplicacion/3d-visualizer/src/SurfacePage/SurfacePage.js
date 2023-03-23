@@ -68,8 +68,8 @@ export default function SurfacePage() {
         handleCreateRow={() => { setEditedRow(""); setDialogOpen(true) }}
         handleRowClick={(name) => {console.log("click"); setEditedRow(name); setDialogOpen(true) }}
       /> */}
-      <TestNode/>
-      <Shader style={{ width: "1000px", margin: "10px" }} sdf={"length(max(abs(p) - vec3(1.0),0.0)) + min(max(abs(p.x) - 1.0,max(abs(p.y) - 1.0,abs(p.z) - 1.0)),0.0)"}/>
+      {/* <TestNode/> */}
+      {/* <Shader style={{ width: "1000px", margin: "10px" }} sdf={"length(max(abs(p) - vec3(1.0),0.0)) + min(max(abs(p.x) - 1.0,max(abs(p.y) - 1.0,abs(p.z) - 1.0)),0.0)"}/> */}
       <SurfaceTable handleNew={()=>setDialogOpen(true)}/>
 
       <SurfaceDialog

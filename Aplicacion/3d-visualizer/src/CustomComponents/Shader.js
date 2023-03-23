@@ -86,8 +86,6 @@ function Shader(props) {
         onReset={() => setExplode(false)}
         resetKeys={[explode]}
       >
-        {mouseDrag}
-        {angle[0]}, {angle[1]}
             <ShadertoyReact
               fs={props.sdf ? fs(props.sdf, primitivesCode) : defaultShader()}
               key={props.sdf+primitivesCode}
