@@ -56,45 +56,141 @@ Nuestra intención será entonces construir una escena definida como la isosuper
 \end{ejemplo}
 
 \section{Operaciones sobre SDF}
-Si bien estas primitivas son fáciles de generar, también son muy simples y nos serán insuficientes si queremos construir escenas más complejas. Una de las ventajas de los SDF es que se pueden generar nuevas formas a partir de primitivas de forma muy sencilla.
+Si bien estas primitivas son fáciles de generar, también son muy simples y nos serán insuficientes si queremos construir escenas más complejas. Una de las ventajas de los SDF es que se pueden generar nuevas formas a partir de primitivas de forma muy sencilla.\\
 
-\begin{proposicion}[Operaciones Booleanas]
-    Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente. Entonces:
+En lo siguiente, tomaremos $p=(x,y,z)\in\R^3$.
+
+\begin{proposicion}[Operaciones Booleanas]\label{p:boolean}
+    Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente. Definimos los SDF para las operaciones:
     \begin{itemize}
-        \item $\sdf_{A\cup B} = \min(\phi, \gamma)$,
-        \item $\sdf_{A\cap B} = \max(\phi, \gamma)$,
-        \item $\sdf_{A\setminus B} = \max(\phi, -\gamma)$.
+        \item \textbf{Unión: } $\sdf_{A\cup B} = \min(\phi, \gamma)$,
+        \item \textbf{Intersección: } $\sdf_{A\cap B} = \max(\phi, \gamma)$,
+        \item \textbf{Diferencia: } $\sdf_{A\setminus B} = \max(\phi, -\gamma)$.
     \end{itemize}
 \end{proposicion}
 
 \begin{observacion}
-    Solo en el caso de la unión se obtiene un SDF según lo establecido en \autoref{d:sdf}, ya que en el interior (donde $\phi < 0$), estas transformaciones producen valores inesperados. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies, así que podemos obviar este problema.
+    Solo en el caso de la unión se obtiene un SDF según lo establecido en \autoref{d:sdf}, ya que al aplicar $\max$ en el interior (donde $\phi < 0$), las funciones resultado pueden ser solo una cota superior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies, así que podemos obviar este problema.
 \end{observacion}
 
-Un problema de usar estas transformaciones es que produce discontinuidades en la derivada del SDF resultante, lo cual preferimos evitar, además de por motivos analíticos, por motivos visuales, ya que el resultado de estas operaciones produce bordes muy acusados en la intersección de ambas superficies. Existen muchas formas de combinar SDF de forma más natural. Una de las más sencillas es la interpolación lineal.
+Un problema de usar estas transformaciones es que produce discontinuidades en la derivada del SDF resultante. Trataremos de evitar esta situación, además de por motivos analíticos, por motivos visuales, ya que el resultado de estas operaciones produce bordes muy acusados en la intersección de ambas superficies. Existen muchas formas de combinar SDF de forma más natural. Una de las más sencillas es la interpolación lineal.
 
 \begin{proposicion}[Operaciones Booleanas Suavizadas]
-    Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente y $k\in \R$ un coeficiente de suavizado. Entonces:
+    Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente. Definimos los SDF para las operaciones suavizadas:
     \begin{itemize}
-        \item $\sdf(A\cup B) = li(\gamma, \phi, h_1) - k\cdot h_1 \cdot (1-h_1)$.
-        \item $\sdf(A\cap B) = li(\gamma, \phi, h_2) + k\cdot h_2 \cdot (1-h_2)$.
-        \item $\sdf(A\setminus B) = li(\phi, -\gamma, h_3) + k\cdot h_3 \cdot (1-h_3)$.
+        \item \textbf{Unión suavizada: } $\sdf_{unionS} = li(\gamma, \phi, h_1) - k\cdot h_1 \cdot (1-h_1)$,
+        \item \textbf{Intersección suavizada: } $\sdf_{interS} = li(\gamma, \phi, h_2) + k\cdot h_2 \cdot (1-h_2)$,
+        \item \textbf{Diferencia suavizada: } $\sdf_{difS} = li(\phi, -\gamma, h_3) + k\cdot h_3 \cdot (1-h_3)$.
     \end{itemize}
 
     donde:
     \begin{itemize}
-        \item $li(x,y,a) = (1-a)\cdot x + a\cdot y$ interpola linealmente $x$ e $y$ según el parámetro $a\in\R$.
-        \item $c(x) = \min(\max(x, 0), 1)$ acota $x$ en $[0,1]$.
-        \item $h_1 = c\left(\frac{1}{2} + \frac{\gamma - \phi}{2k}\right)$.
-        \item $h_2 = c\left( \frac{1}{2} - \frac{\gamma - \phi}{2k} \right)$.
-        \item $h_3 = c\left( \frac{1}{2} - \frac{\gamma + \phi}{2k}\right)$.
+        \item $k\in \R$ un coeficiente de suavizado,
+        \item $li(x,y,a)\colon \R\times\R\times\R\to \R = (1-a)\cdot x + a\cdot y$ interpola linealmente $x$ e $y$ según $a$,
+        \item $h_1 = c\left(\frac{1}{2} + \frac{\gamma - \phi}{2k}\right)$,\quad $h_2 = c\left( \frac{1}{2} - \frac{\gamma - \phi}{2k} \right)$,\quad $h_3 = c\left( \frac{1}{2} - \frac{\gamma + \phi}{2k}\right)$,
+        \item $c\colon \R\to \R = \min(\max(x, 0), 1)$ acota $x$ en $[0,1]$.
     \end{itemize}
 \end{proposicion}
 
-Introducimos por último otro tipo de operaciones que nos resultarán útiles para generar nuevas formas a partir de un único SDF.
+Pasamos ahora a estudiar otro tipo de operaciones, que nos resultarán útiles para generar nuevas formas a partir de un único SDF. 
 
-TODO
+\begin{proposicion}[Operaciones afines]\label{p:afines}
+    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+    \begin{itemize}
+        \item \textbf{Traslación de vector $v$: } $\sdf_{traslacion}(p) = \sdf_{A}(p - v)$,
+        \item \textbf{Escalado uniforme de dimensiones $s$: } $\sdf_{escalado}(p) = \sdf_{A}(p/s)\cdot s$,
+        \item \textbf{Rotaciones de ángulo $\alpha$ sobre los ejes $x,y,z$: }
+        \begin{equation*}
+            \sdf_{rotX}(p) = \sdf_{A}(R_x^{-1}(\alpha)\cdot p^t),\quad \sdf_{rotY}(p) = \sdf_{A}(R_y^{-1}(\alpha)\cdot p^t),\quad \sdf_{rotZ}(p) = \sdf_{A}(R_z^{-1}(\alpha)\cdot p^t)
+        \end{equation*}
+    \end{itemize}
+    donde:
+    \begin{equation*}
+        R_x(\alpha) = \begin{pmatrix}
+            1&0&0\\
+            0&\cos(\alpha) & -\sin(\alpha) \\
+            0&\sin(\alpha) & \cos(\alpha) 
+            \end{pmatrix}\begin{pmatrix}
+            x \\
+            y \\
+            z
+            \end{pmatrix}
+        \quad,
+        R_y(\alpha) = \begin{pmatrix}
+            \cos(\alpha) &0& \sin(\alpha)\\
+            0&1&0\\
+            -\sin(\alpha) &0& \cos(\alpha) 
+            \end{pmatrix},
+        \quad
+        R_z(\alpha) = \begin{pmatrix}
+            \cos(\alpha) & -\sin(\alpha) & 0\\
+            \sin(\alpha) & \cos(\alpha) & 0\\
+            0&0&1
+            \end{pmatrix}
+    \end{equation*}
+\end{proposicion}
+\begin{proof}
+    Las operaciones enumeradas son ya bien conocidas en $\R^3$. Si queremos saber si un punto $q$ pertenece a la superficie afín, tenemos que comprobar si su preimagen por la transformación pertenece a $A$. Por tanto, si $\phi$ es la transformación afín, bastará con evaluar el SDF original en $\phi^{-1}(p)$. Sin embargo, esto es cierto solo si $\phi$ mantiene las distancias, lo cual no ocurre para el escalado: 
+    \begin{equation*}
+        \Vert p-p'\Vert = d \implies = \Vert \phi(p)-\phi(p')\Vert = \Vert sp-sp'\Vert = s\Vert p-p'\Vert = s\cdot d,\ \forall p,p' \in A
+    \end{equation*}
 
+    Como las distancias se escalan, hacemos lo propio con nuestra función distancia aplicándole el mismo factor de escalado $s$.
+\end{proof}
+
+\begin{proposicion}[Operaciones Deformantes]
+    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+    \begin{itemize}
+        
+        \item \textbf{Torsión: } $\sdf_{torsion}(p) = \sdf_{A}(p')$, con $p' = R_z(ky)\cdot (x,z,y)^t$,
+        \item \textbf{Plegado: } $\sdf_{plegado} =\sdf_{A}(p')$, con $p' = R_z(kx)\cdot p^t$,
+        \item \textbf{Redondeo: } $\sdf_{redondeo}(p) = \sdf_{A}(p) - k$,
+        \item \textbf{Desplazamiento: } $\sdf_{desplazamiento}(p) = \sdf_{A}(\delta(p))$.
+    \end{itemize}
+
+    donde:
+    \begin{itemize}
+        \item $k\in \R$ es un coeficiente de deformación,
+        \item $\delta\colon \R^3\to \R^3$ es un patrón de desplazamiento,
+        \item $R_z(\alpha)\in \mathcal{M}_3(\R)$ es la matriz de rotación de ángulo $\alpha$ sobre el eje $z$ definida en \autoref{p:afines}.
+    \end{itemize}
+\end{proposicion}
+
+\begin{proposicion}[Operadores de Posicionamiento]\label{p:posicionamiento}
+    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+    \begin{itemize}
+        \item \textbf{Simetrías sobre los ejes $x,y,z$:}
+        \begin{equation*}
+            \sdf_{simX}(p) = \sdf_{A}(\vert x\vert, y, z),\quad \sdf_{simY}(p) = \sdf_{A}(x, \vert y\vert,  z),\quad \sdf_{simZ}(p) = \sdf_{A}(x,y,\vert z\vert)
+        \end{equation*}
+        \item \textbf{Simetrías sobre los planos $xy,xz,yz$:}
+        \begin{equation*}
+            \sdf_{simXY}(p) = \sdf_{A}(\vert x\vert, \vert y\vert, z),\quad \sdf_{simXZ}(p) = \sdf_{A}(\vert x\vert, y,  \vert z\vert),\quad \sdf_{simYZ}(p) = \sdf_{A}(x,\vert y\vert ,\vert z\vert)
+        \end{equation*}
+        \item \textbf{Repetición $l\in \N^3$ veces en los ejes $x,y,z$ con separación $s\in\R$:} 
+        \begin{equation*}
+            \sdf_{repeticion}(p) = \sdf_{A}(p - s\cdot c\left(r(p/s)), -l, l\right)
+        \end{equation*}
+        \item \textbf{Repetición infinita:}
+        \begin{equation*}
+            \sdf_{repeticion\infty}(p) = \sdf_{A}\left((p+\frac{l}{2}\mod l )- \frac{l}{2}\right)
+        \end{equation*}
+    \end{itemize}
+    donde:
+    \begin{itemize}
+        \item $c\colon \R\times\R\times\R\to \R,\ c(x,a,b) = \min(\max(x, a), b)$ acota $x$ en $[a,b]$,
+        \item $r\colon \R^3 \to \R^3$ redondea las componentes de un vector a sus enteros más cercanos.
+    \end{itemize}
+\end{proposicion}
+\begin{observacion}
+    Hay casos en los que los SDF definidos en \autoref{p:posicionamiento} podrían no ser exactos, al igual que ocurría con la intersección y la diferencia en \autoref{p:boolean}:
+    \begin{enumerate}
+        \item Para las simetrías, cuando el objeto interseca el plano de simetría,
+        \item Para las repeticiones, cuando las dimensiones del objeto sean mayores o iguales a $l/2$.
+    \end{enumerate}
+\end{observacion}
+
+A la vista de todas esta operaciones a nuestra disposición, es evidente el potencial que tienen los SDF, tanto en la generación y modificación de figuras como en su eficiencia, ya que podemos visualizar miles de objetos al precio de uno utilizando las simetrías o repeticiones.
 
 \section{Raymarching y Spheretracing}
 Una vez definida la escena necesitamos un método para visualizarla. Utilizaremos la técnica de \textit{raymarcing}. Para ello deberemos elegir un punto donde estará el observador. A partir de él se trazarán rayos hacia cada uno de los puntos de un plano imaginario que llamaremos plano de visión, de forma que cada punto de este plano corresponde a un pixel de la imagen resultante. Si el rayo interseca con $S_\phi$ significa que ese pixel corresponde a un punto de $S_\phi$ y será coloreado como tal.\newline
@@ -131,11 +227,6 @@ El algoritmo sería por tanto el descrito en \autoref{a:spheretracing}.
         }
     }
 \end{algorithm}
-
-\section{Aproximación de implícitas}
-Empezábamos el capítulo diciendo que una de las representaciones más comunes de superficies es a través de implícitas, pero hasta ahora nos hemos centrado en estudiar un tipo particular de este tipo de ecuaciones. Si intentásemos aplicar los algoritmos anteriores a una función implícita cualquiera, observaríamos que el resultado tiene ciertos defectos, tales como deformaciones. Vamos a introducir una técnica que dada una función implícita $\phi$, nos permitirá obtener un SDF aproximado de $S_\phi$. Esto nos será útil cuando no conozcamos o no podamos calcular explícitamente el SDF de una superficie pero sí su representación implícita.
-
-TODO
 
 \section{Iluminación}
 Ya sabemos qué píxeles pertenecen a la superficie, pero no de qué color deben dibujarse. Para ello utilizaremos el modelo de reflexión de Phong. En él trabajaremos con los siguientes parámetros:
@@ -237,6 +328,45 @@ Procedemos a calcular $N$ aplicaremos el \textbf{método del tetraedro}, el cual
 
   donde hemos usado que $\sum_{i=0}^3 k_i = (0,0,0)$, $\sum_{i=0}^3 k_i\cdot k_i = (1,1,1)$, y que el producto escalar es un operador lineal.
 \end{proof}
+
+\section{Aproximación de implícitas}
+Empezábamos el capítulo diciendo que una de las representaciones más comunes de superficies es a través de implícitas, pero hasta ahora nos hemos centrado en estudiar un tipo particular de este tipo de ecuaciones. Si intentásemos aplicar los algoritmos anteriores a una función implícita cualquiera, observaríamos que el resultado tiene ciertos defectos, tales como deformaciones, o incluso no se visualiza. Vamos a introducir una técnica que dada una función implícita $\phi$, nos permitirá obtener un SDF aproximado de $S_\phi$. Esto nos será útil cuando no conozcamos o no podamos calcular explícitamente el SDF de una superficie pero sí su representación implícita.
+
+\begin{proposicion}
+    Sea $\phi\colon \R^3\to\R$ una función implícita cualquiera y $p\in\R^3$. Entonces: 
+    \begin{equation*}    
+        \sdf_{S_\phi}(p) \approx \frac{\vert \phi(p)\vert}{\vert \nabla\phi(p)\vert}
+    \end{equation*}
+\end{proposicion}
+\begin{proof}
+    Sea $q$ al punto de $S_\phi$ más cercano a $p$ y $v=\vec{pq} \perp S_\phi$ en $q$. Queremos calcular la distancia de $p$ a $S_\phi$, que es justamente $v$. Podemos calcular el desarrollo de Taylor de $\phi$ en $p$:
+    \begin{equation*}
+        \phi(p+v) = \phi(p) + \nabla(p)\cdot (p+v-p) + \mathcal{O}(\vert p+v-p\vert^2) \implies \phi(p+v) = \phi(p) + \nabla(p)\cdot v + \mathcal{O}(\vert v\vert^2)
+    \end{equation*}
+
+    Suponemos ahora que $p$ está cerca de $S_\phi$, esto es, $\vert v\vert < \varepsilon$. Como $\phi(p+v) = \phi(q)=0$, tenemos que:
+    \begin{align*}
+        0 &= \vert \phi(p+v)\vert \approx \vert \phi(p) + \nabla(p)\cdot v \vert \le \vert \phi(p)\vert - \vert \nabla(p)\cdot v \vert\\
+         &\le \vert \phi(p)\vert - \vert \nabla(p)\vert \vert v \vert \implies \vert v\vert \le \frac{\vert \phi(p)\vert}{\vert \nabla(p)\vert}
+    \end{align*}
+    donde hemos usado la desigualdad triangular y las propiedades del producto escalar.
+\end{proof}
+
+Al igual que nos ocurría al calcular el vector normal, habrá ocasiones en las que el gradiente no pueda ser obtenido de forma analítica. Esta vez sin embargo no nos basta con conocer solo la dirección del gradiente, así que no podemos aplicar de nuevo el método del tetraedro. Usaremos un nuevo método en su lugar que usa la definición de derivada.
+
+\begin{proposicion}[Método de las diferencias centrales]
+    Sea $\phi\colon \R^3\to\R$. Entonces:
+    \begin{align*}
+        \frac{\partial\phi}{\partial x}(p) &\approx \frac{\phi(p+(h,0,0)) - \phi(p-(h,0,0))}{2h}\\[10pt]
+        \frac{\partial\phi}{\partial y}(p) &\approx \frac{\phi(p+(0,h,0)) - \phi(p-(0,h,0))}{2h}\\[10pt]
+        \frac{\partial\phi}{\partial z}(p) &\approx \frac{\phi(p+(0,0,h)) - \phi(p-(0,0,h))}{2h}
+    \end{align*}
+    
+    donde $h\in\R^+$ es un valor arbitrariamente pequeño. 
+\end{proposicion}
+
+Para calcular el gradiente necesitaremos evaluar $\phi$ un total de seis veces, ya que hay que realizar dos evaluaciones por cada variable. Es por este motivo que 
+
 
 
 
