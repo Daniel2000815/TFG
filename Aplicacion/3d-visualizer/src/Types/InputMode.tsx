@@ -1,5 +1,5 @@
 export const InputMode = {
-    Implicit: "implicit",
+    Implicit: "Implicit",
     Parametric: "Parametric",
     SDF: "SDF",
 };

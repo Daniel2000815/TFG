@@ -13,6 +13,12 @@ export const fs = (sdf, primitives) => {
     const float PRECISION=.0001;
     const float EPSILON=.0005;
     const float PI=3.14159265359;
+    const float DEG_TO_RAD = PI / 180.0;
+
+    // Camera control
+    vec2 cameraAng = vec2(0.5, 0.5);
+    bool isDragging = false;
+    vec2 startDraggingPos;
 
     struct Material
     {
@@ -34,6 +40,47 @@ export const fs = (sdf, primitives) => {
     }
 
     // Rotation matrix around the X axis.
+    mat3 sdfRotateX(float theta){
+    float c=cos(theta);
+    float s=sin(theta);
+    return mat3(
+        vec3(1.,0.,0.),
+        vec3(0.,c/(c*c+s*s),s/(c*c+s*s)),
+        vec3(0.,-s/(c*c+s*s),c/(c*c+s*s))
+    );
+    }
+
+    // Rotation matrix around the Y axis.
+    mat3 sdfRotateY(float theta){
+    float c=cos(theta);
+    float s=sin(theta);
+    return mat3(
+        vec3(c/(c*c+s*s),0.,-s/(c*c+s*s)),
+        vec3(0.,1.,0.),
+        vec3(s/(c*c+s*s),0.,c)
+    );
+    }
+
+    // Rotation matrix around the Z axis.
+    mat3 sdfRotateZ(float theta){
+    float c=cos(theta);
+    float s=sin(theta);
+    return mat3(
+        vec3(c/(c*c+s*s),s/(c*c+s*s),0.),
+        vec3(-s/(c*c+s*s),c/(c*c+s*s),0.),
+        vec3(0.,0.,1.)
+    );
+    }
+
+    // Identity matrix.
+    mat3 identity(){
+        return mat3(
+            vec3(1,0,0),
+            vec3(0,1,0),
+            vec3(0,0,1)
+        );
+    }
+
     mat3 rotateX(float theta){
         float c=cos(theta);
         float s=sin(theta);
@@ -63,15 +110,6 @@ export const fs = (sdf, primitives) => {
             vec3(c,-s,0.),
             vec3(s,c,0.),
             vec3(0.,0.,1.)
-        );
-    }
-
-    // Identity matrix.
-    mat3 identity(){
-        return mat3(
-            vec3(1,0,0),
-            vec3(0,1,0),
-            vec3(0,0,1)
         );
     }
 
@@ -174,35 +212,54 @@ export const fs = (sdf, primitives) => {
     ));
     }
     
+    vec3 ray_dir( float fov, vec2 size, vec2 pos ) {
+        vec2 xy = pos - size * 0.5;
+    
+        float cot_half_fov = tan( ( 90.0 - fov * 0.5 ) * DEG_TO_RAD );	
+        float z = size.y * 0.5 * cot_half_fov;
+        
+        return normalize( vec3( xy, -z ) );
+    }
+
     void main()
     {
         vec2 uv = (gl_FragCoord.xy - 0.5*iResolution.xy) / iResolution.y;
         vec2 mouseUV = vec2(0.5);
+        mouseUV = iMouse.xy/iResolution.xy;  // [0,1]
 
-        if(iMouse.x > 0.0 || iMouse.y > 0.0)
-            mouseUV = iMouse.xy/iResolution.xy;  // [0,1]
 
         vec3 backgroundColor = vec3(.835, 1.0, 1.0);
         vec3 col    = vec3(0.0);
         
-        vec3 lookAt = vec3(0.0);
-        vec3 eye    = vec3(0,5,0);
+        // default ray dir
+        vec3 dir = ray_dir( 45.0, iResolution.xy, gl_FragCoord.xy );
 
-        float cameraRadius = u_zoom;
+        // default ray origin
         
-        eye.yz = eye.yz * cameraRadius * rotate2d( mix(PI, 0.0, mouseUV.y) );
-        eye.xz = eye.xz * rotate2d( mix(-PI, PI, mouseUV.x) ) 
-                    + vec2(lookAt.x, lookAt.z);
+
+        // ray marching
+        vec3 lookAt = vec3(0.0);
+        vec3 eye    = vec3(0,0,5.0);
+
+        float cameraRadius = 10.0;
+        // rotate camera
+        mat3 rot = (rotateY(u_cameraAng.x)*rotateX(u_cameraAng.y));
+        dir = rot * dir;
+        eye = rot * eye;
+        //eye = (rotateY(cameraAng.x)*rotateX(cameraAng.y)) * eye * cameraRadius + lookAt;
+        //eye =  eye * cameraRadius + lookAt;
+        // eye.yz =   rotate2d( u_cameraAng.x ) * eye.yz * cameraRadius + vec2(lookAt.y, lookAt.z);
+        // eye.xz =  rotate2d( u_cameraAng.y ) * eye.xz + vec2(lookAt.x, lookAt.z);
         
-        vec3 rayDir = camera(eye, lookAt) * normalize(vec3(uv,-1));// ray direction
+        //vec3 rayDir = camera(eye, lookAt) * normalize(vec3(uv,-1));// ray direction
         
-        Surface co = rayMarch(eye, rayDir, MIN_DIST, MAX_DIST);// closest object
+        Surface co = rayMarch(eye, dir, MIN_DIST, MAX_DIST);// closest object
         
         if(co.sd > MAX_DIST){
             col = backgroundColor;  // ray didn't hit anything
         }
         else{
-            vec3 p = eye + rayDir*co.sd;  // point from ray marching
+            vec3 p = eye + dir*co.sd;  // point from ray marching
             vec3 normal = calcNormal(p);
             
             col = lighting(p, normal, eye, co.mat);

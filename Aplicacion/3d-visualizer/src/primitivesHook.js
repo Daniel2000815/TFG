@@ -18,7 +18,7 @@ export const usePrimitivesHook = () => {
             float y = p.g;
             float z = p.b;
 
-            ${p.parsedSdf};
+            return ${p.parsedInput};
         }\n`
     }
 

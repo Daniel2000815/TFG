@@ -5,6 +5,7 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import Box from '@mui/material/Box';
+import { Badge } from "@nextui-org/react";
 
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
@@ -231,11 +232,14 @@ export default function CustomTable(props) {
     setPage(0);
   };
 
-  const DrawCell = (val, colId) => {
+  const DrawCell = (val, colId, inputMode) => {
     if(colId === "name"){
       return val;
     }
-    else if(colId === "implicit"){
+    else if(colId === "input"){
+      return <><Badge isSquared>{inputMode}</Badge><MathJax.Provider> <MathJax.Node inline formula={val} /></MathJax.Provider></>;
+    }
+    else if(colId === "parameters"){
       return <MathJax.Provider> <MathJax.Node inline formula={val} /></MathJax.Provider>;
     }
     else if(colId === "sdf" ){
@@ -247,6 +251,7 @@ export default function CustomTable(props) {
       )
       
     }
+    
     else{
       return "ERROR";
     }
@@ -296,7 +301,7 @@ export default function CustomTable(props) {
                       const value = row[column.id];
                       return (
                         <StyledTableCell onDoubleClick={(event) => props.handleRowClick(row.id)} key={column.id} align={column.align}>
-                          {DrawCell(value, column.id)}
+                          {DrawCell(value, column.id, row.inputMode)}
                         </StyledTableCell>
                       );
                     })}

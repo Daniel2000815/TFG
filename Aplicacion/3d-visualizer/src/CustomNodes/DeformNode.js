@@ -33,17 +33,17 @@ function DeformNode({ data, id }) {
     );
     
     let input = data.inputs[Object.keys(data.inputs)[0]];
-
+    console.log("INPUTS: ", input);
     if(input){
       console.log("OLD: " + input);
-      console.log(typeof(input));
+      console.log(input.replace("p,", `sdf${operation}(p, ${k}),`));
       setSdf(input.replace("p,", `sdf${operation}(p, ${k}),`));
 
     }
   }, [data, operation, k]);
 
   const handleChange = (ev, val) => {
-    setK(parseFloat(val));
+    setK(parseFloat(val).toFixed(4));
   }
 
   return (

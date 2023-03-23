@@ -78,8 +78,8 @@ function Footer() {
 const main = <MainContent />;
 
 function App() {
-  const [tabVal, setTabVal] = React.useState(2);
-  const tabs = [main, <ErrorBoundary children={<Shader sdf="length(p)-r"/>}/>, <SurfacePage />];
+  const [tabVal, setTabVal] = React.useState(1);
+  const tabs = [main, <SurfacePage />];
 
   return (
     <ThemeProvider theme={theme}>
@@ -94,8 +94,7 @@ function App() {
                 aria-label="lab API tabs example"
               >
                 <Tab label="Graph" value={"0"} />
-                <Tab label="Groebner" value={"1"} />
-                <Tab label="Surfaces" value={"2"} />
+                <Tab label="Surfaces" value={"1"} />
               </TabList>
             </Box>
             {tabs.map(function (tabComponent, idx) {

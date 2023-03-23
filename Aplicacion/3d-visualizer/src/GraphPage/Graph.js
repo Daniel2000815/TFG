@@ -19,6 +19,7 @@ import { GraphProvider } from './GraphContext.js';
 import CustomContextMenu from '../CustomComponents/CustomContextMenu.js';
 import useLocalStorage from '../storageHook.ts';
 import { Box, Tabs } from '@mui/material';
+import {isMobile} from 'react-device-detect';
 
 import { ContextMenuTrigger } from 'react-contextmenu';
 
@@ -296,7 +297,7 @@ function Graph() {
 
   return (
     <>
-      <ContextMenuTrigger id='contextmenu'>
+      <ContextMenuTrigger id='contextmenu' holdToDisplay={isMobile ? 1000 : -1}>
         <Box sx={{ height: '100vh' }} tabIndex='0' onKeyDown={handleKey} onMouseMove={handleMouse}>
           <GraphProvider value={sharedFunctions}>
             <ReactFlow

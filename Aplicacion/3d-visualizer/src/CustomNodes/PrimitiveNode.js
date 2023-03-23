@@ -35,8 +35,7 @@ function PrimitiveNode({ data, id }) {
       return;
 
     const parameters = storage[primitive].parameters;
-
-    console.log('TYPE: ' + typeof parameters[0].defaultVal);
+    console.log(parameters);
     setInputs(
       Object.keys(parameters).map(function (k) {
         return parameters[k].defaultVal;
@@ -61,7 +60,7 @@ function PrimitiveNode({ data, id }) {
     const parameters = storage[primitive].parameters;
     console.log(inputs);
     setSdf(
-      `${primitive}(p ${parameters.length > 0 ? ',' : ''}${parameters
+      `${primitive}(p${parameters.length > 0 ? ',' : ''}${parameters
         .map((p, idx) => `${inputs[idx].toFixed(4)}`)
         .join(',')})`
     );
@@ -69,7 +68,6 @@ function PrimitiveNode({ data, id }) {
 
   return (
     <ThemeProvider theme={theme}>
-      {sdf}
       <CustomNode
         title={'Primitive'}
         id={id}

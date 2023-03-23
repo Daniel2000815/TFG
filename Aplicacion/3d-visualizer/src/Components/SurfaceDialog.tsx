@@ -59,7 +59,6 @@ export default function App(props: {
   const [nameErrorMsg, setNameErrorMsg] = useState("");
 
   const [eqInputMode, setEqInputMode] = useState(InputMode.Implicit);
-  const [visible, setVisible] = React.useState(false);
 
   useEffect(() => {
     // if (!props.data) return;
@@ -75,7 +74,17 @@ export default function App(props: {
     handleNewEquation();
   }, [eqInputMode, inputParameters, inputMath]);
 
+  useEffect(()=>{
+    handleNewName();
+  }, [inputName])
+
+  useEffect(()=>{
+    setInputMath(["","",""]);
+    setInputName("");
+  }, [props.open])
+
   useEffect(() => {
+    console.log("YES ", inputParameters);
     computeExampleSDF();
   }, [eqData, inputParameters]);
 
@@ -117,7 +126,7 @@ export default function App(props: {
     
     inputMath.forEach((input, idx) => {
       try {
-        fs.push(new Polynomial(input, ["s", "t"]));
+        fs.push(new Polynomial(input, ["s", "t"].concat(inputParameters.map(p=>p.symbol))));
       } catch (e: any) {
         newErrorMsg[idx] = Error(e).message;
         return [null, newErrorMsg];
@@ -147,11 +156,13 @@ export default function App(props: {
 
     // SPELL CHECK
     try {
-      new Polynomial(inputMath[0]);
+      new Polynomial(inputMath[0], ["x","y","z"].concat(inputParameters.map(p=>p.symbol)));
     } catch (e: any) {
+      console.log("SPELL CHECK ", Error(e).message);
       newErrorMsg[0] = Error(e).message;
       return [null, newErrorMsg];
     }
+    
 
     try {
       return [ImplicitToSDF(inputMath[0], inputParameters), newErrorMsg];
@@ -190,39 +201,59 @@ export default function App(props: {
   };
 
   const handleSave = () => {
-    // const id = inputName.toLowerCase();
-    // if (id in storage) {
-    //   return;
-    // } else {
-    //   let newData = { ...storage };
-    //   const e: EquationData = {
-    //     id: id,
-    //     name: inputName,
-    //     inputMode: eqInputMode,
-    //     implicit: eqData.f.toString(),
-    //     sdf: eqData.sdf.toString(),
-    //     parsedSdf: eqData.parsedSdf,
-    //     fHeader: `${nameInput.toLowerCase()}(vec3 p ${
-    //       parametersInput.length > 0 ? "," : ""
-    //     }${parametersInput.map((p) => `float ${p.symbol}`).join(",")})`,
-    //     parameters: parametersInput,
-    //   };
-    //   newData[id] = e;
-    //   setStorage(newData);
-    //   handleClose();
-    // }
+    const id = inputName.replace(" ","").toLowerCase()
+    if (id in storage) {
+      return;
+    } else {
+      let newData = { ...storage };
+      const e: EquationData = {
+        id: id,
+        name: inputName,
+        inputMode: eqInputMode,
+        input: eqInputMode===InputMode.Parametric ? inputMath : inputMath[0],
+        parsedInput: eqData.parsedInput,
+        parameters: inputParameters,
+        fHeader: `${id}(vec3 p ${
+          inputParameters.length > 0 ? "," : ""
+        }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
+      };
+
+      newData[id] = e;
+      console.log("STORING ", e);
+      setStorage(newData);
+      console.log(storage);
+    }
+
+    props.handleClose();
   };
 
   const computeExampleSDF = () => {
     console.log("PARANUEVOS ", inputParameters);
     let newExampleSDF = eqData.parsedInput;
-    inputParameters.forEach((param: Parameter) => {
-      newExampleSDF = newExampleSDF?.replaceAll(
-        param.symbol,
-        param.defaultVal.toFixed(4).toString()
-      );
-    });
-    console.log("EXXXXX ", newExampleSDF);
+
+    const separators = [' ', '+', '-', '*', '/', '(', ')'];
+    const replacePattern = new RegExp(`[${separators.map(s => s === '-' ? '\\-' : s).join('')}]`, 'g');
+    const replacedStr = newExampleSDF.replace(replacePattern, (match) => `%${match}%`);
+    const parts = replacedStr.split('%').map(p=>p.replace(/\s+/g, ''));
+
+    for(let i=0; i<parts.length; i++){
+      let j : Parameter|undefined = inputParameters.find(p=> p.symbol===parts[i]);
+      if(j !== undefined){
+        parts[i] = j.defaultVal.toFixed(4).toString();
+      }
+      else if(parts[i] !== ""){
+        let n = Number(parts[i]);
+        console.log(n);
+        if(!isNaN(n))
+          parts[i] = n.toFixed(4).toString();
+      }
+
+
+    }
+    
+    newExampleSDF = parts.join(" ");
+
+    console.log("EXAMPLE SDF: ", newExampleSDF, "; PARAMETERS: ", inputParameters);
     setExampleSDF(newExampleSDF);
   };
 
@@ -270,11 +301,13 @@ export default function App(props: {
     }
   }
 
-  function handleNewName(name: string) {
-    setInputName(name);
+  function nameInUse(name: string) {
+    return name.replace(" ","").toLowerCase() in storage;
+  }
 
-    if (name === "") setNameErrorMsg("Introduce a name");
-    else if (name.toLowerCase() in storage) {
+  function handleNewName() {
+    if (inputName === "") setNameErrorMsg("Introduce a name");
+    else if (nameInUse(inputName)) {
       setNameErrorMsg("Name already in use");
     } else {
       setNameErrorMsg("");
@@ -283,15 +316,12 @@ export default function App(props: {
 
   return (
     <div>
-      <Button auto color="warning" shadow onPress={() => setVisible(true)}>
-        Open modal
-      </Button>
       <Modal
         closeButton
         blur
         aria-labelledby="modal-title"
-        open={visible}
-        onClose={() => setVisible(false)}
+        open={props.open}
+        onClose={() => props.handleClose()}
         width="75%"
         css={{ minHeight: "90vh" }}
       >
@@ -331,15 +361,15 @@ export default function App(props: {
                 <Grid xs={12}>
                   <Grid.Container gap={2} direction="column">
                     <Grid>
-                      {/* {EquationInput(
+                      {EquationInput(
                         0,
                         inputName,
                         "Name",
-                        (n: string) => handleNewName(n),
+                        (n: string) => setInputName(n),
                         nameErrorMsg,
                         "left",
                         "Name"
-                      )} */}
+                      )}
                     </Grid>
                     <Grid>{displayInput()}</Grid>
                   </Grid.Container>
@@ -362,17 +392,18 @@ export default function App(props: {
               />
             </Grid>
           </Grid.Container>
+          {exampleSDF}
         </Modal.Body>
         <Modal.Footer>
           <Button
             auto
             flat
             color="error"
-            onPress={() => setVisible(false)}
+            onPress={() => props.handleClose()}
           >
             Discard
           </Button>
-          <Button auto onPress={() => setVisible(false)} disabled={mathErrorMsg.some((m) => m !== "") || nameErrorMsg !== ""}>
+          <Button auto onPress={() => handleSave()} disabled={mathErrorMsg.some((m) => m !== "") || nameErrorMsg !== ""}>
             Save
           </Button>
         </Modal.Footer>

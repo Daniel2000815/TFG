@@ -1,11 +1,11 @@
-import React, { memo, useEffect, useContext } from 'react';
-import Shader from '../CustomComponents/Shader';
-import { useTheme } from '@mui/material/styles';
-import Dropdown from '../CustomComponents/Dropdown';
-import CustomHandle from './CustomHandle';
-import GraphContext from '../GraphPage/GraphContext.js';
-import ToggleButton from '../CustomComponents/ToggleButton';
-import newId from '../uniqueIdHook';
+import React, { memo, useEffect, useContext } from "react";
+import Shader from "../CustomComponents/Shader";
+import { useTheme } from "@mui/material/styles";
+import Dropdown from "../CustomComponents/Dropdown";
+import CustomHandle from "./CustomHandle";
+import GraphContext from "../GraphPage/GraphContext.js";
+import ToggleButton from "../CustomComponents/ToggleButton";
+import newId from "../uniqueIdHook";
 
 function CustomNode(props) {
   const [showMore, setShowMore] = React.useState(true);
@@ -16,48 +16,48 @@ function CustomNode(props) {
   const width = 200;
 
   const nodeStyle = {
-    position: 'relative',
+    position: "relative",
     width: `${width}px`,
-    display: 'flex',
-    flexDirection: 'column',
-    transition: 'border 300ms ease',
-    borderRadius: '0px 0px 0px 0px',
-    backgroundColor: '#fff',
+    display: "flex",
+    flexDirection: "column",
+    transition: "border 300ms ease",
+    borderRadius: "0px 0px 0px 0px",
+    backgroundColor: "#fff",
 
     boxShadow: isHover
-      ? '0 6px 12px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.25)'
-      : '0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)',
+      ? "0 6px 12px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.25)"
+      : "0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)",
 
     border: isHover
       ? `1px solid ${theme.palette.primary.dark}`
       : `1px solid ${theme.palette.primary.main}`,
 
-    '&:hover': {
-      transition: 'box-shadow 200ms ease',
+    "&:hover": {
+      transition: "box-shadow 200ms ease",
       boxShadow:
-        '0 6px 12px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.25)',
+        "0 6px 12px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.25)",
       border: `1px solid ${theme.palette.primary.dark}`,
     },
   };
 
   const headerStyle = {
-    height: showMore ? '20px' : '40px',
+    height: showMore ? "20px" : "40px",
     width: `${width}px`,
-    color: '#EFF7FF',
-    borderRadius: '5px 5px 0px 0px',
-    textAlign: 'center',
-    fontWeight: '600',
-    fontSize: showMore ? '14px' : '24px',
-    letterSpacing: '0.1px',
-    justifyContent: 'flex-start',
+    color: "#EFF7FF",
+    borderRadius: "5px 5px 0px 0px",
+    textAlign: "center",
+    fontWeight: "600",
+    fontSize: showMore ? "14px" : "24px",
+    letterSpacing: "0.1px",
+    justifyContent: "flex-start",
     backgroundColor: `${theme.palette.primary.main}`,
   };
 
   const footerStyle = {
-    height: '20px',
+    height: "20px",
     width: `${width}px`,
-    color: '#EFF7FF',
-    borderRadius: '0px 0px 5px 5px',
+    color: "#EFF7FF",
+    borderRadius: "0px 0px 5px 5px",
     backgroundColor: `${theme.palette.primary.main}`,
   };
 
@@ -76,11 +76,11 @@ function CustomNode(props) {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key.toLowerCase() === 's') setShowMore(!showMore);
+      if (e.key.toLowerCase() === "s") setShowMore(!showMore);
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [showMore]);
 
   return (
@@ -97,7 +97,7 @@ function CustomNode(props) {
         >
           {props.dropdownOptions ? (
             <Dropdown
-            labelId="demo-simple-select-label"
+              labelId="demo-simple-select-label"
               defaultValue={props.dropdownOptions[0]}
               onChange={props.onChangeOption}
               items={props.dropdownOptions}
@@ -115,12 +115,10 @@ function CustomNode(props) {
                   .join(", ")}
               </p>
               <p>{`SDF: ${props.sdf}`}</p> */}
-
               {props.body}
-              {props.sdf}
               <Shader
                 sdf={props.sdf}
-                style={{ margin: '10px', height: '100%' }}
+                style={{ margin: "10px", height: "100%" }}
               />
             </>
           ) : null}
@@ -141,7 +139,7 @@ function CustomNode(props) {
 
       {[...Array(props.nInputs)].map(function (e, i) {
         return (
-          <div key={newId('targetHandleContainer_')}>
+          <div key={newId("targetHandleContainer_")}>
             <CustomHandle
               type="target"
               style={{ top: `${50 - ((props.nInputs - 1) / 2) * 5 + i * 5}%` }}
@@ -152,8 +150,8 @@ function CustomNode(props) {
 
       <CustomHandle
         type="source"
-        onConnect={(params) => console.log('handle onsConnect', params)}
-        style={{ top: '50%' }}
+        onConnect={(params) => console.log("handle onsConnect", params)}
+        style={{ top: "50%" }}
       />
     </div>
   );

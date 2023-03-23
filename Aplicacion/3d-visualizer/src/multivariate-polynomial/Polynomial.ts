@@ -33,12 +33,14 @@ export class Polynomial {
       try {
         if (p.length == 0) pol = "0";
         else pol = nerdamer(p).expand().toString();
+        console.log("EXPAND: ", pol);
       } catch (e) {
         throw new Error(`ERROR PARSING POLYNOMIAL ${p}`);
       }
 
       this.monomials = [];
       this.computeCoefficients(pol);
+      console.log("FINISH COEFS");
     } else {
       if(p.every(m => 
           m.getExp().length === this.vars.length &&
@@ -71,6 +73,7 @@ export class Polynomial {
    * @param pol string representation of the polynomial
    */
   private computeCoefficients(pol: string) : void {
+    console.log("COMPUTING COEFS");
     // if (firstIt) {
     //   this.monomials = [];
     // }
@@ -125,7 +128,7 @@ export class Polynomial {
       const c = coef === "-" ? -1 : eval(coef);
       
       const e = this.vars.map(function (v) {
-        // console.log("CHEKANDO 2", nerdamerjs('deg(t+x^2+2*x+ x*y, x*y)').toString());
+        console.log("CHEKANDO 2", nerdamerjs('deg(t+x^2+2*x+ x*y, x*y)').toString());
         return parseFloat(nerdamerjs(`deg(${variable}, ${v})`).toString());
       });
 

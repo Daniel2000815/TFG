@@ -88,7 +88,7 @@ export default function ImplicitToSDF(implicit: string, parameters: Parameter[])
   const dfdy = nerdamer.diff(f, "y", 1);
   const dfdz = nerdamer.diff(f, "z", 1);
   const norm = nerdamer(`sqrt((${dfdx})^2 + (${dfdy})^2 + (${dfdz})^2)`);
-  // console.log("DECIMAL", norm.toDecimal());
+  console.log("DECIMAL", norm.toDecimal());
   if (norm.toString() === "0") {
     // console.log("ZERO")
     throw new Error("NORM CAN'T BE 0");

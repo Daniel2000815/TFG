@@ -8,7 +8,7 @@ declare global {
     id: string, // identifier to save in local storage
     name: string,
     inputMode: string
-    input: string
+    input: string | string[]
     parsedInput: string,
     parameters: Parameter[],
     fHeader: string,

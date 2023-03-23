@@ -17,7 +17,7 @@ const float u_smoothness=10.;
 
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
-const float u_zoom=1.;
+const float u_zoom=5.;
 
 struct Material
 {
@@ -44,8 +44,8 @@ mat3 rotateX(float theta){
   float s=sin(theta);
   return mat3(
     vec3(1.,0.,0.),
-    vec3(0.,c,-s),
-    vec3(0.,s,c)
+    vec3(0.,c/(c*c+s*s),s/(c*c+s*s)),
+    vec3(0.,-s/(c*c+s*s),c/(c*c+s*s))
   );
 }
 
@@ -54,9 +54,9 @@ mat3 rotateY(float theta){
   float c=cos(theta);
   float s=sin(theta);
   return mat3(
-    vec3(c,0.,s),
+    vec3(c/(c*c+s*s),0.,-s/(c*c+s*s)),
     vec3(0.,1.,0.),
-    vec3(-s,0.,c)
+    vec3(s/(c*c+s*s),0.,c)
   );
 }
 
@@ -65,8 +65,8 @@ mat3 rotateZ(float theta){
   float c=cos(theta);
   float s=sin(theta);
   return mat3(
-    vec3(c,-s,0.),
-    vec3(s,c,0.),
+    vec3(c/(c*c+s*s),s/(c*c+s*s),0.),
+    vec3(-s/(c*c+s*s),c/(c*c+s*s),0.),
     vec3(0.,0.,1.)
   );
 }
@@ -228,16 +228,18 @@ float plane(vec3 p,vec3 n,float h)
 Surface map(vec3 p){
   Material mat=Material(u_specular,u_diffuse,u_ambient,u_smoothness);
   float sphere=sphere(p-vec3(.5),1.);
-  float box=box(p+vec3(.5),vec3(1.));
   
-  // Surface co=Surface(sdfSmoothUnion(sphere,box,.5),mat);
+  vec3 newP=sdfRepeat(p,3.,vec3(30.,20.,2.));
+  float ang=1.7;
+  //newP=rotateZ(ang)*rotateX(ang)*p;
+  Surface co=Surface(box(newP,vec3(1.)),mat);
   // co=Surface(sdfUnion(box,sphere),mat);
   // co=Surface(sdfSmoothIntersection(sphere,box,.2),mat);
   // co=Surface(sdfIntersection(box,sphere),mat);
   // co=Surface(sdfSmoothDifference(box,sphere,.1),mat);
   // co=Surface(sdfDifference(box,sphere),mat);
   
-  Surface co=Surface(plane(p,vec3(0.,1.,0.),0.),mat);
+  // Surface co=Surface(plane(p,vec3(0.,1.,0.),0.),mat);
   
   return co;
 }

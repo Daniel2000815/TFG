@@ -9,10 +9,29 @@ const defaultStorage = {
     name: 'Sphere',
     inputMode: InputMode.Implicit,
     input: 'x^2 + y^2 + z^2 - r',
-    parsedInput: '|p|-r',
+    parsedInput: 'length(p)-r',
     parameters: [{ symbol: 'r', label: 'Radius', defaultVal: 1.0 }],
     fHeader: 'sphere(vec3 p, float r)',
   },
+  torus: {
+    id: 'torus',
+    name: 'Torus',
+    inputMode: InputMode.SDF,
+    input: 'length(vec2(length(p.xz)-R,p.y)) - r',
+    parsedInput: 'length(vec2(length(p.xz)-R,p.y)) - r',
+    parameters: [{ symbol: 'R', label: 'Radius 1', defaultVal: 2.0 }, { symbol: 'r', label: 'Radius 2', defaultVal: 1.0 }],
+    fHeader: 'torus(vec3 p, float R, float r)',
+  },
+  cube: {
+    id: 'cube',
+    name: 'Cube',
+    inputMode: InputMode.SDF,
+    input: 'length(max(abs(p) - vec3(l),0.0)) + min(max(abs(p.x) - l,max(abs(p.y) - l,abs(p.z) - l)),0.0)',
+    parsedInput: 'length(max(abs(p) - vec3(l),0.0)) + min(max(abs(p.x) - l,max(abs(p.y) - l,abs(p.z) - l)),0.0)',
+    parameters: [{ symbol: 'l', label: 'side', defaultVal: 1.0 }],
+    fHeader: 'cube(vec3 p, float l)',
+  }
+  
   // cube: {
   //   id: 'cube',
   //   name: 'Cube',
@@ -35,7 +54,7 @@ const defaultStorage = {
 
 export const useLocalStorage = (key: string) => {
   const [storedValue, setStoredValue] = useState(() => {
-    // localStorage.clear();
+    localStorage.clear();
     try {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : defaultStorage;

@@ -92,19 +92,23 @@ export default function ParameterTable(props: {
 
     console.log(newParams);
 
-    // setParams(newParams);
     setErrorMsgs(newErrors);
 
     const error = newErrors.some((e) => e.some((ee) => ee !== ""));
 
     if (!error){
-      console.log("EDIT PARAMS");
-      props.onEditParams(params);
+      setParams(newParams);
+      console.log("EDIT PARAMS2 " , params);
+      
     }
     else{
       console.log("PARAM ERROR: ", newErrors);
     }
   };
+
+  useEffect(()=>{
+    props.onEditParams(params);
+  }, [params])
 
   const handleCreateParam = () => {
     setErrorMsgs([...errorMsgs, ["", "", ""]]);
@@ -120,9 +124,11 @@ export default function ParameterTable(props: {
 
   const handleDeleteParam = (idx: number) => {
     console.log("BEFORE DELETE ", idx, ": ", params);
+
     setParams(params.filter((val,i) => i!==idx));
     setErrorMsgs(errorMsgs.filter((val,i) => i!==idx));
     console.log("AFTER DELETE ", idx, ": ", params.filter((val,i) => i!==idx));
+    
   }
 
   function ParamInput(i: number,field: 0 | 1 | 2,value: string,label: string, type: "number"|"default" = "default") {

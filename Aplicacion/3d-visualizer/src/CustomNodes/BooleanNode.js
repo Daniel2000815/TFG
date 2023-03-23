@@ -39,12 +39,12 @@ function BooleanNode({ data, id }) {
     if(keys.length < 2)
       return;
 
-    let newSdf = `sdfSmooth${operation}(${data.inputs[keys[0]]}, ${data.inputs[keys[1]]}, ${k})`;
+    let newSdf = `sdfSmooth${operation}(${data.inputs[keys[0]]}, ${data.inputs[keys[1]]}, ${k.toFixed(4)})`;
 
     // Add the rest of inputs
     for (let i = 0; i < keys.length - 2; i++) {
       console.log(data.inputs[keys[i + 2]]);
-      newSdf = `sdfSmooth${operation}(${data.inputs[keys[i + 2]]}, ${newSdf}, ${k})`;
+      newSdf = `sdfSmooth${operation}(${data.inputs[keys[i + 2]]}, ${newSdf}, ${k.toFixed(4)})`;
     };
 
     setSdf(newSdf);
