@@ -21,6 +21,7 @@ import {
   ParametricInput,
   ImplicitInput,
 } from "../Components/EquationInput";
+
 import ImplicitToSDF from "../Components/StringToSDF";
 import nerdamerTS from "nerdamer-ts";
 import nerdamer, { ExpressionParam } from "nerdamer";
@@ -48,7 +49,7 @@ export default function App(props: {
   });
 
   const [exampleSDF, setExampleSDF] = useState("");
-
+  const [exampleShaderFunction, setExampleShaderFunction] = useState("");
   // INPUT FROM DIALOG
   const [inputMath, setInputMath] = useState(["5*t^2 + 2*s^2 - 10", "s", "t"]);
   const [inputName, setInputName] = useState("");
@@ -74,14 +75,14 @@ export default function App(props: {
     handleNewEquation();
   }, [eqInputMode, inputParameters, inputMath]);
 
-  useEffect(()=>{
+  useEffect(() => {
     handleNewName();
-  }, [inputName])
+  }, [inputName]);
 
-  useEffect(()=>{
-    setInputMath(["","",""]);
+  useEffect(() => {
+    setInputMath(["", "", ""]);
     setInputName("");
-  }, [props.open])
+  }, [props.open]);
 
   useEffect(() => {
     console.log("YES ", inputParameters);
@@ -120,13 +121,19 @@ export default function App(props: {
     let newErrorMsg = ["", "", ""];
     let fs: Polynomial[] = [];
 
-
     // SPELL CHECK
-    newErrorMsg = inputMath.map((input) => input==="" ? "Introduce equation" : "");
-    
+    newErrorMsg = inputMath.map((input) =>
+      input === "" ? "Introduce equation" : ""
+    );
+
     inputMath.forEach((input, idx) => {
       try {
-        fs.push(new Polynomial(input, ["s", "t"].concat(inputParameters.map(p=>p.symbol))));
+        fs.push(
+          new Polynomial(
+            input,
+            ["s", "t"].concat(inputParameters.map((p) => p.symbol))
+          )
+        );
       } catch (e: any) {
         newErrorMsg[idx] = Error(e).message;
         return [null, newErrorMsg];
@@ -152,21 +159,28 @@ export default function App(props: {
 
   const handleNewEquationImp = (): [string | null, string[]] => {
     console.log("HANDLING IMPLICIT ", inputMath[0]);
-    let newErrorMsg = ["","",""];
+    let newErrorMsg = ["", "", ""];
 
     // SPELL CHECK
     try {
-      new Polynomial(inputMath[0], ["x","y","z"].concat(inputParameters.map(p=>p.symbol)));
+      new Polynomial(
+        inputMath[0],
+        ["x", "y", "z"].concat(inputParameters.map((p) => p.symbol))
+      );
     } catch (e: any) {
       console.log("SPELL CHECK ", Error(e).message);
       newErrorMsg[0] = Error(e).message;
       return [null, newErrorMsg];
     }
-    
 
     try {
-      return [ImplicitToSDF(inputMath[0], inputParameters), newErrorMsg];
+      console.log("COMPUTING IMPLICIT SDF");
+      let r = ImplicitToSDF(inputMath[0], inputParameters);
+      console.log("HECHO", ImplicitToSDF(inputMath[0], inputParameters, true));
+      setExampleSDF(ImplicitToSDF(inputMath[0], inputParameters, true));
+      return [r, newErrorMsg];
     } catch (error: any) {
+      console.log("error:", Error(error).message);
       newErrorMsg.fill(Error(error).message);
       return [null, newErrorMsg];
     }
@@ -193,15 +207,32 @@ export default function App(props: {
     }
 
     if (res[0] !== null) {
-      setEqData({ ...eqData, parsedInput: res[0] });
-    }
+      let header = `exampleSDF(vec3 p ${
+        inputParameters.length > 0 ? "," : ""
+      }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`;
+  
+      let shaderFunction = `float ${header}{
+        float x = p.r;
+        float y = p.g;
+        float z = p.b;
+  
+        return ${res[0]};
+    }\n`;
+      setEqData({ ...eqData, parsedInput: res[0], fHeader: header });
 
+      setExampleShaderFunction(shaderFunction);
+      setExampleSDF(
+        `exampleSDF(p${inputParameters.length > 0 ? "," : ""}${inputParameters
+          .map((p, idx) => `${p.defaultVal.toFixed(4)}`)
+          .join(",")})`
+      );
+    }
     setMathErrorMsg(res[1]);
-    console.log("FINISH HANDLING ", res[0], res[1]);
+    console.log("FINISH HANDLING ", exampleSDF);
   };
 
   const handleSave = () => {
-    const id = inputName.replace(" ","").toLowerCase()
+    const id = inputName.replace(" ", "").toLowerCase();
     if (id in storage) {
       return;
     } else {
@@ -210,12 +241,10 @@ export default function App(props: {
         id: id,
         name: inputName,
         inputMode: eqInputMode,
-        input: eqInputMode===InputMode.Parametric ? inputMath : inputMath[0],
+        input: eqInputMode === InputMode.Parametric ? inputMath : inputMath[0],
         parsedInput: eqData.parsedInput,
         parameters: inputParameters,
-        fHeader: `${id}(vec3 p ${
-          inputParameters.length > 0 ? "," : ""
-        }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
+        fHeader: eqData.fHeader,
       };
 
       newData[id] = e;
@@ -228,33 +257,29 @@ export default function App(props: {
   };
 
   const computeExampleSDF = () => {
-    console.log("PARANUEVOS ", inputParameters);
-    let newExampleSDF = eqData.parsedInput;
-
-    const separators = [' ', '+', '-', '*', '/', '(', ')'];
-    const replacePattern = new RegExp(`[${separators.map(s => s === '-' ? '\\-' : s).join('')}]`, 'g');
-    const replacedStr = newExampleSDF.replace(replacePattern, (match) => `%${match}%`);
-    const parts = replacedStr.split('%').map(p=>p.replace(/\s+/g, ''));
-
-    for(let i=0; i<parts.length; i++){
-      let j : Parameter|undefined = inputParameters.find(p=> p.symbol===parts[i]);
-      if(j !== undefined){
-        parts[i] = j.defaultVal.toFixed(4).toString();
-      }
-      else if(parts[i] !== ""){
-        let n = Number(parts[i]);
-        console.log(n);
-        if(!isNaN(n))
-          parts[i] = n.toFixed(4).toString();
-      }
-
-
-    }
-    
-    newExampleSDF = parts.join(" ");
-
-    console.log("EXAMPLE SDF: ", newExampleSDF, "; PARAMETERS: ", inputParameters);
-    setExampleSDF(newExampleSDF);
+    // console.log("PARANUEVOS ", inputParameters);
+    // let newExampleSDF = eqData.parsedInput;
+    // const separators = [' ', '+', '-', '*', '/', '(', ')'];
+    // const replacePattern = new RegExp(`[${separators.map(s => s === '-' ? '\\-' : s).join('')}]`, 'g');
+    // const replacedStr = newExampleSDF.replace(replacePattern, (match) => `%${match}%`);
+    // const parts = replacedStr.split('%').map(p=>p.replace(/\s+/g, ''));
+    // for(let i=0; i<parts.length; i++){
+    //   let j : Parameter|undefined = inputParameters.find(p=> p.symbol===parts[i]);
+    //   if(j !== undefined){
+    //     parts[i] = j.defaultVal.toFixed(4).toString();
+    //   }
+    //   else if(parts[i] !== ""){
+    //     // console.log(replacedStr);
+    //     // console.log(parts);
+    //     let n = Number(parts[i]);
+    //     // console.log(n);
+    //     if(!isNaN(n))
+    //       parts[i] = n.toFixed(4).toString();
+    //   }
+    // }
+    // newExampleSDF = parts.join(" ");
+    // console.log("EXAMPLE SDF: ", newExampleSDF, "; PARAMETERS: ", inputParameters);
+    // setExampleSDF(newExampleSDF);
   };
 
   const displayInput = () => {
@@ -284,25 +309,25 @@ export default function App(props: {
         break;
     }
   };
-  
-  const displayInputHelp = () =>{
+
+  const displayInputHelp = () => {
     switch (eqInputMode) {
       case InputMode.Implicit:
         return "Write the implicit equation using variables x,y,z";
 
       case InputMode.Parametric:
-        return "Write the parametrization of each component x,y,z using s,t as parameters"
+        return "Write the parametrization of each component x,y,z using s,t as parameters";
 
       case InputMode.SDF:
-        return "Write the SDF of the surface at a point p=(x,y,z)"
+        return "Write the SDF of the surface at a point p=(x,y,z)";
 
       default:
         break;
     }
-  }
+  };
 
   function nameInUse(name: string) {
-    return name.replace(" ","").toLowerCase() in storage;
+    return name.replace(" ", "").toLowerCase() in storage;
   }
 
   function handleNewName() {
@@ -326,12 +351,11 @@ export default function App(props: {
         css={{ minHeight: "90vh" }}
       >
         <Modal.Header>
-            <Text id="modal-title" size={18}>
-              <Text b size={18}>
-                New Surface
-              </Text>
+          <Text id="modal-title" size={18}>
+            <Text b size={18}>
+              New Surface
             </Text>
-            
+          </Text>
         </Modal.Header>
         <Modal.Body>
           <Grid.Container
@@ -353,11 +377,11 @@ export default function App(props: {
                 </Button>
               </Button.Group>
               <Text id="modal-title" size={18}>
-                <Text size={16} >{displayInputHelp()}</Text>
+                <Text size={16}>{displayInputHelp()}</Text>
               </Text>
             </Row>
-            <Grid  xs={8}>
-              <Grid.Container gap={1} direction="row" >
+            <Grid xs={8}>
+              <Grid.Container gap={1} direction="row">
                 <Grid xs={12}>
                   <Grid.Container gap={2} direction="column">
                     <Grid>
@@ -388,22 +412,21 @@ export default function App(props: {
             <Grid xs={4}>
               <Shader
                 sdf={exampleSDF}
+                primitives={exampleShaderFunction}
                 style={{ width: "100%", margin: "10px" }}
               />
             </Grid>
           </Grid.Container>
-          {exampleSDF}
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            auto
-            flat
-            color="error"
-            onPress={() => props.handleClose()}
-          >
+          <Button auto flat color="error" onPress={() => props.handleClose()}>
             Discard
           </Button>
-          <Button auto onPress={() => handleSave()} disabled={mathErrorMsg.some((m) => m !== "") || nameErrorMsg !== ""}>
+          <Button
+            auto
+            onPress={() => handleSave()}
+            disabled={mathErrorMsg.some((m) => m !== "") || nameErrorMsg !== ""}
+          >
             Save
           </Button>
         </Modal.Footer>

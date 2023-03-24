@@ -245,7 +245,7 @@ export const fs = (sdf, primitives) => {
         // rotate camera
         mat3 rot = (rotateY(u_cameraAng.x)*rotateX(u_cameraAng.y));
         dir = rot * dir;
-        eye = rot * eye;
+        eye = rot * eye * u_zoom;
         //eye = (rotateY(cameraAng.x)*rotateX(cameraAng.y)) * eye * cameraRadius + lookAt;
         //eye =  eye * cameraRadius + lookAt;
         // eye.yz =   rotate2d( u_cameraAng.x ) * eye.yz * cameraRadius + vec2(lookAt.y, lookAt.z);

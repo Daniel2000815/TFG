@@ -60,8 +60,16 @@ function Shader(props) {
   };
 
   const handleMouseDown = (e) => {
-    setDragging(true);
-    setDraggingLastPos(mousePos);
+    console.log(e);
+
+    if(e.button===0){ //left click
+      setDragging(true);
+      setDraggingLastPos(mousePos);
+    }
+    else if(e.button===2){  // right click
+
+
+    }
   };
 
   const handleMouseUp = (e) => {
@@ -87,8 +95,8 @@ function Shader(props) {
         resetKeys={[explode]}
       >
             <ShadertoyReact
-              fs={props.sdf ? fs(props.sdf, primitivesCode) : defaultShader()}
-              key={props.sdf+primitivesCode}
+              fs={props.sdf ? fs(props.sdf, primitivesCode.concat(props.primitives)) : defaultShader()}
+              key={props.sdf+primitivesCode+props.primitives}
               uniforms={{
                 ...props.uniforms,
                 u_zoom: { type: '1f', value: zoom },
@@ -96,7 +104,7 @@ function Shader(props) {
                 u_diffuse: { type: '3fv', value: [1.0, 0.0, 0.0] },
                 u_ambient: { type: '3fv', value: [0.2, 0.2, 0.2] },
                 u_smoothness: { type: '1f', value: 10.0 },
-                u_cameraAng: {type: '2fv', value: angle}
+                u_cameraAng: {type: '2fv', value: angle},
               }}
             />
             </ErrorBoundary>
