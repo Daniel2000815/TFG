@@ -4,7 +4,7 @@
 
 ### Ejecución
 
-- Abrir el archivo [./Aplicacion/build/index.html](./Aplicacion/3d-visualizer/build/index.html).
+- Abrir el archivo [./Aplicacion/3d-visualizer/build/index.html](./Aplicacion/3d-visualizer/build/index.html).
 
 ### Estructura
 Se pueden elegir diferentes pestañas desde la barra superior:
