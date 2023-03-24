@@ -54,7 +54,7 @@ const defaultStorage = {
 
 export const useLocalStorage = (key: string) => {
   const [storedValue, setStoredValue] = useState(() => {
-    localStorage.clear();
+    // localStorage.clear();
     try {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : defaultStorage;

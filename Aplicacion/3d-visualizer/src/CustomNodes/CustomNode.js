@@ -118,6 +118,7 @@ function CustomNode(props) {
               {props.body}
               <Shader
                 sdf={props.sdf}
+                primitives=""
                 style={{ margin: "10px", height: "100%" }}
               />
             </>

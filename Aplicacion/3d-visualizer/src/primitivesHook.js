@@ -22,7 +22,7 @@ export const usePrimitivesHook = () => {
         }\n`
     }
 
-    console.log("PRIM " + res);
+    console.log("PRIM NUEVAS " + res);
     setPrimitives(res);
   }, [storage]);
 

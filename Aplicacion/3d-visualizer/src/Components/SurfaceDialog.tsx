@@ -207,18 +207,19 @@ export default function App(props: {
     }
 
     if (res[0] !== null) {
-      let header = `exampleSDF(vec3 p ${
+      let exampleHeader = `exampleSDF(vec3 p ${
         inputParameters.length > 0 ? "," : ""
       }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`;
-  
-      let shaderFunction = `float ${header}{
-        float x = p.r;
-        float y = p.g;
-        float z = p.b;
-  
-        return ${res[0]};
-    }\n`;
-      setEqData({ ...eqData, parsedInput: res[0], fHeader: header });
+
+      let shaderFunction = `float ${exampleHeader}{
+          float x = p.r;
+          float y = p.g;
+          float z = p.b;
+    
+          return ${res[0]};
+      }\n`;
+
+      setEqData({ ...eqData, parsedInput: res[0] });
 
       setExampleShaderFunction(shaderFunction);
       setExampleSDF(
@@ -244,7 +245,9 @@ export default function App(props: {
         input: eqInputMode === InputMode.Parametric ? inputMath : inputMath[0],
         parsedInput: eqData.parsedInput,
         parameters: inputParameters,
-        fHeader: eqData.fHeader,
+        fHeader: `${id}(vec3 p ${
+          inputParameters.length > 0 ? "," : ""
+        }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
       };
 
       newData[id] = e;
