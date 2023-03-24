@@ -9,18 +9,9 @@
 ### Estructura
 Se pueden elegir diferentes pestañas desde la barra superior:
 #### Graph
-- A la izquierda aparece un canvas con un shader de prueba, que se puede consultar en [./Aplicacion/src/fragmentShaderMovable.js](./Aplicacion/src/fragmentShaderMovable.js). 
-- En él se puede girar la cámara en torno al cubo si se mantiene el click izquierdo y hacer zoom con la rueda del ratón mientras se pulsa con el ratón.
-- A la derecha aparece el editor de nodos. Cada nodo tiene un canvas de previsualización similar al explicado anteriormente. Los puertos de entrada son los superiores y los de salida los inferiores (actualmente si se actualiza un nodo una vez conectado no se actualiza el resultado).
+Aquí se pueden realizar operaciones sobre las primitivas existentes. A la izquierda aparece un canvas con un shader de prueba que no hace nada de momento. A la derecha aparece el editor de nodos. Cada nodo tiene un canvas de previsualización. Los puertos de entrada son los de la izquierda y los de salida los de la derecha.
 
-#### Surfaces
-- Se podrá crear nuevas superficies dando su ecuación implícita usando el botón de la parte inferior izquierda de la pantalla 
-  - Hay que modificar la ecuación que viene de ejemplo para que realice los primeros cálculos.
-  - Actualmente no se guarda en memoria, solo realiza los cálculos en la misma página.
-
-### Controles
-
-#### Graph
+##### Controles
 - Creación de nodos:
   - `P`: crear nodo de primitiva.
   - `B`: crear nodo de operación booleana.
@@ -30,19 +21,32 @@ Se pueden elegir diferentes pestañas desde la barra superior:
 - Navegación / Edición:
   - `click izquierdo`: 
     - Sobre el fondo: mover vista.
-    - Sobre un nodo: seleccionar nodo.
+    - Sobre un nodo: seleccionar/mover nodo.
     - Sobre una conexión: eliminar conexión.
-  - `rueda ratón`: hacer zoom.
+    - Sobre shader: rotar vista
+  - `rueda ratón` sobre el fondo o sobre un shader: hacer zoom.
   - `retroceso`: elimina el nodo seleccionado anteriormente.
   - `s`: colapsar/expandir todos los nodos
 
+#### Surfaces
+En esta página se pueden crear nuevas superficies. Por defecto aparecen 3. Para crear una nueva superficie:
+- Pulsar el botón superior derecho de la tabla
+- Se elige el tipo de ecuación a introducir (implícita, paramétricas o SDF).
+- En la tabla inferior se pueden añadir parámetros que luego se podrán controlar en el editor de nodos.
+- A la derecha aparece un shader del mismo tipo que en la página *Graph* a modo de previsualización de la superficie creada.
+
+> *Ejemplo:* para crear una esfera con diámetro variable, puedes seleccionar la opción "SDF" e introducir `length(p) - r` en el campo de texto de la ecuación. En la tabla tendrás que añadir un nuevo parámetro con símbol `r`, etiqueta la que quieras y un valor por defecto, por ejemplo $1$. Otra opción sería usar la opción "Implicit" e introducir $x^2+y^2+z^2-r$.
+
 ### Fallos conocidos / TODO
 
-- [ ] Operador escala no funciona
-- [ ] Los nodos con una entrada no se actualizan si se la desconectas
-- [ ] Hacer sliders continuos
-- [ ] Save / Load ?
-- [ ] Añadir soporte para introducir ecuaciones
+- *Surfaces*:
+  - [ ] No se pueden usar parámetros cuando el tipo de ecuación es "Parametric". 
+  - [ ] En el modo "SDF" si hay algún fallo no te avisa, simplemente no se visualiza nada.
+  - [ ] El botón de editar no funciona.
+- *Graph*
+  - [ ] Rendimiento.
+  - [ ] Save / Load ?
+  - [ ] Faltan algunas operaciones
 
 ## Memoria
 - El archivo compilado se encuentra en [./Memoria/TFG.pdf](./Memoria/TFG.pdf).

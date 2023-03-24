@@ -2,6 +2,7 @@
   "name": "3d-visualizer",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@agjs/react-right-click-menu": "^0.0.8",
     "@chakra-ui/react": "^2.2.6",
