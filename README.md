@@ -47,6 +47,8 @@ En esta página se pueden crear nuevas superficies. Por defecto aparecen 3. Para
   - [ ] Rendimiento.
   - [ ] Save / Load ?
   - [ ] Faltan algunas operaciones
+  - [ ] Operador de escalado no funciona
+  - [ ] Eliminar conexiones hace que deje de funcionar
 
 ## Memoria
 - El archivo compilado se encuentra en [./Memoria/TFG.pdf](./Memoria/TFG.pdf).
