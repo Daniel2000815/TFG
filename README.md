@@ -42,7 +42,7 @@ En esta página se pueden crear nuevas superficies. Por defecto aparecen 3. Para
 - *Surfaces*:
   - [ ] No se pueden usar parámetros cuando el tipo de ecuación es "Parametric". 
   - [ ] En el modo "SDF" si hay algún fallo no te avisa, simplemente no se visualiza nada.
-  - [ ] El botón de editar no funciona.
+  - [x] El botón de editar no funciona.
 - *Graph*
   - [ ] Rendimiento.
   - [ ] Save / Load ?
