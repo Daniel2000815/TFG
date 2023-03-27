@@ -2,9 +2,7 @@ import React from "react";
 import {
   Modal,
   Grid,
-  Input,
   Row,
-  Checkbox,
   Button,
   Text,
 } from "@nextui-org/react";
@@ -13,7 +11,6 @@ import { useState, useEffect } from "react";
 import "katex/dist/katex.min.css";
 import useLocalStorage from "../storageHook";
 import Shader from "../CustomComponents/Shader";
-import CustomInputTable from "../CustomComponents/CustomInputTable";
 import { Polynomial } from "../multivariate-polynomial/Polynomial";
 import EquationInput from "../Components/EquationInput";
 import {
@@ -23,16 +20,13 @@ import {
 } from "../Components/EquationInput";
 
 import ImplicitToSDF from "../Components/StringToSDF";
-import nerdamerTS from "nerdamer-ts";
-import nerdamer, { ExpressionParam } from "nerdamer";
+
 import { InputMode } from "../Types/InputMode";
-import { Expression } from "nerdamer-ts/dist/Parser/Expression";
 import ParameterTable from "../Components/ParameterTable";
-import { err } from "nerdamer-ts/dist/Core/Errors";
 require("nerdamer/Calculus");
 
 export default function App(props: {
-  data: EquationData;
+  initialID: string;
   handleClose: Function;
   open: boolean;
 }) {
@@ -48,8 +42,10 @@ export default function App(props: {
     fHeader: "",
   });
 
+  // PREVIEW
   const [exampleSDF, setExampleSDF] = useState("");
   const [exampleShaderFunction, setExampleShaderFunction] = useState("");
+
   // INPUT FROM DIALOG
   const [inputMath, setInputMath] = useState(["5*t^2 + 2*s^2 - 10", "s", "t"]);
   const [inputName, setInputName] = useState("");
@@ -61,6 +57,7 @@ export default function App(props: {
 
   const [eqInputMode, setEqInputMode] = useState(InputMode.Implicit);
 
+
   useEffect(() => {
     // if (!props.data) return;
     // setEqInputMode(props.data.inputMode);
@@ -68,7 +65,7 @@ export default function App(props: {
     // setInputParameters(props.data.parameters);
     // handleNewName(props.data.name);
     // computeExampleSDF();
-  }, [props.data]);
+  }, [props.initialID]);
 
   useEffect(() => {
     console.log("INPUT MATH NEW ", inputMath);
@@ -80,14 +77,33 @@ export default function App(props: {
   }, [inputName]);
 
   useEffect(() => {
-    setInputMath(["", "", ""]);
-    setInputName("");
+    const initialSurf : EquationData = storage[props.initialID];
+    if(initialSurf){
+      setEqInputMode(initialSurf.inputMode);
+      console.log("TEST ", initialSurf);
+      console.log("TEST ", initialSurf.input);
+      if(initialSurf.inputMode === InputMode.Parametric){
+        setInputMath([initialSurf.input[0], initialSurf.input[1],initialSurf.input[2]]);
+      }
+      else{
+        setInputMath([initialSurf.input[0], "", ""]);
+        console.log("TEST ", inputMath);
+      }
+
+      setInputName(initialSurf.name);
+      
+      setInputParameters(initialSurf.parameters);
+      computeExampleSDF(initialSurf.parsedInput);
+
+    }
+    else{
+      setInputMath(["", "", ""]);
+      setInputName("");
+      setExampleSDF("");
+      setInputParameters([]);
+    }
   }, [props.open]);
 
-  useEffect(() => {
-    console.log("YES ", inputParameters);
-    computeExampleSDF();
-  }, [eqData, inputParameters]);
 
   // const latexInfo = () => {
   //   const implicit =
@@ -207,26 +223,10 @@ export default function App(props: {
     }
 
     if (res[0] !== null) {
-      let exampleHeader = `exampleSDF(vec3 p ${
-        inputParameters.length > 0 ? "," : ""
-      }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`;
-
-      let shaderFunction = `float ${exampleHeader}{
-          float x = p.r;
-          float y = p.g;
-          float z = p.b;
-    
-          return ${res[0]};
-      }\n`;
-
+  
       setEqData({ ...eqData, parsedInput: res[0] });
-
-      setExampleShaderFunction(shaderFunction);
-      setExampleSDF(
-        `exampleSDF(p${inputParameters.length > 0 ? "," : ""}${inputParameters
-          .map((p, idx) => `${p.defaultVal.toFixed(4)}`)
-          .join(",")})`
-      );
+      computeExampleSDF(res[0]);
+      
     }
     setMathErrorMsg(res[1]);
     console.log("FINISH HANDLING ", exampleSDF);
@@ -234,21 +234,27 @@ export default function App(props: {
 
   const handleSave = () => {
     const id = inputName.replace(" ", "").toLowerCase();
-    if (id in storage) {
+
+    if (nameInUse(inputName)) {
       return;
     } else {
-      let newData = { ...storage };
+      let newData : any = {};
       const e: EquationData = {
         id: id,
         name: inputName,
         inputMode: eqInputMode,
-        input: eqInputMode === InputMode.Parametric ? inputMath : inputMath[0],
+        input: inputMath,
         parsedInput: eqData.parsedInput,
         parameters: inputParameters,
         fHeader: `${id}(vec3 p ${
           inputParameters.length > 0 ? "," : ""
         }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
       };
+
+      Object.keys(storage).forEach((k:string) => {
+        if(props.initialID===id || k !== props.initialID)
+          newData[k] = storage[k];
+      });
 
       newData[id] = e;
       console.log("STORING ", e);
@@ -259,30 +265,25 @@ export default function App(props: {
     props.handleClose();
   };
 
-  const computeExampleSDF = () => {
-    // console.log("PARANUEVOS ", inputParameters);
-    // let newExampleSDF = eqData.parsedInput;
-    // const separators = [' ', '+', '-', '*', '/', '(', ')'];
-    // const replacePattern = new RegExp(`[${separators.map(s => s === '-' ? '\\-' : s).join('')}]`, 'g');
-    // const replacedStr = newExampleSDF.replace(replacePattern, (match) => `%${match}%`);
-    // const parts = replacedStr.split('%').map(p=>p.replace(/\s+/g, ''));
-    // for(let i=0; i<parts.length; i++){
-    //   let j : Parameter|undefined = inputParameters.find(p=> p.symbol===parts[i]);
-    //   if(j !== undefined){
-    //     parts[i] = j.defaultVal.toFixed(4).toString();
-    //   }
-    //   else if(parts[i] !== ""){
-    //     // console.log(replacedStr);
-    //     // console.log(parts);
-    //     let n = Number(parts[i]);
-    //     // console.log(n);
-    //     if(!isNaN(n))
-    //       parts[i] = n.toFixed(4).toString();
-    //   }
-    // }
-    // newExampleSDF = parts.join(" ");
-    // console.log("EXAMPLE SDF: ", newExampleSDF, "; PARAMETERS: ", inputParameters);
-    // setExampleSDF(newExampleSDF);
+  const computeExampleSDF = (parsedSDF: string) => {
+    let exampleHeader = `exampleSDF(vec3 p ${
+      inputParameters.length > 0 ? "," : ""
+    }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`;
+
+    let shaderFunction = `float ${exampleHeader}{
+        float x = p.r;
+        float y = p.g;
+        float z = p.b;
+  
+        return ${parsedSDF};
+    }\n`;
+
+    setExampleShaderFunction(shaderFunction);
+      setExampleSDF(
+        `exampleSDF(p${inputParameters.length > 0 ? "," : ""}${inputParameters
+          .map((p, idx) => `${p.defaultVal.toFixed(4)}`)
+          .join(",")})`
+      );
   };
 
   const displayInput = () => {
@@ -330,7 +331,12 @@ export default function App(props: {
   };
 
   function nameInUse(name: string) {
-    return name.replace(" ", "").toLowerCase() in storage;
+    const id = name.replace(" ", "").toLowerCase();
+    if(props.initialID==="")
+      return id in storage;
+    else{
+      return id!==props.initialID && id in storage;
+    }
   }
 
   function handleNewName() {
@@ -369,13 +375,13 @@ export default function App(props: {
           >
             <Row align="center" justify="flex-start">
               <Button.Group color="primary" bordered auto>
-                <Button onClick={() => setEqInputMode(InputMode.Implicit)}>
+                <Button flat={eqInputMode===InputMode.Implicit} onClick={() => setEqInputMode(InputMode.Implicit)}>
                   Implicit
                 </Button>
-                <Button onClick={() => setEqInputMode(InputMode.Parametric)}>
+                <Button flat={eqInputMode===InputMode.Parametric} onClick={() => setEqInputMode(InputMode.Parametric)}>
                   Parametric
                 </Button>
-                <Button onClick={() => setEqInputMode(InputMode.SDF)}>
+                <Button flat={eqInputMode===InputMode.SDF} onClick={() => setEqInputMode(InputMode.SDF)}>
                   SDF
                 </Button>
               </Button.Group>

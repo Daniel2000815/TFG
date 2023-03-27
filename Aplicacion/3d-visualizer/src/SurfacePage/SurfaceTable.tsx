@@ -5,11 +5,12 @@ import useLocalStorage from "../storageHook";
 import React, { useEffect, useState } from "react";
 import { EditIcon } from "./EditIcon";
 import { DeleteIcon } from "./DeleteIcon";
-import { CiCirclePlus } from "react-icons/ci";
+import { CiCirclePlus,CiRedo } from "react-icons/ci";
 import { AddIcon } from "./AddIcon";
 
 import "katex/dist/katex.min.css";
 import { InputMode } from "../Types/InputMode";
+import { defaultStorage } from "../defaultStorage";
 var Latex = require("react-latex");
 
 const columns = [
@@ -35,7 +36,7 @@ const renderCell = (data: EquationData, col: React.Key, handleEdit: Function, ha
         
         {data.inputMode === InputMode.SDF ?
         <Text css={{ fontFamily: "Fira Code" }}>{data.input}</Text> :
-        <Latex>{` $$ ${data.input} $$`}</Latex>}
+        <Latex>{` $$ ${data.inputMode===InputMode.Implicit ? data.input[0] : data.input.join(',')} $$`}</Latex>}
       </Row>
     );
   }
@@ -84,13 +85,13 @@ const renderCell = (data: EquationData, col: React.Key, handleEdit: Function, ha
 };
 
 
-export default function SurfaceTable(props: {handleNew: Function}) {
+export default function SurfaceTable(props: {handleNew: Function, handleEdit: Function}) {
   const [storage, setStorage] = useLocalStorage("user_implicits");
   const [rows, setRows] = useState<EquationData[]>([]);
 
   useEffect(() => {
     let newRows: EquationData[] = [];
-    console.log("WY");
+    console.log("WY ", storage);
     Object.keys(storage).forEach(function (key, index) {
       const item: EquationData = storage[key];
       console.log("DATA ", item);
@@ -98,28 +99,36 @@ export default function SurfaceTable(props: {handleNew: Function}) {
     });
 
     setRows(newRows);
-    console.log(newRows);
+    
+    console.log("rows", newRows);
   }, [storage]);
 
   const handleEdit = (id: string) => {
-    
+    props.handleEdit(id);
   }
   
   const handleDelete = (id: string) => {
-    let newStorage: EquationData[] = []
+    let newData : any = {};
 
-    Object.keys(storage).forEach(function (key, index) {
-      const item: EquationData = storage[key];
-      if(item.id !== id)
-        newStorage.push(item);
+    Object.keys(storage).forEach((k:string) => {
+      if(k !== id)
+        newData[k] = storage[k];
     });
+      
+    setStorage(newData);
+    console.log(newData);
+  }
 
-    setStorage(newStorage);
-    console.log(newStorage);
+  const handleRestore = () => {
+    setStorage(defaultStorage);
   }
 
   function AddButton(){
     return (<Tooltip content="New surface"><Button auto light icon={<CiCirclePlus size={24} />} onClick={() => props.handleNew()}/></Tooltip>);
+  }
+
+  function RestoreButton(){
+    return (<Tooltip content="Restore dafult"><Button auto light icon={<CiRedo size={24} />} onClick={() => handleRestore()}/></Tooltip>);
   }
 
   return (
@@ -141,16 +150,16 @@ export default function SurfaceTable(props: {handleNew: Function}) {
             key={column.uid}
             align={column.uid === "actions" ? "center" : "start"}
           >
-            {column.uid!=="actions" ? column.name : <AddButton/>}
+            {column.uid!=="actions" ? column.name : <Row><AddButton/><RestoreButton/></Row>}
               
           </Table.Column>
         )}
       </Table.Header>
       <Table.Body items={rows}>
         {(item) => (
-          <Table.Row key={item.id}>
+          <Table.Row key={item.id} >
             {(columnKey) => (
-              <Table.Cell>{renderCell(item, columnKey, handleEdit, handleDelete)}</Table.Cell>
+              <Table.Cell >{renderCell(item, columnKey, handleEdit, handleDelete)}</Table.Cell>
             )}
           </Table.Row>
         )}

@@ -35,38 +35,38 @@ function Shader(props) {
   const zoomIncrement = 0.5;
 
   const [dragging, setDragging] = useState(false);
-  const [draggingLastPos, setDraggingLastPos] = useState([0,0]);
-  const [mousePos, setMousePos] = useState([0,0]);
-  const [mouseDrag, setMouseDrag] = useState([0.0,0.0]);
-  const [angle, setAngle] = useState([10,0]);
+  const [draggingLastPos, setDraggingLastPos] = useState([0, 0]);
+  const [mousePos, setMousePos] = useState([0, 0]);
+  const [mouseDrag, setMouseDrag] = useState([0.0, 0.0]);
+  const [angle, setAngle] = useState([10, 0]);
 
-  useEffect(() => {}, [props.shader, props.uniforms, primitivesCode]);
+  useEffect(() => { }, [props.shader, props.uniforms, primitivesCode]);
 
   const handleMouseMove = (e) => {
     let rect = e.currentTarget.getBoundingClientRect();
     let x = (e.clientX - rect.left) / rect.width;
     let y = (e.clientY - rect.top) / rect.height;
 
-    setMousePos([x,y]);
+    setMousePos([x, y]);
 
-    if(dragging){
-      let difX = x-draggingLastPos[0];
-      let difY = y-draggingLastPos[1];
+    if (dragging) {
+      let difX = x - draggingLastPos[0];
+      let difY = y - draggingLastPos[1];
 
-      setAngle([angle[0]+difX, angle[1]+difY]);
+      setAngle([angle[0] + difX, angle[1] + difY]);
       setDraggingLastPos(mousePos);
-      console.log("ANGLE: ", [angle[0]+difX, angle[1]+difY]);
+      console.log("ANGLE: ", [angle[0] + difX, angle[1] + difY]);
     }
   };
 
   const handleMouseDown = (e) => {
     console.log(e);
 
-    if(e.button===0){ //left click
+    if (e.button === 0) { //left click
       setDragging(true);
       setDraggingLastPos(mousePos);
     }
-    else if(e.button===2){  // right click
+    else if (e.button === 2) {  // right click
 
 
     }
@@ -81,36 +81,38 @@ function Shader(props) {
   };
 
   return (
-    <div style={{...props.style, borderColor:"red"}} onMouseMove={handleMouseMove} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseLeave}>
+    <div style={{ ...props.style, borderColor: "red" }} onMouseMove={handleMouseMove} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseLeave}>
       <ReactScrollWheelHandler
-        timeout="0"
+        timeout={0}
         wheelConfig={[100, 1000, 0.05]}
         preventScroll="true"
         upHandler={(e) => setZoom(zoom + zoomIncrement)}
         downHandler={(e) => setZoom(zoom - zoomIncrement)}
+        disableSwipeWithMouse={true}
       >
-          <ErrorBoundary
-        FallbackComponent={ErrorFallback}
-        onReset={() => setExplode(false)}
-        resetKeys={[explode]}
-      >
-            <ShadertoyReact
-              fs={props.sdf ? fs(props.sdf, primitivesCode.concat(props.primitives)) : defaultShader()}
-              key={props.sdf+primitivesCode+props.primitives}
-              uniforms={{
-                ...props.uniforms,
-                u_zoom: { type: '1f', value: zoom },
-                u_specular: { type: '3fv', value: [1.0, 0.0, 1.0] },
-                u_diffuse: { type: '3fv', value: [1.0, 0.0, 0.0] },
-                u_ambient: { type: '3fv', value: [0.2, 0.2, 0.2] },
-                u_smoothness: { type: '1f', value: 10.0 },
-                u_cameraAng: {type: '2fv', value: angle},
-              }}
-            />
-            </ErrorBoundary>
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={() => setExplode(false)}
+          resetKeys={[explode]}
+        >
+          <ShadertoyReact
+            fs={props.sdf ? fs(props.sdf, primitivesCode.concat(props.primitives)) : defaultShader()}
+            key={props.sdf + primitivesCode + props.primitives}
+            uniforms={{
+              ...props.uniforms,
+              u_zoom: { type: '1f', value: zoom },
+              u_specular: { type: '3fv', value: [1.0, 0.0, 1.0] },
+              u_diffuse: { type: '3fv', value: [1.0, 0.0, 0.0] },
+              u_ambient: { type: '3fv', value: [0.2, 0.2, 0.2] },
+              u_smoothness: { type: '1f', value: 10.0 },
+              u_cameraAng: { type: '2fv', value: angle },
+            }}
+          />
+        </ErrorBoundary>
       </ReactScrollWheelHandler>
-    </div>
-  );
+    </div>);
+
+
 }
 
 export default React.memo(Shader);

@@ -9,7 +9,6 @@ import SurfaceDialog from '../Components/SurfaceDialog';
 import SurfaceTable from './SurfaceTable';
 import { InputMode } from '../Types/InputMode';
 import TestNode from '../GraphPage/TestNode';
-import Shader from '../CustomComponents/Shader';
 const latexEq = (eq) => {
   return <Latex>{`$ ${eq} $`}</Latex>;
 };
@@ -26,24 +25,28 @@ export default function SurfacePage() {
   const [tableRows, setTableRows] = useState([]);
   const [editedRow, setEditedRow] = useState('');
   const [sdf, setSdf] = useState("sphere(p, 1.5000)");
-  
-  useEffect(() => {
-    let newRows = [];
-    Object.keys(storage).forEach(function (key, index) {
-      const item = storage[key];
+  const [editID, setEditID] = useState("");
 
-      newRows.push({
-        name: item.name,
-        input: item.inputMode===InputMode.SDF ?item.input : nerdamer.convertToLaTeX(item.input),
-        parameters: item.parameters.map(p => p.symbol),
-        sdf: item.parsedInput,
+  // useEffect(() => {
+  //   let newRows = [];
+  //   Object.keys(storage).forEach(function (key, index) {
+  //     const item = storage[key];
+  //     console.log("item ", item.input);
+
+  //     let latex = "";
+  //     if(item.inputMode!==InputMode.SDF) item.input.forEach(i => {latex += nerdamer.convertToLaTeX(i) + ', '; console.log(latex)});
+  //     newRows.push({
+  //       name: item.name,
+  //       input: item.inputMode===InputMode.SDF ?item.input : latex,
+  //       parameters: item.parameters.map(p => p.symbol),
+  //       sdf: item.parsedInput,
         
-        inputMode: item.inputMode
-      });
-    });
+  //       inputMode: item.inputMode
+  //     });
+  //   });
 
-    setTableRows(newRows);
-  }, [storage]);
+  //   setTableRows(newRows);
+  // }, [storage]);
 
   const handleDelete = (selectedList) => {
     console.log("TRYING TO DELETE");
@@ -59,6 +62,16 @@ export default function SurfacePage() {
     setStorage(newStorage);
   };
 
+  const handleEdit = (id) => {
+    setEditID(id); 
+    setDialogOpen(true);
+  }
+
+  const handleNew = () => {
+    setEditID("");
+    setDialogOpen(true);
+  }
+
   return (
     <Box>
       {/* <CustomTable
@@ -70,10 +83,10 @@ export default function SurfacePage() {
       /> */}
       {/* <TestNode/> */}
       {/* <Shader style={{ width: "1000px", margin: "10px" }} sdf={"length(max(abs(p) - vec3(1.0),0.0)) + min(max(abs(p.x) - 1.0,max(abs(p.y) - 1.0,abs(p.z) - 1.0)),0.0)"}/> */}
-      <SurfaceTable handleNew={()=>setDialogOpen(true)}/>
 
+      <SurfaceTable handleEdit={(id) => handleEdit(id)} handleNew={()=>handleNew()}/>
       <SurfaceDialog
-        data={null} 
+        initialID={editID} 
         handleClose={() => setDialogOpen(false)}
         open={dialogOpen}
       />

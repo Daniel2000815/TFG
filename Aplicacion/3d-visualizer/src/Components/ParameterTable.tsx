@@ -156,7 +156,7 @@ export default function ParameterTable(props: {
 
 
   return (
-    <Card variant="bordered" css={{ $$cardColor: "#FFFFFF" }}>
+    <Card variant="bordered" >
       <Card.Header>
         <Row align="stretch" justify="space-between">
           <Text h5>Parameters</Text>
