@@ -10,7 +10,8 @@ import {
 } from "@nextui-org/react";
 import {Delete} from "react-iconly";
 import { set } from "nerdamer-ts/dist/Functions/Core";
-
+import { DeleteIcon } from "../SurfacePage/DeleteIcon";
+import { CiCirclePlus,CiRedo } from "react-icons/ci";
 const defaultParameter = {
   symbol: "",
   label: "",
@@ -162,16 +163,16 @@ export default function ParameterTable(props: {
           <Text h5>Parameters</Text>
 
           <Button
+            icon={<CiCirclePlus size={24}/>}
             onClick={() => handleCreateParam()}
-            size="sm"
             css={{ height: "30px", width: "20px" }}
+            light
             auto
             disabled={params.length >= 4}
             color="primary"
             rounded
-          >
-            +
-          </Button>
+          />
+          
         </Row>
       </Card.Header>
       <Card.Body>

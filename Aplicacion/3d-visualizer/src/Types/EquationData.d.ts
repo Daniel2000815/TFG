@@ -14,11 +14,20 @@ declare global {
     fHeader: string,
   }
 
+  interface Material {
+    specular: float[],
+    ambient: float[],
+    diffuse: float[],
+    smoothness: float
+  }
+
   interface Parameter {
     symbol: string; 
     label: string; 
     defaultVal: number
   }
+
+  
 
 }
 

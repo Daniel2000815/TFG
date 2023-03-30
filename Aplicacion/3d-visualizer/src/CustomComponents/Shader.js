@@ -9,6 +9,7 @@ import { fs } from '../ShaderStuff/sdfShader';
 import usePrimitivesHook from '../primitivesHook';
 import { ErrorBoundary } from 'react-error-boundary';
 import { borderColor } from '@mui/system';
+import { defaultMaterial } from './defaultMaterial';
 
 
 function ErrorFallback({ error, resetErrorBoundary }) {
@@ -39,8 +40,13 @@ function Shader(props) {
   const [mousePos, setMousePos] = useState([0, 0]);
   const [mouseDrag, setMouseDrag] = useState([0.0, 0.0]);
   const [angle, setAngle] = useState([10, 0]);
-
+  const [material, setMaterial] = useState(defaultMaterial);
   useEffect(() => { }, [props.shader, props.uniforms, primitivesCode]);
+  
+  useEffect(()=>{
+    if(props.material)
+      setMaterial(props.material);
+  }, [props.material])
 
   const handleMouseMove = (e) => {
     let rect = e.currentTarget.getBoundingClientRect();
@@ -101,10 +107,10 @@ function Shader(props) {
             uniforms={{
               ...props.uniforms,
               u_zoom: { type: '1f', value: zoom },
-              u_specular: { type: '3fv', value: [1.0, 0.0, 1.0] },
-              u_diffuse: { type: '3fv', value: [1.0, 0.0, 0.0] },
-              u_ambient: { type: '3fv', value: [0.2, 0.2, 0.2] },
-              u_smoothness: { type: '1f', value: 10.0 },
+              u_specular: { type: '3fv', value: material.specular },
+              u_diffuse: { type: '3fv', value: material.diffuse },
+              u_ambient: { type: '3fv', value: material.ambient },
+              u_smoothness: { type: '1f', value: material.smoothness },
               u_cameraAng: { type: '2fv', value: angle },
             }}
           />

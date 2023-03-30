@@ -3,8 +3,11 @@ import {
   Modal,
   Grid,
   Row,
+  Col,
   Button,
   Text,
+  Collapse,
+  Input
 } from "@nextui-org/react";
 import { useState, useEffect } from "react";
 
@@ -19,10 +22,13 @@ import {
   ImplicitInput,
 } from "../Components/EquationInput";
 
+import ColorPick from "../SurfacePage/ColorPicker";
 import ImplicitToSDF from "../Components/StringToSDF";
 
 import { InputMode } from "../Types/InputMode";
 import ParameterTable from "../Components/ParameterTable";
+import MaterialInput from "../SurfacePage/MaterialInput";
+
 require("nerdamer/Calculus");
 
 export default function App(props: {
@@ -50,6 +56,7 @@ export default function App(props: {
   const [inputMath, setInputMath] = useState(["5*t^2 + 2*s^2 - 10", "s", "t"]);
   const [inputName, setInputName] = useState("");
   const [inputParameters, setInputParameters] = useState<Parameter[]>([]);
+  const [inputMaterial, setInputMaterial] = useState<Material>();
 
   // VALIDATION OS INPUT FROM DIALOG
   const [mathErrorMsg, setMathErrorMsg] = useState(["", "", ""]);
@@ -407,15 +414,25 @@ export default function App(props: {
                     <Grid>{displayInput()}</Grid>
                   </Grid.Container>
                 </Grid>
-                <Grid xs={12}>
-                  <ParameterTable
+                <Grid.Container gap={2}>
+      <Grid xs={12}>
+        <Collapse.Group shadow splitted>
+          <Collapse title="Parameters">
+          <ParameterTable
                     params={inputParameters}
                     onEditParams={(newParams: Parameter[]) => {
                       setInputParameters(newParams.map((p) => p));
                       console.log("EDIT PARAMS", newParams);
                     }}
                   />
-                </Grid>
+          </Collapse>
+          <Collapse title="Material">
+                    <MaterialInput handleChange={(m: Material)=>setInputMaterial(m)}/>
+          </Collapse>
+          
+        </Collapse.Group>
+      </Grid>
+    </Grid.Container>
               </Grid.Container>
             </Grid>
             <Grid xs={4}>
@@ -423,6 +440,7 @@ export default function App(props: {
                 sdf={exampleSDF}
                 primitives={exampleShaderFunction}
                 style={{ width: "100%", margin: "10px" }}
+                material={inputMaterial}
               />
             </Grid>
           </Grid.Container>
