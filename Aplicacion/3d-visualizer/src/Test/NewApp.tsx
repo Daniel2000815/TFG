@@ -1,10 +1,10 @@
 import React from "react";
 import { Navbar, Button, Link, Text } from "@nextui-org/react";
-import { Layout } from "./Test/Layout.js";
-import { AcmeLogo } from "./Test/AcmeLogo.js";
+import { Layout } from "./Layout.js";
+import { AcmeLogo } from "./AcmeLogo.js";
 import { createTheme, NextUIProvider } from "@nextui-org/react";
-import Graph from "./GraphPage/Graph.js";
-import SurfacePage from "./SurfacePage/SurfacePage.js";
+import Graph from "../GraphPage/Graph.js";
+import SurfacePage from "../SurfacePage/SurfacePage.js";
 
 const theme = createTheme({
   type: "dark", // it could be "light" or "dark"

@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { RGBColor } from "react-color";
 import ColorPicker from "./ColorPicker";
-import { defaultMaterial } from "../CustomComponents/defaultMaterial";
+import { defaultMaterial } from "../../Defaults/defaultMaterial";
 
 export default function MaterialInput(props: {handleChange: Function}) {
   const [material, setMaterial] = React.useState<Material>(defaultMaterial);

@@ -13,11 +13,11 @@ import DeformNode from '../CustomNodes/DeformNode.js';
 import TransformNode from '../CustomNodes/TransformNode.js';
 
 import ButtonEdge from '../CustomNodes/ButtonEdge';
-import CustomControls from '../CustomComponents/CustomControls.js';
+import CustomControls from '../CustomComponents/ShaderPage/CustomControls.js';
 import '../styles.css';
 import { GraphProvider } from './GraphContext.js';
-import CustomContextMenu from '../CustomComponents/CustomContextMenu.js';
-import useLocalStorage from '../storageHook.ts';
+import CustomContextMenu from '../CustomComponents/ShaderPage/CustomContextMenu.js';
+import useLocalStorage from '../Utils/storageHook.ts';
 import { Box, Tabs } from '@mui/material';
 import {isMobile} from 'react-device-detect';
 

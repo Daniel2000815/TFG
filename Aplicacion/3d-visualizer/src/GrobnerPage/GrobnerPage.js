@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { Maximize, SignalCellularNoSimOutlined } from '@mui/icons-material';
-import Polynomial from '../Polynomial';
+import Polynomial from '../Utils/Polynomial';
 import { variables } from 'nerdamer-ts/dist/Core/Utils';
 
 const nerdamer = require('nerdamer');

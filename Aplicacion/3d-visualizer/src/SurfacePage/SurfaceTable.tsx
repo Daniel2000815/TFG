@@ -1,15 +1,12 @@
 import { Table, Text, Row, Col, Tooltip, Badge, Button } from "@nextui-org/react";
-import { IconButton } from "./IconButton";
 import "@fontsource/fira-code";
-import useLocalStorage from "../storageHook";
+import useLocalStorage from "../Utils/storageHook";
 import React, { useEffect, useState } from "react";
-import { EditIcon } from "./EditIcon";
-import { DeleteIcon } from "./DeleteIcon";
-import { CiCirclePlus,CiRedo } from "react-icons/ci";
-import { AddIcon } from "./AddIcon";
+
+import { CiCirclePlus,CiRedo,CiTrash,CiEdit } from "react-icons/ci";
 
 import { InputMode } from "../Types/InputMode";
-import { defaultStorage } from "../defaultStorage";
+import { defaultStorage } from "../Defaults/defaultStorage";
 import "katex/dist/katex.min.css";
 
 var Latex = require("react-latex");
@@ -53,30 +50,15 @@ const renderCell = (data: EquationData, col: React.Key, handleEdit: Function, ha
       <Row justify="center" align="center">
         <Col css={{ d: "flex" }}>
           <Tooltip content="Edit">
-            <IconButton onClick={() => handleEdit(data.id)}>
-              <EditIcon
-                size={20}
-                fill="#979797"
-                height={undefined}
-                width={undefined}
-              />
-            </IconButton>
+          <Button auto light icon={<CiEdit size={24} />} onClick={() => handleEdit(data.id)}/>
           </Tooltip>
         </Col>
         <Col css={{ d: "flex" }}>
           <Tooltip
             content="Delete"
             color="error"
-            onClick={() => handleDelete(data.id)}
           >
-            <IconButton>
-              <DeleteIcon
-                size={20}
-                fill="#FF0080"
-                height={undefined}
-                width={undefined}
-              />
-            </IconButton>
+            <Button auto light color="error" icon={<CiTrash size={24} />} onClick={() => handleDelete(data.id)}/>
           </Tooltip>
         </Col>
       </Row>

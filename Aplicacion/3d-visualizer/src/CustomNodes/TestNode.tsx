@@ -1,8 +1,8 @@
 import { Card, Grid, Text, Button, Row } from "@nextui-org/react";
 import { useState } from "react";
-import EquationInput from "../Components/EquationInput";
+import EquationInput from "../CustomComponents/MaterialPage/EquationInput";
 import { createTheme, NextUIProvider } from "@nextui-org/react";
-import ThreeShader from "./ThreeShader";
+
 
 const theme = createTheme({
   type: "dark", // it could be "light" or "dark"
@@ -46,7 +46,6 @@ export default function App() {
         {EquationInput(0, "test 1", "t1", ()=>{}, "", "left", "x")}
         {EquationInput(1, "test 1", "t1", ()=>{}, "", "left", "y")}
         {EquationInput(2, "test 1", "t1", ()=>{}, "", "left", "z")}
-        <ThreeShader/>
       </Card.Body>}
       <Card.Footer>
           <Button onClick={()=>setCollapse(!collapse)} flat css={{width: "100%", maxHeight: "20px"}}>Agree</Button>

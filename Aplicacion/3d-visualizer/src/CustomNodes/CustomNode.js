@@ -1,11 +1,11 @@
 import React, { memo, useEffect, useContext } from "react";
 import Shader from "../CustomComponents/Shader";
 import { useTheme } from "@mui/material/styles";
-import Dropdown from "../CustomComponents/Dropdown";
+import Dropdown from "../CustomComponents/ShaderPage/Dropdown";
 import CustomHandle from "./CustomHandle";
 import GraphContext from "../GraphPage/GraphContext.js";
-import ToggleButton from "../CustomComponents/ToggleButton";
-import newId from "../uniqueIdHook";
+import ToggleButton from "../CustomComponents/ShaderPage/ToggleButton";
+import newId from "../Utils/uniqueIdHook";
 
 function CustomNode(props) {
   const [showMore, setShowMore] = React.useState(true);

@@ -8,9 +8,7 @@ import {
   Button,
   Tooltip,
 } from "@nextui-org/react";
-import { Delete } from "react-iconly";
-import { set } from "nerdamer-ts/dist/Functions/Core";
-import { DeleteIcon } from "../SurfacePage/DeleteIcon";
+
 import { CiCirclePlus, CiTrash } from "react-icons/ci";
 import { Newspaper } from "@mui/icons-material";
 const defaultParameter = {

@@ -6,10 +6,10 @@ import ShadertoyReact from 'shadertoy-react';
 import { defaultShader } from '../ShaderStuff/defaultShader';
 import ReactScrollWheelHandler from 'react-scroll-wheel-handler';
 import { fs } from '../ShaderStuff/sdfShader';
-import usePrimitivesHook from '../primitivesHook';
+import usePrimitivesHook from '../Utils/primitivesHook';
 import { ErrorBoundary } from 'react-error-boundary';
 import { borderColor } from '@mui/system';
-import { defaultMaterial } from './defaultMaterial';
+import { defaultMaterial } from '../Defaults/defaultMaterial';
 
 
 function ErrorFallback({ error, resetErrorBoundary }) {

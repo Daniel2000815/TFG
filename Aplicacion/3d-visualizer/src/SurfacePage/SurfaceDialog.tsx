@@ -1,293 +1,466 @@
-// import React, { useState, useEffect } from "react";
-// import Grid from "@mui/material/Unstable_Grid2";
-// import InputAdornment from "@mui/material/InputAdornment";
-// import ButtonGroup from "@mui/material/ButtonGroup";
-// import TextField from "@mui/material/TextField";
-// import Dialog from "@mui/material/Dialog";
-// import DialogActions from "@mui/material/DialogActions";
-// import Box from "@mui/material/Box";
-// import DialogContent from "@mui/material/DialogContent";
-// import DialogTitle from "@mui/material/DialogTitle";
-// import Button from "@mui/material/Button";
-// import "katex/dist/katex.min.css";
-// import useLocalStorage from "../storageHook";
-// import Shader from "../CustomComponents/Shader";
-// import CustomInputTable from "../CustomComponents/CustomInputTable";
-// import { Polynomial } from "../multivariate-polynomial/Polynomial";
+import React from "react";
+import {
+  Modal,
+  Grid,
+  Row,
+  Col,
+  Button,
+  Text,
+  Collapse,
+  Input
+} from "@nextui-org/react";
+import { useState, useEffect } from "react";
 
-// import  {SDFInput, ParametricInput, ImplicitInput} from "../Components/EquationInput";
-// import ImplicitToSDF from "../Components/StringToSDF";
-// import nerdamerTS from "nerdamer-ts";
-// import nerdamer, { ExpressionParam } from "nerdamer";
-// import { InputMode } from "../Types/InputMode";
-// import { Expression } from "nerdamer-ts/dist/Parser/Expression";
-// import ParameterTable from "../Components/ParameterTable";
-// import { err } from "nerdamer-ts/dist/Core/Errors";
-// require("nerdamer/Calculus");
+import "katex/dist/katex.min.css";
+import useLocalStorage from "../Utils/storageHook";
+import Shader from "../CustomComponents/Shader";
+import { Polynomial } from "../multivariate-polynomial/Polynomial";
+import EquationInput from "../CustomComponents/MaterialPage/EquationInput";
+import {
+  SDFInput,
+  ParametricInput,
+  ImplicitInput,
+} from "../CustomComponents/MaterialPage/EquationInput";
 
-export default function App(){
-  <></>
-}
-// export default function SurfaceDialog(props : {
-//   data: EquationData,
-//   handleClose: Function,
-//   open: boolean
-// }
-// ) {
-//   const [eqData, setEqData] = useState({
-//     id: "",
-//     name: "",
-//     inputMode: InputMode.Implicit,
-//     input: "",
-//     parsedInput: "",
-//     parameters: [""],
-//     fHeader: ""
-//   });
+import ColorPick from "../CustomComponents/MaterialPage/ColorPicker";
+import ImplicitToSDF from "../Utils/StringToSDF";
 
-//   const [storage, setStorage] = useLocalStorage("user_implicits");
+import { InputMode } from "../Types/InputMode";
+import ParameterTable from "../CustomComponents/MaterialPage/ParameterTable";
+import MaterialInput from "../CustomComponents/MaterialPage/MaterialInput";
+import "katex/dist/katex.min.css";
 
-//   // INPUT FROM DIALOG
-//   const [inputMath1, setInputMath1] = useState("5*t^2 + 2*s^2 - 10");
-//   const [inputMath2, setInputMath2] = useState("t");
-//   const [inputMath3, setInputMath3] = useState("s");
-//   const [inputName, setInputName] = useState("");
-//   const [inputParameters, setInputParameters] = useState<Parameter[]>([]);
+var Latex = require("react-latex");
 
-//   // VALIDATION OS INPUT FROM DIALOG
-//   const [validName, setValidName] = useState(false);
-//   const [mathErrorMsg, setMathErrorMsg] = useState(["", "", ""]);
-//   const [nameErrorMsg, setNameErrorMsg] = useState("");
+require("nerdamer/Calculus");
 
-//   const [eqInputMode, setEqInputMode] = useState(InputMode.Implicit);
+export default function App(props: {
+  initialID: string;
+  handleClose: Function;
+  open: boolean;
+}) {
+  const [storage, setStorage] = useLocalStorage("user_implicits");
 
-//   // const latexInfo = () => {
-//   //   const implicit =
-//   //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.f.toString()) : "";
-//   //   const dx =
-//   //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dx.toString()) : "";
-//   //   const dy =
-//   //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dy.toString()) : "";
-//   //   const dz =
-//   //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dz.toString()) : "";
-//   //   const norm =
-//   //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.norm.toString()) : "";
-//   //   const sdf =
-//   //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.sdf.toString()) : "";
+  const [eqData, setEqData] = useState({
+    id: "",
+    name: "",
+    inputMode: InputMode.Implicit,
+    input: "",
+    parsedInput: "",
+    parameters: [""],
+    fHeader: "",
+  });
 
-//   //   return `\\begin{align*}
-//   //         f(x,y,z) &=  ${implicit} \\\\[10pt]
-//   //         \\nabla f(x,y,z) &= \\left(
-//   //           ${dx},
-//   //           ${dy},
-//   //           ${dz}
-//   //         \\right) \\\\[10pt]
-//   //         \\Vert \\nabla f(x,y,z) \\Vert &= ${norm} \\\\[10pt]
-//   //         \\text{sdf}(x,y,z) &= ${sdf}
-//   //       \\end{align*}`;
-//   // };
+  // PREVIEW
+  const [exampleSDF, setExampleSDF] = useState("");
+  const [exampleShaderFunction, setExampleShaderFunction] = useState("");
 
-//   const handleNewEquation = (newEq: string, eqIndex: number) => {
-//     let f: string | null = null; // Parsed string by nerdamer
-//     let newErrorMsg = [...mathErrorMsg];
-//     newErrorMsg[eqIndex] = newEq==="" ? "Introduce equation":"";
+  // INPUT FROM DIALOG
+  const [inputMath, setInputMath] = useState(["5*t^2 + 2*s^2 - 10", "s", "t"]);
+  const [inputName, setInputName] = useState("");
+  const [inputParameters, setInputParameters] = useState<Parameter[]>([]);
+  const [inputMaterial, setInputMaterial] = useState<Material>();
 
-//     let res: string | null = null;
+  // VALIDATION OS INPUT FROM DIALOG
+  const [mathErrorMsg, setMathErrorMsg] = useState(["", "", ""]);
+  const [nameErrorMsg, setNameErrorMsg] = useState("");
 
-//     // Modificamos el texto que se ve en el campo de texto correspondiente
-//     if(eqIndex === 0) setInputMath1(newEq);
-//     else if(eqIndex === 1) setInputMath2(newEq);
-//     else if(eqIndex === 2) setInputMath3(newEq);
-//     else  throw new Error("EQUATION INDEX OUT OF RANGE");
-
-//     // Si es un SDF no hace falta parsear
-//     if (eqInputMode === InputMode.SDF) {
-//       res = newEq;
-//     } else {
-//       let implicit = newEq;
-
-//       if (eqInputMode === InputMode.Parametric) {
-//         const fx = new Polynomial(inputMath1, ["s","t"]);
-//         const fy = new Polynomial(inputMath2, ["s","t"]);
-//         const fz = new Polynomial(inputMath3, ["s","t"]);
-//         implicit = Polynomial.implicitateR3(fx,fy,fz).toString();
-//         console.log("IMPLICIT: ", implicit);
-//       }
-
-//       // try {
-//       //   res = ImplicitToSDF(implicit, inputParameters);
-//       //   console.log("SDF: ", res);
-//       // } catch (error: any) {
-//       //   console.log("ERRORES:" + error.msg);
-//       //   newErrorMsg[eqIndex] = error.msg;
-//       // }
-//       res = ImplicitToSDF(implicit, inputParameters);
-     
-//     }
-
-//     if (res !== null) setEqData({ ...eqData, parsedInput: res });
-//     console.log(res);
-//     setMathErrorMsg(newErrorMsg);
-//     console.log("ERRORS ", newErrorMsg);
-//   };
+  const [eqInputMode, setEqInputMode] = useState(InputMode.Implicit);
 
 
-//   const handleSave = () => {
-//     // const id = inputName.toLowerCase();
+  useEffect(() => {
+    // if (!props.data) return;
+    // setEqInputMode(props.data.inputMode);
+    // setInputMath([...props.data.input]);
+    // setInputParameters(props.data.parameters);
+    // handleNewName(props.data.name);
+    // computeExampleSDF();
+  }, [props.initialID]);
 
-//     // if (id in storage) {
-//     //   return;
-//     // } else {
-//     //   let newData = { ...storage };
+  useEffect(() => {
+    console.log("INPUT MATH NEW ", inputMath);
+    handleNewEquation();
+  }, [eqInputMode, inputParameters, inputMath]);
 
-//     //   const e: EquationData = {
-//     //     id: id,
-//     //     name: inputName,
-//     //     inputMode: eqInputMode,
-//     //     implicit: eqData.f.toString(),
-//     //     sdf: eqData.sdf.toString(),
-//     //     parsedSdf: eqData.parsedSdf,
-//     //     fHeader: `${nameInput.toLowerCase()}(vec3 p ${
-//     //       parametersInput.length > 0 ? "," : ""
-//     //     }${parametersInput.map((p) => `float ${p.symbol}`).join(",")})`,
-//     //     parameters: parametersInput,
-//     //   };
+  useEffect(() => {
+    handleNewName();
+  }, [inputName]);
 
-//     //   newData[id] = e;
+  useEffect(() => {
+    const initialSurf : EquationData = storage[props.initialID];
+    if(initialSurf){
+      setEqInputMode(initialSurf.inputMode);
+      console.log("TEST ", initialSurf);
+      console.log("TEST ", initialSurf.input);
+      if(initialSurf.inputMode === InputMode.Parametric){
+        setInputMath([initialSurf.input[0], initialSurf.input[1],initialSurf.input[2]]);
+      }
+      else{
+        setInputMath([initialSurf.input[0], "", ""]);
+        console.log("TEST ", inputMath);
+      }
 
-//     //   setStorage(newData);
-//     //   handleClose();
-//     // }
-//   };
-
-//   useEffect(() => {
-    
-//     if(!props.data)
-//       return;
-    
-//     setEqInputMode(props.data.inputMode);
-//     setInputMath1(props.data.parsedInput);
-//     setInputParameters(props.data.parameters);
-
-//     if(props.data.inputMode === InputMode.Parametric){
-//       handleNewEquation(props.data.input[0], 0);
-//       handleNewEquation(props.data.input[1], 1);
-//       handleNewEquation(props.data.input[2], 2);
-//     }
-//     else
-//       handleNewEquation(props.data.input, 0);
-
-//     handleNewName(props.data.name);
-    
-//   }, [props.data]);
-
-//   const chooseInput = () => {
-//     return (
-//       <ButtonGroup variant="outlined" aria-label="outlined button group">
-//         <Button onClick={() => setEqInputMode(InputMode.Implicit)}>
-//           Implicit
-//         </Button>
-//         <Button onClick={() => setEqInputMode(InputMode.Parametric)}>
-//           Parametric
-//         </Button>
-//         <Button onClick={() => setEqInputMode(InputMode.SDF)}>SDF</Button>
-//       </ButtonGroup>
-//     );
-//   };
-
-//   const displayInput = () => {
-//     switch (eqInputMode) {
-//       case InputMode.Implicit:
-//         return ImplicitInput([inputMath1], (inputs: string[],)=>handleNewEquation(inputs[0],0), mathErrorMsg[0]);
-
-//       case InputMode.Parametric:
-//         return ParametricInput([inputMath1, inputMath2, inputMath3], (inputs: string[],)=>{handleNewEquation(inputs[0],0); handleNewEquation(inputs[1],1); handleNewEquation(inputs[2],2);}, mathErrorMsg)
-
-//       case InputMode.SDF:
-//         return SDFInput([inputMath1], (inputs: string[],)=>handleNewEquation(inputs[0],0), mathErrorMsg[0])
-
-//       default:
-//         break;
-//     }
-//   };
-
-//   function handleNewName(name: string){
-//     setInputName(name);
-
-//     if(name === "") setNameErrorMsg("Introduce a name");
-//     else if((name.toLowerCase() in storage)){
-//       setNameErrorMsg("Name already in use");
-//     }
-//     else{
-//       setNameErrorMsg("");
-//     }
-
-//   }
-//   const nameInputText = () => {
-//     return (
-//       <TextField
-//         value={inputName}
-//         error={nameErrorMsg !== ""}
-//         helperText={nameErrorMsg}
-//         onChange={(e) => handleNewName(e.target.value)}
-//         id="name"
-//         label="Name"
-//       />
-//     );
-//   };
-
-//   return (
-//     <Dialog open={props.open} onClose={() => props.handleClose()}>
+      setInputName(initialSurf.name);
       
-//       <DialogTitle>New Surface</DialogTitle>
+      setInputParameters(initialSurf.parameters);
+      computeExampleSDF(initialSurf.parsedInput);
 
-//       <DialogContent>
-//       {eqData.parsedInput}
-//         <Grid container spacing={2}>
-//           {inputParameters.toString()}
-//           <Grid xs={12}>
-//             {nameInputText()}
-//           </Grid>
-//           <Grid xs={12}>
-//             <Box textAlign="center">{chooseInput()}</Box>
-//           </Grid>
-//           <Grid xs={12}>
-//             {displayInput()}
-//           </Grid>
-//           {/* <Grid xs={6}>
-//             <MathJax.Provider>
-//               <MathJax.Node formula={latexInfo()} />
-//             </MathJax.Provider>
-//           </Grid> */}
-//           <Grid xs={12}>
-//             {/* <CustomInputTable
-//               rows={inputParameters}
-//               handleNewParameters={(newParams: Parameter[]) => {
-//                 setInputParameters(newParams);
-//                 console.log(newParams);
-//               }}
-//             /> */}
-//             <ParameterTable params={inputParameters} onEditParams={(newParams: Parameter[]) => {
-//                 setInputParameters(newParams);
-//                 console.log(newParams);
-//               }}/>
-//           </Grid>
-//           <Grid xs={6}>
-//             <Shader sdf={eqData.parsedInput} style={{ margin: "10px", height: "100px" }} />
-//           </Grid>
+    }
+    else{
+      setInputMath(["", "", ""]);
+      setInputName("");
+      setExampleSDF("");
+      setInputParameters([]);
+    }
+  }, [props.open]);
+
+
+  // const latexInfo = () => {
+  //   const implicit =
+  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.f.toString()) : "";
+  //   const dx =
+  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dx.toString()) : "";
+  //   const dy =
+  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dy.toString()) : "";
+  //   const dz =
+  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dz.toString()) : "";
+  //   const norm =
+  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.norm.toString()) : "";
+  //   const sdf =
+  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.sdf.toString()) : "";
+
+  //   return `\\begin{align*}
+  //         f(x,y,z) &=  ${implicit} \\\\[10pt]
+  //         \\nabla f(x,y,z) &= \\left(
+  //           ${dx},
+  //           ${dy},
+  //           ${dz}
+  //         \\right) \\\\[10pt]
+  //         \\Vert \\nabla f(x,y,z) \\Vert &= ${norm} \\\\[10pt]
+  //         \\text{sdf}(x,y,z) &= ${sdf}
+  //       \\end{align*}`;
+  // };
+
+  const handleNewEquationParam = (): [string | null, string[]] => {
+    console.log("HANDLING PARAMETRIC ", mathErrorMsg);
+    let implicit = "";
+    let newErrorMsg = ["", "", ""];
+    let fs: Polynomial[] = [];
+
+    // SPELL CHECK
+    newErrorMsg = inputMath.map((input) =>
+      input === "" ? "Introduce equation" : ""
+    );
+
+    inputMath.forEach((input, idx) => {
+      try {
+        fs.push(
+          new Polynomial(
+            input,
+            ["s", "t"].concat(inputParameters.map((p) => p.symbol))
+          )
+        );
+      } catch (e: any) {
+        newErrorMsg[idx] = Error(e).message;
+        return [null, newErrorMsg];
+      }
+    });
+
+    // PARAM -> IMPLICIT
+    try {
+      implicit = Polynomial.implicitateR3(fs[0], fs[1], fs[2]).toString();
+    } catch (error: any) {
+      newErrorMsg.fill(Error(error).message);
+      return [null, newErrorMsg];
+    }
+
+    // IMPLICIT -> SDF
+    try {
+      return [ImplicitToSDF(implicit, inputParameters), newErrorMsg];
+    } catch (error: any) {
+      newErrorMsg.fill(Error(error).message);
+      return [null, newErrorMsg];
+    }
+  };
+
+  const handleNewEquationImp = (): [string | null, string[]] => {
+    console.log("HANDLING IMPLICIT ", inputMath[0]);
+    let newErrorMsg = ["", "", ""];
+
+    // SPELL CHECK
+    try {
+      new Polynomial(
+        inputMath[0],
+        ["x", "y", "z"].concat(inputParameters.map((p) => p.symbol))
+      );
+    } catch (e: any) {
+      console.log("SPELL CHECK ", Error(e).message);
+      newErrorMsg[0] = Error(e).message;
+      return [null, newErrorMsg];
+    }
+
+    try {
+      console.log("COMPUTING IMPLICIT SDF");
+      let r = ImplicitToSDF(inputMath[0], inputParameters);
+      console.log("HECHO", ImplicitToSDF(inputMath[0], inputParameters, true));
+      setExampleSDF(ImplicitToSDF(inputMath[0], inputParameters, true));
+      return [r, newErrorMsg];
+    } catch (error: any) {
+      console.log("error:", Error(error).message);
+      newErrorMsg.fill(Error(error).message);
+      return [null, newErrorMsg];
+    }
+  };
+
+  const handleNewEquationSDF = (): [string, string[]] => {
+    return [inputMath[0], ["", "", ""]];
+  };
+
+  const handleNewEquation = () => {
+    let res: [string | null, string[]] = [null, ["", "", ""]];
+    switch (eqInputMode) {
+      case InputMode.Parametric:
+        res = handleNewEquationParam();
+        break;
+      case InputMode.Implicit:
+        res = handleNewEquationImp();
+        break;
+      case InputMode.SDF:
+        res = handleNewEquationSDF();
+        break;
+      default:
+        break;
+    }
+
+    if (res[0] !== null) {
+  
+      setEqData({ ...eqData, parsedInput: res[0] });
+      computeExampleSDF(res[0]);
+      
+    }
+    setMathErrorMsg(res[1]);
+    console.log("FINISH HANDLING ", exampleSDF);
+  };
+
+  const handleSave = () => {
+    const id = inputName.replace(" ", "").toLowerCase();
+
+    if (nameInUse(inputName)) {
+      return;
+    } else {
+      let newData : any = {};
+      const e: EquationData = {
+        id: id,
+        name: inputName,
+        inputMode: eqInputMode,
+        input: inputMath,
+        parsedInput: eqData.parsedInput,
+        parameters: inputParameters,
+        fHeader: `${id}(vec3 p ${
+          inputParameters.length > 0 ? "," : ""
+        }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
+      };
+
+      Object.keys(storage).forEach((k:string) => {
+        if(props.initialID===id || k !== props.initialID)
+          newData[k] = storage[k];
+      });
+
+      newData[id] = e;
+      console.log("STORING ", e);
+      setStorage(newData);
+      console.log(storage);
+    }
+
+    props.handleClose();
+  };
+
+  const computeExampleSDF = (parsedSDF: string) => {
+    let exampleHeader = `exampleSDF(vec3 p ${
+      inputParameters.length > 0 ? "," : ""
+    }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`;
+
+    let shaderFunction = `float ${exampleHeader}{
+        float x = p.r;
+        float y = p.g;
+        float z = p.b;
+  
+        return ${parsedSDF};
+    }\n`;
+
+    setExampleShaderFunction(shaderFunction);
+      setExampleSDF(
+        `exampleSDF(p${inputParameters.length > 0 ? "," : ""}${inputParameters
+          .map((p, idx) => `${p.defaultVal.toFixed(4)}`)
+          .join(",")})`
+      );
+  };
+
+  const displayInput = () => {
+    switch (eqInputMode) {
+      case InputMode.Implicit:
+        return ImplicitInput(
+          inputMath,
+          (newInputMath: string[]) => setInputMath(newInputMath),
+          mathErrorMsg[0]
+        );
+
+      case InputMode.Parametric:
+        return ParametricInput(
+          inputMath,
+          (newInputMath: string[]) => setInputMath(newInputMath),
+          mathErrorMsg
+        );
+
+      case InputMode.SDF:
+        return SDFInput(
+          inputMath,
+          (newInputMath: string[]) => setInputMath(newInputMath),
+          mathErrorMsg[0]
+        );
+
+      default:
+        break;
+    }
+  };
+
+  const displayInputHelp = () => {
+    switch (eqInputMode) {
+      case InputMode.Implicit:
+        return <Latex>{`Write the implicit equation using variables $$ x,y,z$$.`}</Latex>;
+
+      case InputMode.Parametric:
+        return <Latex>{`Write the parametrization of each component $$x,y,z$$ using $$s,t$$ as parameters.`}</Latex>;
+
+      case InputMode.SDF:
+        return <Latex>{`Write the SDF of the surface at a point $$p=(x,y,z)$$. You can use any $$\\texttt{glsl}$$ function.`}</Latex>;
+
+      default:
+        break;
+    }
+  };
+
+  function nameInUse(name: string) {
+    const id = name.replace(" ", "").toLowerCase();
+    if(props.initialID==="")
+      return id in storage;
+    else{
+      return id!==props.initialID && id in storage;
+    }
+  }
+
+  function handleNewName() {
+    if (inputName === "") setNameErrorMsg("Introduce a name");
+    else if (nameInUse(inputName)) {
+      setNameErrorMsg("Name already in use");
+    } else {
+      setNameErrorMsg("");
+    }
+  }
+
+  return (
+    <div>
+      <Modal
+        closeButton
+        blur
+        aria-labelledby="modal-title"
+        open={props.open}
+        onClose={() => props.handleClose()}
+        width="75%"
+        css={{ minHeight: "90vh" }}
+      >
+        <Modal.Header>
+          <Text id="modal-title" size={18}>
+            <Text b size={18}>
+              New Surface
+            </Text>
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Grid.Container
+            alignItems="center"
+            alignContent="space-between"
+            justify="space-between"
+            direction="row"
+          >
+            <Row align="center" justify="flex-start">
+              <Button.Group color="primary" bordered auto>
+                <Button flat={eqInputMode===InputMode.Implicit} onClick={() => setEqInputMode(InputMode.Implicit)}>
+                  Implicit
+                </Button>
+                <Button flat={eqInputMode===InputMode.Parametric} onClick={() => setEqInputMode(InputMode.Parametric)}>
+                  Parametric
+                </Button>
+                <Button flat={eqInputMode===InputMode.SDF} onClick={() => setEqInputMode(InputMode.SDF)}>
+                  SDF
+                </Button>
+              </Button.Group>
+              <Text id="modal-title" size={18}>
+                <Text size={16}>{displayInputHelp()}</Text>
+              </Text>
+            </Row>
+            <Grid xs={8}>
+              <Grid.Container gap={1} direction="row">
+                <Grid xs={12}>
+                  <Grid.Container gap={2} direction="column">
+                    <Grid>
+                      {EquationInput(
+                        0,
+                        inputName,
+                        "Name",
+                        (n: string) => setInputName(n),
+                        nameErrorMsg,
+                        "left",
+                        "Name"
+                      )}
+                    </Grid>
+                    <Grid>{displayInput()}</Grid>
+                  </Grid.Container>
+                </Grid>
+                <Grid.Container gap={2}>
+      <Grid xs={12}>
+        <Collapse.Group shadow splitted>
+          <Collapse title={<Row align="center"><Text h4>Parameters</Text><Latex>{`$$\\quad $$ ${inputParameters.map(p=>`$$ ${p.symbol} $$`)}`}</Latex></Row>}>
+          <ParameterTable
+                    params={inputParameters}
+                    onEditParams={(newParams: Parameter[]) => {
+                      setInputParameters(newParams.map((p) => p));
+                      console.log("EDIT PARAMS", newParams);
+                    }}
+                  />
+          </Collapse>
+          <Collapse title={<Row align="center"><Text h4>Material</Text></Row>}>
+                    <MaterialInput handleChange={(m: Material)=>setInputMaterial(m)}/>
+          </Collapse>
           
-//         </Grid>
-//       </DialogContent>
-//       <DialogActions>
-//         <Button onClick={()=>props.handleClose()}>Cancel</Button>
-//         <Button
-//           onClick={handleSave}
-//           disabled={
-//             !validName || mathErrorMsg.some(m => m!=="") || inputName === ""
-//           }
-//         >
-//           Save
-//         </Button>
-//       </DialogActions>
-//     </Dialog>
-//   );
-// }
+        </Collapse.Group>
+      </Grid>
+    </Grid.Container>
+              </Grid.Container>
+            </Grid>
+            <Grid xs={4}>
+              <Shader
+                sdf={exampleSDF}
+                primitives={exampleShaderFunction}
+                style={{ width: "100%", margin: "10px" }}
+                material={inputMaterial}
+              />
+            </Grid>
+          </Grid.Container>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button auto flat color="error" onPress={() => props.handleClose()}>
+            Discard
+          </Button>
+          <Button
+            auto
+            onPress={() => handleSave()}
+            disabled={mathErrorMsg.some((m) => m !== "") || nameErrorMsg !== ""}
+          >
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+}

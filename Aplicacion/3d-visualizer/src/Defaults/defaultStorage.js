@@ -1,4 +1,4 @@
-import { InputMode } from './Types/InputMode';
+import { InputMode } from "../Types/InputMode";
 
 export const defaultStorage = {
     sphere: {

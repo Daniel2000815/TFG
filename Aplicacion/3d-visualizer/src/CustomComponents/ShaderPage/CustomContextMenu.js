@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ContextMenu, MenuItem } from "react-contextmenu";
 
-import { NodeTypes } from '../GraphPage/nodeTypes';
+import { NodeTypes } from '../../Types/nodeTypes'; 
 import Typography from '@mui/material/Typography';
 
 import PrimitiveIcon from '@mui/icons-material/ViewInAr';

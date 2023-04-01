@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import CustomTable from '../CustomComponents/CustomTable';
-import nerdamer from 'nerdamer';
+
 import 'katex/dist/katex.min.css';
 import Latex from 'react-latex-next';
-import useLocalStorage from '../storageHook.ts';
-import SurfaceDialog from '../Components/SurfaceDialog';
+import useLocalStorage from '../Utils/storageHook.ts';
+import SurfaceDialog from './SurfaceDialog';
 import SurfaceTable from './SurfaceTable';
-import { InputMode } from '../Types/InputMode';
-import TestNode from '../GraphPage/TestNode';
+import TestNode from '../CustomNodes/TestNode';
 const latexEq = (eq) => {
   return <Latex>{`$ ${eq} $`}</Latex>;
 };
@@ -83,7 +81,6 @@ export default function SurfacePage() {
       /> */}
       {/* <TestNode/> */}
       {/* <Shader style={{ width: "1000px", margin: "10px" }} sdf={"length(max(abs(p) - vec3(1.0),0.0)) + min(max(abs(p.x) - 1.0,max(abs(p.y) - 1.0,abs(p.z) - 1.0)),0.0)"}/> */}
-
       <SurfaceTable handleEdit={(id) => handleEdit(id)} handleNew={()=>handleNew()}/>
       <SurfaceDialog
         initialID={editID} 

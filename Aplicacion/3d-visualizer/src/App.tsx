@@ -10,16 +10,14 @@ import TabPanel from '@mui/lab/TabPanel';
 import Graph from './GraphPage/Graph';
 import Grid from '@mui/material/Grid';
 
-import MaterialsPage from './MaterialPage/MaterialsPage';
 import SurfacePage from './SurfacePage/SurfacePage';
 import GrobnerPage from './GrobnerPage/GrobnerPage';
-import ErrorBoundary from './MyErrorBoundary';
 import 'rsuite/dist/styles/rsuite-default.css';
 import { Box, Tabs } from '@mui/material';
 import './styles.css';
 import Shader from './CustomComponents/Shader';
 import { fs } from './ShaderStuff/fragmentShaderMovable';
-import newId from './uniqueIdHook';
+import newId from './Utils/uniqueIdHook';
 import theme from './theme';
 
 // const theme = createTheme({

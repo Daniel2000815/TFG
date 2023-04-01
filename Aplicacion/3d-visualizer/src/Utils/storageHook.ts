@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import { InputMode } from './Types/InputMode';
-
-import { defaultStorage } from './defaultStorage';
+import { defaultStorage } from '../Defaults/defaultStorage';
 
 export const useLocalStorage = (key: string) => {
   const [storedValue, setStoredValue] = useState(() => {
