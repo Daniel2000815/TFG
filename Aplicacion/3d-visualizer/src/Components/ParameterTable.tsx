@@ -6,12 +6,13 @@ import {
   Row,
   Input,
   Button,
-  FormElement,
+  Tooltip,
 } from "@nextui-org/react";
-import {Delete} from "react-iconly";
+import { Delete } from "react-iconly";
 import { set } from "nerdamer-ts/dist/Functions/Core";
 import { DeleteIcon } from "../SurfacePage/DeleteIcon";
-import { CiCirclePlus,CiRedo } from "react-icons/ci";
+import { CiCirclePlus, CiTrash } from "react-icons/ci";
+import { Newspaper } from "@mui/icons-material";
 const defaultParameter = {
   symbol: "",
   label: "",
@@ -33,7 +34,7 @@ function findDuplicateIndices(arr: string[]): number[] {
 
   // identify elements that appear more than once
   for (const element in counts) {
-    if (counts[element].length > 1 && element!=="") {
+    if (counts[element].length > 1 && element !== "") {
       duplicates.push(...counts[element]);
     }
   }
@@ -51,7 +52,7 @@ export default function ParameterTable(props: {
   );
 
   const editParam = (idx: number, field: 0 | 1 | 2, val: string) => {
-    let newParams = params.map(p => p);
+    let newParams = params.map((p) => p);
     var newErrors = errorMsgs.map(function (arr) {
       return arr.slice();
     });
@@ -79,11 +80,11 @@ export default function ParameterTable(props: {
 
         break;
       case 1:
-        newErrors[idx][1] =  val === "" ? "Introduce label" : "";
+        newErrors[idx][1] = val === "" ? "Introduce label" : "";
         newParams[idx].label = val;
         break;
       case 2:
-        console.log("CHECIING ", val, " : ", val==="");
+        console.log("CHECIING ", val, " : ", val === "");
         newErrors[idx][2] = val === "" ? "Introduce default value" : "";
         newParams[idx].defaultVal = Number(val);
         break;
@@ -97,28 +98,30 @@ export default function ParameterTable(props: {
 
     const error = newErrors.some((e) => e.some((ee) => ee !== ""));
 
-    if (!error){
+    if (!error) {
       setParams(newParams);
-      console.log("EDIT PARAMS2 " , params);
-      
-    }
-    else{
+      props.onEditParams(newParams);
+      console.log("EDIT PARAMS2 ", params);
+    } else {
       console.log("PARAM ERROR: ", newErrors);
     }
   };
 
-  useEffect(()=>{
-    props.onEditParams(params);
-  }, [params])
+
+  // useEffect(() => {
+  //   props.onEditParams(params);
+  // }, [params]);
 
   const handleCreateParam = () => {
     setErrorMsgs([...errorMsgs, ["", "", ""]]);
-    let copy = params.map(p => p);
-    setParams(copy.concat({
-      symbol: "",
-      label: "",
-      defaultVal: 0,
-    }));
+    let copy = params.map((p) => p);
+    setParams(
+      copy.concat({
+        symbol: "",
+        label: "",
+        defaultVal: 0,
+      })
+    );
 
     setErrorMsgs([...errorMsgs, ["Introduce symbol", "Introduce label", ""]]);
   };
@@ -126,56 +129,50 @@ export default function ParameterTable(props: {
   const handleDeleteParam = (idx: number) => {
     console.log("BEFORE DELETE ", idx, ": ", params);
 
-    setParams(params.filter((val,i) => i!==idx));
-    setErrorMsgs(errorMsgs.filter((val,i) => i!==idx));
-    console.log("AFTER DELETE ", idx, ": ", params.filter((val,i) => i!==idx));
-    
-  }
+    const newParams = params.filter((val, i) => i !== idx);
+    setParams(newParams);
+    setErrorMsgs(errorMsgs.filter((val, i) => i !== idx));
+    props.onEditParams(newParams);
+    console.log(
+      "AFTER DELETE ",
+      idx,
+      ": ",
+      params.filter((val, i) => i !== idx)
+    );
+  };
 
-  function ParamInput(i: number,field: 0 | 1 | 2,value: string,label: string, type: "number"|"default" = "default") {
+  function ParamInput(
+    i: number,
+    field: 0 | 1 | 2,
+    value: string,
+    label: string,
+    type: "number" | "default" = "default"
+  ) {
     console.log("RENDERING ", i);
     console.log(errorMsgs);
     const color = errorMsgs[i][field] === "" ? "default" : "error";
 
     return (
       <Input
-          onChange={(e) => editParam(i, field, e.target.value.toString())}
-          color={color}
-          helperColor={
-            color
-          }
-          type={type}
-          value={value}
-          aria-label={label}
-          fullWidth
-          status={errorMsgs[i][field] === "" ? "default" : "error"}
-          helperText={errorMsgs[i][field]}
+        onChange={(e) => editParam(i, field, e.target.value.toString())}
+        color={color}
+        helperColor={color}
+        type={type}
+        value={value}
+        aria-label={label}
+        fullWidth
+        status={errorMsgs[i][field] === "" ? "default" : "error"}
+        helperText={errorMsgs[i][field]}
       />
     );
   }
 
-
-
   return (
-    <Card variant="bordered" >
-      <Card.Header>
-        <Row align="stretch" justify="space-between">
-          <Text h5>Parameters</Text>
+    <>
+        <Row align="flex-end" justify="flex-end">
 
-          <Button
-            icon={<CiCirclePlus size={24}/>}
-            onClick={() => handleCreateParam()}
-            css={{ height: "30px", width: "20px" }}
-            light
-            auto
-            disabled={params.length >= 4}
-            color="primary"
-            rounded
-          />
           
         </Row>
-      </Card.Header>
-      <Card.Body>
         <Grid.Container gap={1}>
           <Grid xs={3}>
             <Text h6>Symbol</Text>
@@ -186,17 +183,42 @@ export default function ParameterTable(props: {
           <Grid xs={3}>
             <Text h6>Default Value</Text>
           </Grid>
+          <Grid xs={1}><Button
+            icon={<CiCirclePlus size={24} />}
+            onClick={() => handleCreateParam()}
+            css={{ height: "30px", width: "20px" }}
+            light
+            auto
+            disabled={params.length >= 4}
+            color="primary"
+            rounded
+          /></Grid>
           {params.map((p, i) => (
             <>
-            <Grid xs={3}>{ParamInput(i, 0, p.symbol, "Symbol")}</Grid>
-            <Grid xs={5}>{ParamInput(i, 1, p.label, "Label")}</Grid>
-            <Grid xs={3}>{ParamInput(i, 2, p.defaultVal.toString(), "Default Value", "number")}</Grid>
-            <Grid xs={1}><Button onClick={()=>handleDeleteParam(i)} icon={"x"} auto/>
+              <Grid xs={3}>{ParamInput(i, 0, p.symbol, "Symbol")}</Grid>
+              <Grid xs={5}>{ParamInput(i, 1, p.label, "Label")}</Grid>
+              <Grid xs={3}>
+                {ParamInput(
+                  i,
+                  2,
+                  p.defaultVal.toString(),
+                  "Default Value",
+                  "number"
+                )}
               </Grid>
-              </>
+              <Grid xs={1}>
+                <Tooltip content="Delete parameter">
+                  <Button
+                    color="error"
+                    onClick={() => handleDeleteParam(i)}
+                    icon={<CiTrash size={24} />}
+                    auto
+                  />
+                </Tooltip>
+              </Grid>
+            </>
           ))}
         </Grid.Container>
-      </Card.Body>
-    </Card>
+    </>
   );
 }

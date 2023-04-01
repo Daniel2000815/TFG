@@ -28,6 +28,9 @@ import ImplicitToSDF from "../Components/StringToSDF";
 import { InputMode } from "../Types/InputMode";
 import ParameterTable from "../Components/ParameterTable";
 import MaterialInput from "../SurfacePage/MaterialInput";
+import "katex/dist/katex.min.css";
+
+var Latex = require("react-latex");
 
 require("nerdamer/Calculus");
 
@@ -324,13 +327,13 @@ export default function App(props: {
   const displayInputHelp = () => {
     switch (eqInputMode) {
       case InputMode.Implicit:
-        return "Write the implicit equation using variables x,y,z";
+        return <Latex>{`Write the implicit equation using variables $$ x,y,z$$.`}</Latex>;
 
       case InputMode.Parametric:
-        return "Write the parametrization of each component x,y,z using s,t as parameters";
+        return <Latex>{`Write the parametrization of each component $$x,y,z$$ using $$s,t$$ as parameters.`}</Latex>;
 
       case InputMode.SDF:
-        return "Write the SDF of the surface at a point p=(x,y,z)";
+        return <Latex>{`Write the SDF of the surface at a point $$p=(x,y,z)$$. You can use any $$\\texttt{glsl}$$ function.`}</Latex>;
 
       default:
         break;
@@ -417,7 +420,7 @@ export default function App(props: {
                 <Grid.Container gap={2}>
       <Grid xs={12}>
         <Collapse.Group shadow splitted>
-          <Collapse title="Parameters">
+          <Collapse title={<Row align="center"><Text h4>Parameters</Text><Latex>{`$$\\quad $$ ${inputParameters.map(p=>`$$ ${p.symbol} $$`)}`}</Latex></Row>}>
           <ParameterTable
                     params={inputParameters}
                     onEditParams={(newParams: Parameter[]) => {
@@ -426,7 +429,7 @@ export default function App(props: {
                     }}
                   />
           </Collapse>
-          <Collapse title="Material">
+          <Collapse title={<Row align="center"><Text h4>Material</Text></Row>}>
                     <MaterialInput handleChange={(m: Material)=>setInputMaterial(m)}/>
           </Collapse>
           

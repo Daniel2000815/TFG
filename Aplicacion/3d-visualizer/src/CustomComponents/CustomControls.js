@@ -1,5 +1,5 @@
 import React from 'react';
-import { Controls, ControlButton } from 'reactflow';
+import { Controls, ControlButton } from 'react-flow-renderer';
 import SaveIcon from '@mui/icons-material/Save';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 

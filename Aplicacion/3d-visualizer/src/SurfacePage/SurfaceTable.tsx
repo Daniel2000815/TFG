@@ -8,9 +8,10 @@ import { DeleteIcon } from "./DeleteIcon";
 import { CiCirclePlus,CiRedo } from "react-icons/ci";
 import { AddIcon } from "./AddIcon";
 
-import "katex/dist/katex.min.css";
 import { InputMode } from "../Types/InputMode";
 import { defaultStorage } from "../defaultStorage";
+import "katex/dist/katex.min.css";
+
 var Latex = require("react-latex");
 
 const columns = [
@@ -23,7 +24,6 @@ const columns = [
 ];
 
 const renderCell = (data: EquationData, col: React.Key, handleEdit: Function, handleDelete: Function) => {
-  console.log("aaaaass", data);
   if (col === "name") {
     return <Text>{data.name}</Text>;
   } 
