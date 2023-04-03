@@ -1,6 +1,5 @@
 import React, { useState, memo } from 'react';
 import { useEffect, useRef } from 'react';
-
 import ReactFlow, {
   addEdge,
   Background,
@@ -12,7 +11,6 @@ import PrimitiveNode from '../CustomNodes/PrimitiveNode.tsx';
 import BooleanNode from '../CustomNodes/BooleanNode.js';
 import DeformNode from '../CustomNodes/DeformNode.js';
 import TransformNode from '../CustomNodes/TransformNode.js';
-import { useResizeDetector } from 'react-resize-detector'; 
 
 import ButtonEdge from '../CustomNodes/ButtonEdge';
 import CustomControls from '../CustomComponents/ShaderPage/CustomControls.js';
@@ -25,7 +23,6 @@ import {isMobile} from 'react-device-detect';
 
 import { ContextMenuTrigger } from 'react-contextmenu';
 
-var lodash = require("lodash");
 
 const flowKey = 'savedGraph';
 const graphNodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode, deformNode: DeformNode, transformNode: TransformNode };
@@ -82,7 +79,6 @@ function Graph() {
   const [rfInstance, setRfInstance] = useState(null);
   const [id, setId] = React.useState(3);
   const [mouseCoor, setMouseCoor] = useState([0, 0]);
-  const { width, height, ref } = useResizeDetector();
   const [storage] = useLocalStorage("user_implicits", {});
   const reactFlowRef = useRef(null);
 
@@ -303,7 +299,6 @@ function Graph() {
   };
 
   const handleKey = (e) => {
-    console.log(e);
     if (rfInstance === undefined) {
       console.log("RF INSTANCE UDNEFINED");
       return;
@@ -326,18 +321,18 @@ function Graph() {
     }
   };
 
-  // const handleMouse = (e) => {
-  //     // let rect = e.currentTarget.getBoundingClientRect(); muy lento -> resizeDetector
-  //     // let x = (e.clientX - width) ;
-  //     // let y = (e.clientY - height);
+  const handleMouse = (e) => {
+    if (reactFlowRef.current === undefined) {
+      console.log("RF REF UDNEFINED");
+      return;
+    }
 
-  //   setMouseCoor([e.clientX,e.clientY]);
-  // };
+    const bounds = reactFlowRef?.current?.getBoundingClientRect();
 
-  const handleMouse = React.useCallback(lodash.throttle((e) => {
-    const bounds = reactFlowRef.current.getBoundingClientRect();
+    if (bounds === undefined) return;
+
     setMouseCoor([e.clientX - bounds.left, e.clientY - bounds.top]);
-  }, 500), []);
+  };
 
   return (
     <>
@@ -350,7 +345,7 @@ function Graph() {
         >
           <GraphProvider value={sharedFunctions}>
             <ReactFlow
-              ref={reactFlowRef}
+              // ref={reactFlowRef}
               nodes={nodes}
               edges={edges}
               onNodesChange={onNodesChange}
