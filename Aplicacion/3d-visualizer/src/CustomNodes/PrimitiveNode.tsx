@@ -1,17 +1,12 @@
 import React, { memo, useEffect } from "react";
-import CustomNode from "../CustomNodes/CustomNode";
+import CustomNode from "./CustomNode";
 import FloatInput from "../CustomComponents/FloatInput";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useLocalStorage from "../Utils/storageHook";
 import newId from "../Utils/uniqueIdHook";
 import {
   Grid,
-  Card,
-  Text,
-  Row,
-  Input,
-  Button,
-  Tooltip,
+
 } from "@nextui-org/react";
 const theme = createTheme({
   palette: {
@@ -24,14 +19,14 @@ const theme = createTheme({
   },
 });
 
-function PrimitiveNode({ data, id }) {
+function PrimitiveNode(props: { data: any, id: string }) {
   const [primitive, setPrimitive] = React.useState("sphere");
   const [sdf, setSdf] = React.useState("");
   const [inputs, setInputs] = React.useState([1.0, 1.0, 1.0]);
   const [inputLabels, setInputLabels] = React.useState(["Radius", "", ""]);
-  const [storage] = useLocalStorage("user_implicits", {});
+  const [storage] = useLocalStorage("user_implicits");
 
-  const handleInputChange = (newVal, idx) => {
+  const handleInputChange = (newVal: number, idx: number) => {
     const newInputs = [...inputs];
     newInputs[idx] = newVal;
 
@@ -62,7 +57,7 @@ function PrimitiveNode({ data, id }) {
   useEffect(() => {
     if (!storage[primitive]) return;
 
-    const parameters = storage[primitive].parameters;
+    const parameters : Parameter[] = storage[primitive].parameters;
     console.log(inputs);
     setSdf(
       `${primitive}(p${parameters.length > 0 ? "," : ""}${parameters
@@ -75,8 +70,8 @@ function PrimitiveNode({ data, id }) {
     <ThemeProvider theme={theme}>
       <CustomNode
         title={"Primitive"}
-        id={id}
-        data={data}
+        id={props.id}
+        data={props.data}
         dropdownOptions={Object.keys(storage)}
         body={
           <>

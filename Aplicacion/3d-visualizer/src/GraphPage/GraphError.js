@@ -1,33 +1,38 @@
-import React, { useState, memo } from 'react';
-import { useEffect, useRef } from 'react';
+import React, { useState, memo } from "react";
+import { useEffect, useRef } from "react";
 import ReactFlow, {
   addEdge,
   Background,
   useNodesState,
   useEdgesState,
   MarkerType,
-} from 'react-flow-renderer';
-import PrimitiveNode from '../CustomNodes/PrimitiveNode.tsx';
-import BooleanNode from '../CustomNodes/BooleanNode.js';
-import DeformNode from '../CustomNodes/DeformNode.js';
-import TransformNode from '../CustomNodes/TransformNode.js';
+  Connection,
+  BackgroundVariant,
+  ReactFlowInstance,
+} from "react-flow-renderer";
+import PrimitiveNode from "../CustomNodes/PrimitiveNode";
+import BooleanNode from "../CustomNodes/BooleanNode";
+import DeformNode from "../CustomNodes/DeformNode";
+import TransformNode from "../CustomNodes/TransformNode";
 
-import ButtonEdge from '../CustomNodes/ButtonEdge';
-import CustomControls from '../CustomComponents/ShaderPage/CustomControls.js';
-import '../styles.css';
-import { GraphProvider } from './GraphContext.js';
-import CustomContextMenu from '../CustomComponents/ShaderPage/CustomContextMenu.js';
-import useLocalStorage from '../Utils/storageHook';
-import { Box, Tabs } from '@mui/material';
-import {isMobile} from 'react-device-detect';
+import ButtonEdge from "../CustomNodes/ButtonEdge";
+import CustomControls from "../CustomComponents/ShaderPage/CustomControls.js";
+import "../styles.css";
+import { GraphProvider } from "./GraphContext.js";
+import CustomContextMenu from "../CustomComponents/ShaderPage/CustomContextMenu.js";
+import useLocalStorage from "../Utils/storageHook";
+import { Box, Tabs } from "@mui/material";
+import { isMobile } from "react-device-detect";
+import { ContextMenuTrigger } from "react-contextmenu";
 
-import { ContextMenuTrigger } from 'react-contextmenu';
-
-
-const flowKey = 'savedGraph';
-const graphNodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode, deformNode: DeformNode, transformNode: TransformNode };
+const flowKey = "savedGraph";
+const graphNodeTypes = {
+  primitiveNode: PrimitiveNode,
+  booleanNode: BooleanNode,
+  deformNode: DeformNode,
+  transformNode: TransformNode,
+};
 const edgeTypes = { buttonEdge: ButtonEdge };
-
 
 const initialNodes = [
   {
@@ -73,14 +78,15 @@ const initialNodes = [
     data: { inputs: {}, sdf: "", children: [] },
   },
 ];
+
 function Graph() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [rfInstance, setRfInstance] = useState(null);
+  const [rfInstance, setRfInstance] = useState();
   const [id, setId] = React.useState(3);
   const [mouseCoor, setMouseCoor] = useState([0, 0]);
-  const [storage] = useLocalStorage("user_implicits", {});
-  const reactFlowRef = useRef(null);
+  const [storage] = useLocalStorage("user_implicits");
+  const reactFlowRef = useRef<HTMLDivElement>(null);
 
   const updateNodeSdf = (id, newSdf) => {
     console.log("ACTUALIZADONDO SDF DE " + id);
@@ -236,32 +242,28 @@ function Graph() {
   // }, [nodes]);
 
   useEffect(() => {
-    console.log('NUEVO EDGE:');
+    console.log("NUEVO EDGE:");
     console.log(edges);
   }, [edges]);
 
   useEffect(() => {
-    console.log('ME VUELVO A CARGAR:');
+    console.log("ME VUELVO A CARGAR:");
   }, []);
-
-  useEffect(() => {
-    console.log('NODOS ACTUALIZADOS:');
-  }, [nodes]);
 
   const onSave = () => {
     if (rfInstance) {
       const flow = rfInstance.toObject();
-      console.log('FLOW SAVED:');
+      console.log("FLOW SAVED:");
       console.log(flow);
       localStorage.setItem(flowKey, JSON.stringify(flow));
     }
   };
 
   const onLoad = async () => {
-    const flow = JSON.parse(localStorage.getItem(flowKey));
+    const flow = JSON.parse(localStorage.getItem(flowKey) || "");
 
-    if (flow) {
-      console.log('FLOW LOADED:');
+    if (flow && flow !== "") {
+      console.log("FLOW LOADED:");
       console.log(flow);
 
       setNodes(flow.nodes || []);
@@ -336,7 +338,7 @@ function Graph() {
 
   return (
     <>
-      <ContextMenuTrigger id="contextmenu" holdToDisplay={isMobile ? 1000 : -1}>
+      <ContextMenuTrigger id="contextmenu" >
         <Box
           sx={{ height: "100vh" }}
           tabIndex={0}
@@ -345,7 +347,7 @@ function Graph() {
         >
           <GraphProvider value={sharedFunctions}>
             <ReactFlow
-              // ref={reactFlowRef}
+              ref={reactFlowRef}
               nodes={nodes}
               edges={edges}
               onNodesChange={onNodesChange}
@@ -363,7 +365,7 @@ function Graph() {
               fitView
             >
               <Background
-                variant="lines"
+                variant={BackgroundVariant.Lines}
                 color="#aaa"
                 gap={10}
               />

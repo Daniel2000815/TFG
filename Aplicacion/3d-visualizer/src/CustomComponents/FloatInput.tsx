@@ -1,7 +1,7 @@
 import { Input } from "@nextui-org/react";
 
 export default function FloatInput(props: {
-  initialVal: string;
+  initialVal: string | number;
   onChange: (n: number) => void;
   label: string;
   errorMsg?: string;
@@ -11,7 +11,7 @@ export default function FloatInput(props: {
   return (
     <Input
       fullWidth
-      initialValue={props.initialVal}
+      initialValue={props.initialVal.toString()}
       defaultValue="0"
       onChange={(e) => props.onChange(parseFloat(e.target.value))}
       id={props.label}

@@ -24,10 +24,14 @@
     "@types/react-color": "^3.0.6",
     "@types/react-dom": "^18.0.9",
     "@types/three": "^0.150.0",
+    "buffer": "^6.0.3",
     "classcat": "^5.0.4",
     "equation-editor-react": "^0.0.10",
     "evaluatex": "^2.2.0",
     "framer-motion": "^6.5.1",
+    "gl-react": "^5.2.0",
+    "gl-react-dom": "^5.2.1",
+    "gl-shader": "^4.3.1",
     "mathjax-full": "^3.2.2",
     "mathjax-react": "^2.0.1",
     "mathjs": "^11.1.0",
@@ -36,6 +40,7 @@
     "nerdamer": "^1.1.13",
     "nerdamer-ts": "^1.2.0",
     "polynomial": "^1.4.5",
+    "rctx-contextmenu": "^1.4.1",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-contextmenu": "^2.14.0",
@@ -51,8 +56,10 @@
     "react-mathjax": "^1.0.1",
     "react-pick-color": "^1.0.2",
     "react-ratio": "0.1.5",
+    "react-resize-detector": "^8.0.4",
     "react-scripts": "^5.0.1",
     "react-scroll-wheel-handler": "^2.2.0",
+    "react-sizeme": "^3.0.2",
     "rsuite": "4.8.4",
     "shadertoy-react": "1.1.2",
     "three": "^0.151.2",
@@ -83,5 +90,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/gl-react": "^3.15.4",
+    "@types/gl-react-dom": "^3.15.4"
   }
 }

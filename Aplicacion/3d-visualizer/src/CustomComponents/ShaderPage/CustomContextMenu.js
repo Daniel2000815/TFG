@@ -26,7 +26,7 @@ export default function CustomContextMenu(props) {
 
   return (
 
-    <ContextMenu id="contextmenu" hideOnLeave={true}>
+    <ContextMenu onShow={()=>console.log("MENU")} id="contextmenu" hideOnLeave={true}>
       {Object.keys(NodeTypes).map((type, index) =>
         <MenuItem key={index} onClick={()=>props.newNode(Object.values(NodeTypes)[index],0,0)}>
           {icons[index]}

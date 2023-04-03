@@ -7,13 +7,14 @@ import {
   Button,
   Text,
   Collapse,
-  Input
+  Input,
 } from "@nextui-org/react";
 import { useState, useEffect } from "react";
+import { SizeMe } from "react-sizeme";
 
 import "katex/dist/katex.min.css";
 import useLocalStorage from "../Utils/storageHook";
-import Shader from "../CustomComponents/Shader";
+import Shader from "../CustomComponents/ShaderGL";
 import { Polynomial } from "../multivariate-polynomial/Polynomial";
 import EquationInput from "../CustomComponents/MaterialPage/EquationInput";
 import {
@@ -29,6 +30,7 @@ import { InputMode } from "../Types/InputMode";
 import ParameterTable from "../CustomComponents/MaterialPage/ParameterTable";
 import MaterialInput from "../CustomComponents/MaterialPage/MaterialInput";
 import "katex/dist/katex.min.css";
+import { defaultMaterial } from "../Defaults/defaultMaterial";
 
 var Latex = require("react-latex");
 
@@ -59,14 +61,13 @@ export default function App(props: {
   const [inputMath, setInputMath] = useState(["5*t^2 + 2*s^2 - 10", "s", "t"]);
   const [inputName, setInputName] = useState("");
   const [inputParameters, setInputParameters] = useState<Parameter[]>([]);
-  const [inputMaterial, setInputMaterial] = useState<Material>();
+  const [inputMaterial, setInputMaterial] = useState<Material>(defaultMaterial);
 
   // VALIDATION OS INPUT FROM DIALOG
   const [mathErrorMsg, setMathErrorMsg] = useState(["", "", ""]);
   const [nameErrorMsg, setNameErrorMsg] = useState("");
 
   const [eqInputMode, setEqInputMode] = useState(InputMode.Implicit);
-
 
   useEffect(() => {
     // if (!props.data) return;
@@ -87,33 +88,33 @@ export default function App(props: {
   }, [inputName]);
 
   useEffect(() => {
-    const initialSurf : EquationData = storage[props.initialID];
-    if(initialSurf){
+    const initialSurf: EquationData = storage[props.initialID];
+    if (initialSurf) {
       setEqInputMode(initialSurf.inputMode);
       console.log("TEST ", initialSurf);
       console.log("TEST ", initialSurf.input);
-      if(initialSurf.inputMode === InputMode.Parametric){
-        setInputMath([initialSurf.input[0], initialSurf.input[1],initialSurf.input[2]]);
-      }
-      else{
+      if (initialSurf.inputMode === InputMode.Parametric) {
+        setInputMath([
+          initialSurf.input[0],
+          initialSurf.input[1],
+          initialSurf.input[2],
+        ]);
+      } else {
         setInputMath([initialSurf.input[0], "", ""]);
         console.log("TEST ", inputMath);
       }
 
       setInputName(initialSurf.name);
-      
+
       setInputParameters(initialSurf.parameters);
       computeExampleSDF(initialSurf.parsedInput);
-
-    }
-    else{
+    } else {
       setInputMath(["", "", ""]);
       setInputName("");
       setExampleSDF("");
       setInputParameters([]);
     }
   }, [props.open]);
-
 
   // const latexInfo = () => {
   //   const implicit =
@@ -233,10 +234,8 @@ export default function App(props: {
     }
 
     if (res[0] !== null) {
-  
       setEqData({ ...eqData, parsedInput: res[0] });
       computeExampleSDF(res[0]);
-      
     }
     setMathErrorMsg(res[1]);
     console.log("FINISH HANDLING ", exampleSDF);
@@ -248,7 +247,7 @@ export default function App(props: {
     if (nameInUse(inputName)) {
       return;
     } else {
-      let newData : any = {};
+      let newData: any = {};
       const e: EquationData = {
         id: id,
         name: inputName,
@@ -261,8 +260,8 @@ export default function App(props: {
         }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
       };
 
-      Object.keys(storage).forEach((k:string) => {
-        if(props.initialID===id || k !== props.initialID)
+      Object.keys(storage).forEach((k: string) => {
+        if (props.initialID === id || k !== props.initialID)
           newData[k] = storage[k];
       });
 
@@ -289,11 +288,11 @@ export default function App(props: {
     }\n`;
 
     setExampleShaderFunction(shaderFunction);
-      setExampleSDF(
-        `exampleSDF(p${inputParameters.length > 0 ? "," : ""}${inputParameters
-          .map((p, idx) => `${p.defaultVal.toFixed(4)}`)
-          .join(",")})`
-      );
+    setExampleSDF(
+      `exampleSDF(p${inputParameters.length > 0 ? "," : ""}${inputParameters
+        .map((p, idx) => `${p.defaultVal.toFixed(4)}`)
+        .join(",")})`
+    );
   };
 
   const displayInput = () => {
@@ -327,13 +326,19 @@ export default function App(props: {
   const displayInputHelp = () => {
     switch (eqInputMode) {
       case InputMode.Implicit:
-        return <Latex>{`Write the implicit equation using variables $$ x,y,z$$.`}</Latex>;
+        return (
+          <Latex>{`Write the implicit equation using variables $$ x,y,z$$.`}</Latex>
+        );
 
       case InputMode.Parametric:
-        return <Latex>{`Write the parametrization of each component $$x,y,z$$ using $$s,t$$ as parameters.`}</Latex>;
+        return (
+          <Latex>{`Write the parametrization of each component $$x,y,z$$ using $$s,t$$ as parameters.`}</Latex>
+        );
 
       case InputMode.SDF:
-        return <Latex>{`Write the SDF of the surface at a point $$p=(x,y,z)$$. You can use any $$\\texttt{glsl}$$ function.`}</Latex>;
+        return (
+          <Latex>{`Write the SDF of the surface at a point $$p=(x,y,z)$$. You can use any $$\\texttt{glsl}$$ function.`}</Latex>
+        );
 
       default:
         break;
@@ -342,10 +347,9 @@ export default function App(props: {
 
   function nameInUse(name: string) {
     const id = name.replace(" ", "").toLowerCase();
-    if(props.initialID==="")
-      return id in storage;
-    else{
-      return id!==props.initialID && id in storage;
+    if (props.initialID === "") return id in storage;
+    else {
+      return id !== props.initialID && id in storage;
     }
   }
 
@@ -356,6 +360,16 @@ export default function App(props: {
     } else {
       setNameErrorMsg("");
     }
+  }
+
+  function handleShaderError(e: string){
+    const regex = /ERROR: 0:255: ([^\n]+)/;
+const match = e.match(regex);
+const errorMessage = match ? match[1] : "No error message found";
+
+console.log(errorMessage);
+
+    setMathErrorMsg([errorMessage,"",""])
   }
 
   return (
@@ -385,13 +399,22 @@ export default function App(props: {
           >
             <Row align="center" justify="flex-start">
               <Button.Group color="primary" bordered auto>
-                <Button flat={eqInputMode===InputMode.Implicit} onClick={() => setEqInputMode(InputMode.Implicit)}>
+                <Button
+                  flat={eqInputMode === InputMode.Implicit}
+                  onClick={() => setEqInputMode(InputMode.Implicit)}
+                >
                   Implicit
                 </Button>
-                <Button flat={eqInputMode===InputMode.Parametric} onClick={() => setEqInputMode(InputMode.Parametric)}>
+                <Button
+                  flat={eqInputMode === InputMode.Parametric}
+                  onClick={() => setEqInputMode(InputMode.Parametric)}
+                >
                   Parametric
                 </Button>
-                <Button flat={eqInputMode===InputMode.SDF} onClick={() => setEqInputMode(InputMode.SDF)}>
+                <Button
+                  flat={eqInputMode === InputMode.SDF}
+                  onClick={() => setEqInputMode(InputMode.SDF)}
+                >
                   SDF
                 </Button>
               </Button.Group>
@@ -418,34 +441,57 @@ export default function App(props: {
                   </Grid.Container>
                 </Grid>
                 <Grid.Container gap={2}>
-      <Grid xs={12}>
-        <Collapse.Group shadow splitted>
-          <Collapse title={<Row align="center"><Text h4>Parameters</Text><Latex>{`$$\\quad $$ ${inputParameters.map(p=>`$$ ${p.symbol} $$`)}`}</Latex></Row>}>
-          <ParameterTable
-                    params={inputParameters}
-                    onEditParams={(newParams: Parameter[]) => {
-                      setInputParameters(newParams.map((p) => p));
-                      console.log("EDIT PARAMS", newParams);
-                    }}
-                  />
-          </Collapse>
-          <Collapse title={<Row align="center"><Text h4>Material</Text></Row>}>
-                    <MaterialInput handleChange={(m: Material)=>setInputMaterial(m)}/>
-          </Collapse>
-          
-        </Collapse.Group>
-      </Grid>
-    </Grid.Container>
+                  <Grid xs={12}>
+                    <Collapse.Group shadow splitted>
+                      <Collapse
+                        title={
+                          <Row align="center">
+                            <Text h4>Parameters</Text>
+                            <Latex>{`$$\\quad $$ ${inputParameters.map(
+                              (p) => `$$ ${p.symbol} $$`
+                            )}`}</Latex>
+                          </Row>
+                        }
+                      >
+                        <ParameterTable
+                          params={inputParameters}
+                          onEditParams={(newParams: Parameter[]) => {
+                            setInputParameters(newParams.map((p) => p));
+                            console.log("EDIT PARAMS", newParams);
+                          }}
+                        />
+                      </Collapse>
+                      <Collapse
+                        title={
+                          <Row align="center">
+                            <Text h4>Material</Text>
+                          </Row>
+                        }
+                      >
+                        <MaterialInput
+                          handleChange={(m: Material) => setInputMaterial(m)}
+                        />
+                      </Collapse>
+                    </Collapse.Group>
+                  </Grid>
+                </Grid.Container>
               </Grid.Container>
             </Grid>
-            <Grid xs={4}>
-              <Shader
-                sdf={exampleSDF}
-                primitives={exampleShaderFunction}
-                style={{ width: "100%", margin: "10px" }}
-                material={inputMaterial}
-              />
-            </Grid>
+            <SizeMe monitorHeight>
+              {({ size }) => (
+                <Grid style={{ height: "200px" }} xs={4}>
+                  <Shader
+                    sdf={exampleSDF}
+                    primitives={exampleShaderFunction}
+                    style={{}}
+                    material={inputMaterial}
+                    width={size.width}
+                    height={size.height}
+                    onError={(e:string) => handleShaderError(e)}
+                  />
+                </Grid>
+              )}
+            </SizeMe>
           </Grid.Container>
         </Modal.Body>
         <Modal.Footer>

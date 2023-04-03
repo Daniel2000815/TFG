@@ -7,6 +7,8 @@ import useLocalStorage from '../Utils/storageHook.ts';
 import SurfaceDialog from './SurfaceDialog';
 import SurfaceTable from './SurfaceTable';
 import TestNode from '../CustomNodes/TestNode';
+import ShaderGL from '../CustomComponents/ShaderGL';
+
 const latexEq = (eq) => {
   return <Latex>{`$ ${eq} $`}</Latex>;
 };

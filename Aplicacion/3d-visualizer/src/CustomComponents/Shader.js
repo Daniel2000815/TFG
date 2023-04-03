@@ -41,12 +41,21 @@ function Shader(props) {
   const [mouseDrag, setMouseDrag] = useState([0.0, 0.0]);
   const [angle, setAngle] = useState([10, 0]);
   const [material, setMaterial] = useState(defaultMaterial);
+
+  const [oldProps, setOldProps] = useState();
   useEffect(() => { }, [props.shader, props.uniforms, primitivesCode]);
   
   useEffect(()=>{
     if(props.material)
       setMaterial(props.material);
   }, [props.material])
+
+  useEffect(()=>{
+    console.log("SHADER RE-RENDER!!");
+    console.log("NEW", props);
+    console.log("OLD", oldProps);
+    setOldProps(props);
+  }, [props])
 
   const handleMouseMove = (e) => {
     let rect = e.currentTarget.getBoundingClientRect();

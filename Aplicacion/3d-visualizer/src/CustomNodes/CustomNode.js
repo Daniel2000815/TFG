@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useContext } from "react";
-import Shader from "../CustomComponents/Shader";
+import Shader from "../CustomComponents/ShaderGL";
 import { useTheme } from "@mui/material/styles";
 import Dropdown from "../CustomComponents/ShaderPage/Dropdown";
 import CustomHandle from "./CustomHandle";
@@ -84,7 +84,7 @@ function CustomNode(props) {
   }, [showMore]);
 
   return (
-    <div tabIndex="0">
+    <div tabIndex={0}>
       <div className="nodeHeader" style={headerStyle}>
         {showMore ? props.title : props.currOption}
       </div>
@@ -120,6 +120,8 @@ function CustomNode(props) {
                 sdf={props.sdf}
                 primitives=""
                 style={{ margin: "10px", height: "100%" }}
+                width={width*0.9}
+                height={100}
               />
             </>
           ) : null}
