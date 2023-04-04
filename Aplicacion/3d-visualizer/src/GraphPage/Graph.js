@@ -1,5 +1,5 @@
-import React, { useState, memo } from 'react';
-import { useEffect, useRef } from 'react';
+import React, { useState, memo } from "react";
+import { useEffect, useRef } from "react";
 
 import ReactFlow, {
   addEdge,
@@ -7,30 +7,36 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   MarkerType,
-} from 'react-flow-renderer';
-import PrimitiveNode from '../CustomNodes/PrimitiveNode.tsx';
-import BooleanNode from '../CustomNodes/BooleanNode.js';
-import DeformNode from '../CustomNodes/DeformNode.js';
-import TransformNode from '../CustomNodes/TransformNode.js';
-import { useResizeDetector } from 'react-resize-detector'; 
+} from "react-flow-renderer";
+import { Container, Row, Col } from "@nextui-org/react";
+import PrimitiveNode from "../CustomNodes/PrimitiveNode.tsx";
+import BooleanNode from "../CustomNodes/BooleanNode.js";
+import DeformNode from "../CustomNodes/DeformNode.js";
+import TransformNode from "../CustomNodes/TransformNode.js";
+import { useResizeDetector } from "react-resize-detector";
+import Shader from "../CustomComponents/ShaderGL";
+import ButtonEdge from "../CustomNodes/ButtonEdge";
+import CustomControls from "../CustomComponents/ShaderPage/CustomControls.js";
+import "../styles.css";
+import { GraphProvider } from "./GraphContext.js";
+import CustomContextMenu from "../CustomComponents/ShaderPage/CustomContextMenu.js";
+import useLocalStorage from "../Utils/storageHook";
+import { Box, Tabs } from "@mui/material";
+import { isMobile } from "react-device-detect";
+import { SizeMe } from "react-sizeme";
 
-import ButtonEdge from '../CustomNodes/ButtonEdge';
-import CustomControls from '../CustomComponents/ShaderPage/CustomControls.js';
-import '../styles.css';
-import { GraphProvider } from './GraphContext.js';
-import CustomContextMenu from '../CustomComponents/ShaderPage/CustomContextMenu.js';
-import useLocalStorage from '../Utils/storageHook';
-import { Box, Tabs } from '@mui/material';
-import {isMobile} from 'react-device-detect';
-
-import { ContextMenuTrigger } from 'react-contextmenu';
+import { ContextMenuTrigger } from "react-contextmenu";
 
 var lodash = require("lodash");
 
-const flowKey = 'savedGraph';
-const graphNodeTypes = { primitiveNode: PrimitiveNode, booleanNode: BooleanNode, deformNode: DeformNode, transformNode: TransformNode };
+const flowKey = "savedGraph";
+const graphNodeTypes = {
+  primitiveNode: PrimitiveNode,
+  booleanNode: BooleanNode,
+  deformNode: DeformNode,
+  transformNode: TransformNode,
+};
 const edgeTypes = { buttonEdge: ButtonEdge };
-
 
 const initialNodes = [
   {
@@ -85,6 +91,7 @@ function Graph() {
   const { width, height, ref } = useResizeDetector();
   const [storage] = useLocalStorage("user_implicits", {});
   const reactFlowRef = useRef(null);
+  const [finalSdf, setFinalSdf] = useState("");
 
   const updateNodeSdf = (id, newSdf) => {
     console.log("ACTUALIZADONDO SDF DE " + id);
@@ -167,9 +174,12 @@ function Graph() {
     removeChild(edge.source, edge.target);
   };
 
+  const onChangeFinalSdf = (sdf) => {console.log("FINAL",sdf);setFinalSdf(sdf)};
+
   const sharedFunctions = {
     updateNodeSdf,
     removeEdge,
+    onChangeFinalSdf,
   };
 
   const onConnect = (params) => {
@@ -240,22 +250,22 @@ function Graph() {
   // }, [nodes]);
 
   useEffect(() => {
-    console.log('NUEVO EDGE:');
+    console.log("NUEVO EDGE:");
     console.log(edges);
   }, [edges]);
 
   useEffect(() => {
-    console.log('ME VUELVO A CARGAR:');
+    console.log("ME VUELVO A CARGAR:");
   }, []);
 
   useEffect(() => {
-    console.log('NODOS ACTUALIZADOS:');
+    console.log("NODOS ACTUALIZADOS:");
   }, [nodes]);
 
   const onSave = () => {
     if (rfInstance) {
       const flow = rfInstance.toObject();
-      console.log('FLOW SAVED:');
+      console.log("FLOW SAVED:");
       console.log(flow);
       localStorage.setItem(flowKey, JSON.stringify(flow));
     }
@@ -265,7 +275,7 @@ function Graph() {
     const flow = JSON.parse(localStorage.getItem(flowKey));
 
     if (flow) {
-      console.log('FLOW LOADED:');
+      console.log("FLOW LOADED:");
       console.log(flow);
 
       setNodes(flow.nodes || []);
@@ -291,23 +301,19 @@ function Graph() {
   };
 
   const createAddNodeMousePos = (nodeType) => {
-    if (rfInstance === undefined) {
-      console.log("RF INSTANCE UDNEFINED");
-      return;
-    }
+    // if (rfInstance === undefined) {
+    //   console.log("RF INSTANCE UDNEFINED");
+    //   return;
+    // }
 
     const { x, y } = rfInstance.project({ x: mouseCoor[0], y: mouseCoor[1] });
     let node = newNode(nodeType, x, y);
-    nodes.push(node);
+    setNodes((nds) => nds.concat(node));
     // onNodesChange([node]); ??
   };
 
   const handleKey = (e) => {
     console.log(e);
-    if (rfInstance === undefined) {
-      console.log("RF INSTANCE UDNEFINED");
-      return;
-    }
 
     let node;
 
@@ -334,51 +340,70 @@ function Graph() {
   //   setMouseCoor([e.clientX,e.clientY]);
   // };
 
-  const handleMouse = React.useCallback(lodash.throttle((e) => {
-    const bounds = reactFlowRef.current.getBoundingClientRect();
-    setMouseCoor([e.clientX - bounds.left, e.clientY - bounds.top]);
-  }, 500), []);
+  const handleMouse = React.useCallback(
+    lodash.throttle((e) => {
+      const bounds = reactFlowRef.current.getBoundingClientRect();
+      setMouseCoor([e.clientX - bounds.left, e.clientY - bounds.top]);
+    }, 500),
+    []
+  );
 
   return (
-    <>
-      <ContextMenuTrigger id="contextmenu" holdToDisplay={isMobile ? 1000 : -1}>
-        <Box
-          sx={{ height: "100vh" }}
-          tabIndex={0}
-          onKeyDown={handleKey}
-          onMouseMove={handleMouse}
-        >
-          <GraphProvider value={sharedFunctions}>
-            <ReactFlow
-              ref={reactFlowRef}
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              // onDisconnect={onDisconnect}
-
-              nodeTypes={graphNodeTypes}
-              // edgeTypes={edgeTypes}
-              onInit={setRfInstance}
-              // onEdgeClick={(ev, edge) =>
-              //   setEdges(edges.filter((e) => e.id != edge.id))
-              // }
-              snapToGrid={false}
-              fitView
+    <Container fluid xl>
+      <Row>
+        <Col >
+          <ContextMenuTrigger
+            id="contextmenu"
+            holdToDisplay={isMobile ? 1000 : -1}
+          >
+            <Box
+              sx={{ height: "100vh" }}
+              tabIndex={0}
+              onKeyDown={handleKey}
+              onMouseMove={handleMouse}
             >
-              <Background
-                variant="lines"
-                color="#aaa"
-                gap={10}
+              <GraphProvider value={sharedFunctions}>
+                <ReactFlow
+                  ref={reactFlowRef}
+                  nodes={nodes}
+                  edges={edges}
+                  onNodesChange={onNodesChange}
+                  onEdgesChange={onEdgesChange}
+                  onConnect={onConnect}
+                  // onDisconnect={onDisconnect}
+
+                  nodeTypes={graphNodeTypes}
+                  // edgeTypes={edgeTypes}
+                  onInit={setRfInstance}
+                  // onEdgeClick={(ev, edge) =>
+                  //   setEdges(edges.filter((e) => e.id != edge.id))
+                  // }
+                  snapToGrid={false}
+                  fitView
+                >
+                  <Background variant="lines" color="#aaa" gap={10} />
+                  <CustomControls save={onSave} load={onLoad} />
+                </ReactFlow>
+              </GraphProvider>
+            </Box>
+          </ContextMenuTrigger>
+          <CustomContextMenu newNode={createAddNodeMousePos} />
+        </Col>
+        <SizeMe >
+        {({ size }) => (
+        <Col span={4}>
+        <Shader
+              sdf={finalSdf}
+              primitives=""
+              style={{ margin: "10px", height: "100%" }}
+              width={size.width}
+              height={size.width}
               />
-              <CustomControls save={onSave} load={onLoad} />
-            </ReactFlow>
-          </GraphProvider>
-        </Box>
-      </ContextMenuTrigger>
-      <CustomContextMenu newNode={createAddNodeMousePos} />
-    </>
+              
+        </Col>)}
+        </SizeMe>
+      </Row>
+    </Container>
   );
 }
 

@@ -84,7 +84,7 @@ function CustomNode(props) {
   }, [showMore]);
 
   return (
-    <div tabIndex={0}>
+    <div tabIndex={0} onDoubleClick={()=>sharedFunctions.onChangeFinalSdf(props.sdf)}>
       <div className="nodeHeader" style={headerStyle}>
         {showMore ? props.title : props.currOption}
       </div>
@@ -161,3 +161,4 @@ function CustomNode(props) {
 }
 
 export default memo(CustomNode);
+

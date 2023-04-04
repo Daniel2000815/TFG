@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "./static/css/main.bf9b6d61.css",
-    "main.js": "./static/js/main.3300edde.js",
+    "main.css": "./static/css/main.8f83e27b.css",
+    "main.js": "./static/js/main.bbe05666.js",
     "static/media/fira-code-all-400-normal.woff": "./static/media/fira-code-all-400-normal.c050f0ce726c76d279c8.woff",
     "static/media/KaTeX_AMS-Regular.ttf": "./static/media/KaTeX_AMS-Regular.f80d9eaff7bad6dad739.ttf",
     "static/media/KaTeX_Main-Regular.ttf": "./static/media/KaTeX_Main-Regular.af7fc7b32dbf2a640c9c.ttf",
@@ -70,11 +70,11 @@
     "static/media/KaTeX_Size3-Regular.woff": "./static/media/KaTeX_Size3-Regular.f32a9fde642521722ca1.woff",
     "static/media/KaTeX_Size3-Regular.woff2": "./static/media/KaTeX_Size3-Regular.1ef7adae735724bab211.woff2",
     "index.html": "./index.html",
-    "main.bf9b6d61.css.map": "./static/css/main.bf9b6d61.css.map",
-    "main.3300edde.js.map": "./static/js/main.3300edde.js.map"
+    "main.8f83e27b.css.map": "./static/css/main.8f83e27b.css.map",
+    "main.bbe05666.js.map": "./static/js/main.bbe05666.js.map"
   },
   "entrypoints": [
-    "static/css/main.bf9b6d61.css",
-    "static/js/main.3300edde.js"
+    "static/css/main.8f83e27b.css",
+    "static/js/main.bbe05666.js"
   ]
 }

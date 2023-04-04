@@ -10,7 +10,10 @@ import {
 } from "@nextui-org/react";
 
 import { CiCirclePlus, CiTrash } from "react-icons/ci";
-import { Newspaper } from "@mui/icons-material";
+import UseAnimations from 'react-useanimations';
+import trash2 from 'react-useanimations/lib/trash2'
+
+
 const defaultParameter = {
   symbol: "",
   label: "",
@@ -209,7 +212,7 @@ export default function ParameterTable(props: {
                   <Button
                     color="error"
                     onClick={() => handleDeleteParam(i)}
-                    icon={<CiTrash size={24} />}
+                    icon={<UseAnimations animation={trash2} />}
                     auto
                   />
                 </Tooltip>

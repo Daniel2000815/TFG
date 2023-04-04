@@ -1,12 +1,42 @@
 import React from "react";
-import { Navbar, Button, Link, Text } from "@nextui-org/react";
+import { Navbar, Button, Link, Text, Container, Col } from "@nextui-org/react";
 import { Layout } from "./Layout.js";
 import { AcmeLogo } from "./AcmeLogo.js";
 import { createTheme, NextUIProvider } from "@nextui-org/react";
 import Graph from "../GraphPage/Graph.js";
 import SurfacePage from "../SurfacePage/SurfacePage.js";
 
-const theme = createTheme({
+const lightTheme = createTheme({
+  type: "light", // it could be "light" or "dark"
+  theme: {
+    colors: {
+      // brand colors
+      primaryLight: "$green200",
+      primaryLightHover: "$green300",
+      primaryLightActive: "$green400",
+      primaryLightContrast: "$green600",
+      primary: "#4ADE7B",
+      primaryBorder: "$green500",
+      primaryBorderHover: "$green600",
+      primarySolidHover: "$green700",
+      primarySolidContrast: "$white",
+      primaryShadow: "$green500",
+
+      gradient:
+        "linear-gradient(112deg, $blue100 -25%, $pink500 -10%, $purple500 80%)",
+      link: "#5E1DAD",
+
+      // you can also create your own color
+      myColor: "#ff4ecd",
+
+      // ...  more colors
+    },
+    space: {},
+    fonts: {},
+  },
+});
+
+const darkTheme = createTheme({
   type: "dark", // it could be "light" or "dark"
   theme: {
     colors: {
@@ -38,8 +68,10 @@ const theme = createTheme({
 
 export default function App() {
   const [tab, setTab] = React.useState(0);
+  const [theme, setTheme] = React.useState(lightTheme);
 
   return (
+    
     <NextUIProvider theme={theme}>
       <Navbar maxWidth="fluid" isCompact isBordered variant="sticky">
         <Navbar.Brand>
@@ -57,14 +89,20 @@ export default function App() {
         </Navbar.Content>
         <Navbar.Content hideIn="xs">
           <Navbar.Item>
-            <Button auto flat as={Link} href="#">
-              Sign Up
+            <Button auto flat onClick={()=>setTheme(theme===lightTheme
+               ? darkTheme : lightTheme)}>
+              Test Button
             </Button>
           </Navbar.Item>
         </Navbar.Content>
       </Navbar>
+      <Container gap={2} xl fluid>
+      
       {tab === 0 && <Graph />}
       {tab === 1 && <SurfacePage />}
+      
+      </Container>
     </NextUIProvider>
+    
   );
 }

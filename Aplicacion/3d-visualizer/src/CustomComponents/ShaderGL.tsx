@@ -10,13 +10,14 @@ import usePrimitivesHook from "../Utils/primitivesHook";
 import { ErrorBoundary } from "react-error-boundary";
 import { borderColor } from "@mui/system";
 import { defaultMaterial } from "../Defaults/defaultMaterial";
+import UseAnimations from 'react-useanimations';
+import alertCircle from 'react-useanimations/lib/alertCircle'
+import ReactScrollWheelHandler from 'react-scroll-wheel-handler';
 
 
-
-export default function ShaderGL(props: {sdf: string, primitives: string, width: number|null, height: number|null, onError?: (e:string)=>void, uniforms?: any[], material: Material; style: any }) {
+export default function ShaderGL(props: {sdf: string, primitives: string, width: number|null, height: number|null, onError?: (e:string)=>void, uniforms?: any[], material: Material }) {
   
   const [zoom, setZoom] = useState(1.5);
-  const [explode, setExplode] = React.useState(false);
   const zoomIncrement = 0.5;
 
   const [dragging, setDragging] = useState(false);
@@ -122,17 +123,23 @@ export default function ShaderGL(props: {sdf: string, primitives: string, width:
 
   function Result() {
     if (compileError) {
-      return <p>Error</p>;
+      return <UseAnimations size={props.width ? 0.6*props.width : 24} animation={alertCircle} />;
     }
     return <div
     // ref={ref}
-    style={{ ...props.style, height: "100%", width:"100%", borderColor: "red"}}
+    style={{height: "100%", width:"100%"}}
     onMouseMove={handleMouseMove}
     onMouseDown={handleMouseDown}
     onMouseUp={handleMouseUp}
     onMouseLeave={handleMouseLeave}
-    onWheel={handleScroll}
   >
+    <ReactScrollWheelHandler
+        timeout={0}
+        preventScroll={true}
+        upHandler={(e) => setZoom(zoom + zoomIncrement)}
+        downHandler={(e) => setZoom(zoom - zoomIncrement)}
+        disableSwipeWithMouse={true}
+      >
     <Surface visitor={visitor} width={props.width || 100 } height={props.height || 100}>
       <Node
         shader={shader}
@@ -148,6 +155,7 @@ export default function ShaderGL(props: {sdf: string, primitives: string, width:
         }}
       />
     </Surface>
+    </ReactScrollWheelHandler>
   </div>;
   }
 

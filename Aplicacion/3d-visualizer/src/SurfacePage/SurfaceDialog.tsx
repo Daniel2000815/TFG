@@ -483,7 +483,6 @@ console.log(errorMessage);
                   <Shader
                     sdf={exampleSDF}
                     primitives={exampleShaderFunction}
-                    style={{}}
                     material={inputMaterial}
                     width={size.width}
                     height={size.height}
