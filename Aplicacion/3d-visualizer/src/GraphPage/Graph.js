@@ -10,9 +10,9 @@ import ReactFlow, {
 } from "react-flow-renderer";
 import { Container, Row, Col } from "@nextui-org/react";
 import PrimitiveNode from "../CustomNodes/PrimitiveNode.tsx";
-import BooleanNode from "../CustomNodes/BooleanNode.js";
-import DeformNode from "../CustomNodes/DeformNode.js";
-import TransformNode from "../CustomNodes/TransformNode.js";
+import BooleanNode from "../CustomNodes/BooleanNode";
+import DeformNode from "../CustomNodes/DeformNode";
+import TransformNode from "../CustomNodes/TransformNode";
 import { useResizeDetector } from "react-resize-detector";
 import Shader from "../CustomComponents/ShaderGL";
 import ButtonEdge from "../CustomNodes/ButtonEdge";
@@ -183,6 +183,7 @@ function Graph() {
   };
 
   const onConnect = (params) => {
+    console.log(params);
     const sourceNode = nodes.find((n) => n.id === params.source);
     if (sourceNode === undefined) {
       console.error("CAN'T FIND CONNECTING NODE");
@@ -373,7 +374,7 @@ function Graph() {
                   // onDisconnect={onDisconnect}
 
                   nodeTypes={graphNodeTypes}
-                  // edgeTypes={edgeTypes}
+                  edgeTypes={edgeTypes}
                   onInit={setRfInstance}
                   // onEdgeClick={(ev, edge) =>
                   //   setEdges(edges.filter((e) => e.id != edge.id))

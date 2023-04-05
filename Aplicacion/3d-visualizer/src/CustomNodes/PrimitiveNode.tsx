@@ -77,8 +77,8 @@ function PrimitiveNode(props: { data: any, id: string }) {
           <>
             <Grid.Container gap={1}>
               {inputs.map((input, idx) => (
-                <>
-                  <Grid xs={12}>
+                
+                  <Grid key={`${props.id}_input_${idx}`} xs={12}>
                     <FloatInput
                       initialVal={inputs[idx]}
                       onChange={(newVal) => handleInputChange(newVal, idx)}
@@ -87,7 +87,7 @@ function PrimitiveNode(props: { data: any, id: string }) {
                       adornmentPos="left"
                     />
                   </Grid>
-                </>
+                
               ))}
             </Grid.Container>
           </>

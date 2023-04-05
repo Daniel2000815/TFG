@@ -56,6 +56,7 @@ function DeformNode({ data, id }) {
       onChangeOption={setOperation}
       sdf={sdf}
       currOption={operation}
+      nInputs={1}
       body={
         <div style={{ margin: 10 }}>
             Amount

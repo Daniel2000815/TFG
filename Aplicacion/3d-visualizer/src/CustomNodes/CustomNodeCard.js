@@ -2,7 +2,7 @@ import React, { memo, useEffect, useContext } from "react";
 import Shader from "../CustomComponents/ShaderGL";
 import { useTheme } from "@mui/material/styles";
 import Dropdown from "../CustomComponents/ShaderPage/Dropdown";
-import CustomHandle from "./CustomHandle";
+import CustomHandle from "./CustomHandleTS";
 import GraphContext from "../GraphPage/GraphContext.js";
 import ToggleButton from "../CustomComponents/ShaderPage/ToggleButton";
 import newId from "../Utils/uniqueIdHook";

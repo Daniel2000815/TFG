@@ -2,7 +2,7 @@ import React, { memo, useEffect, useContext } from "react";
 import Shader from "../CustomComponents/ShaderGL";
 import { useTheme } from "@mui/material/styles";
 import Dropdown from "../CustomComponents/ShaderPage/Dropdown";
-import CustomHandle from "./CustomHandle";
+import CustomHandle from "./CustomHandleTS";
 import GraphContext from "../GraphPage/GraphContext.js";
 import ToggleButton from "../CustomComponents/ShaderPage/ToggleButton";
 import newId from "../Utils/uniqueIdHook";
@@ -144,6 +144,8 @@ function CustomNode(props) {
         return (
           <div key={newId("targetHandleContainer_")}>
             <CustomHandle
+              nodeId={props.id}
+              inputNumber={`${i}`}
               type="target"
               style={{ top: `${50 - ((props.nInputs - 1) / 2) * 5 + i * 5}%` }}
             />
@@ -152,6 +154,9 @@ function CustomNode(props) {
       })}
 
       <CustomHandle
+        handleConnect={(params) => console.log("YES: ", params)}
+        nodeId={props.id}
+        inputNumber="0"
         type="source"
         onConnect={(params) => console.log("handle onsConnect", params)}
         style={{ top: "50%" }}
