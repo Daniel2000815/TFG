@@ -3,7 +3,6 @@ import CustomNode from "./CustomNode";
 import FloatInput from "../CustomComponents/FloatInput";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useLocalStorage from "../Utils/storageHook";
-import newId from "../Utils/uniqueIdHook";
 import {
   Grid,
 
@@ -19,7 +18,7 @@ const theme = createTheme({
   },
 });
 
-function PrimitiveNode(props: { data: any, id: string }) {
+function PrimitiveNode(props: { id: string }) {
   const [primitive, setPrimitive] = React.useState("sphere");
   const [sdf, setSdf] = React.useState("");
   const [inputs, setInputs] = React.useState([1.0, 1.0, 1.0]);
@@ -71,7 +70,6 @@ function PrimitiveNode(props: { data: any, id: string }) {
       <CustomNode
         title={"Primitive"}
         id={props.id}
-        data={props.data}
         dropdownOptions={Object.keys(storage)}
         body={
           <>

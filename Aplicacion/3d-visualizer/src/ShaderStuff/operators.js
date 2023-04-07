@@ -89,6 +89,39 @@ export const operators = () => `
         return p;
     }
 
+    // Rotation matrix around the X axis.
+    vec3 sdfRotateX(vec3 p, float theta){
+    float c=cos(theta);
+    float s=sin(theta);
+    return mat3(
+        vec3(1.,0.,0.),
+        vec3(0.,c/(c*c+s*s),s/(c*c+s*s)),
+        vec3(0.,-s/(c*c+s*s),c/(c*c+s*s))
+    ) * p;
+    }
+
+    // Rotation matrix around the Y axis.
+    vec3 sdfRotateY(vec3 p,float theta){
+    float c=cos(theta);
+    float s=sin(theta);
+    return mat3(
+        vec3(c/(c*c+s*s),0.,-s/(c*c+s*s)),
+        vec3(0.,1.,0.),
+        vec3(s/(c*c+s*s),0.,c)
+    ) * p;
+    }
+
+    // Rotation matrix around the Z axis.
+    vec3 sdfRotateZ(vec3 p,float theta){
+    float c=cos(theta);
+    float s=sin(theta);
+    return mat3(
+        vec3(c/(c*c+s*s),s/(c*c+s*s),0.),
+        vec3(-s/(c*c+s*s),c/(c*c+s*s),0.),
+        vec3(0.,0.,1.)
+    ) * p;
+    }
+
     vec3 sdfTranslate(vec3 p, vec3 t) {
         return p-t;
     }

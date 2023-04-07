@@ -15,7 +15,7 @@ import alertCircle from 'react-useanimations/lib/alertCircle'
 import ReactScrollWheelHandler from 'react-scroll-wheel-handler';
 
 
-export default function ShaderGL(props: {sdf: string, primitives: string, width: number|null, height: number|null, onError?: (e:string)=>void, uniforms?: any[], material: Material }) {
+export default function ShaderGL(props: {sdf: string, primitives: string, width: number|null, height: number|null, onError?: (e:string)=>void, uniforms?: any[], material?: Material }) {
   
   const [zoom, setZoom] = useState(1.5);
   const zoomIncrement = 0.5;
@@ -112,7 +112,7 @@ export default function ShaderGL(props: {sdf: string, primitives: string, width:
   visitor.onSurfaceDrawError = (e: Error) => {
     if(props.onError)
       props.onError(e.message);
-    console.log("LOL", e.message);
+    console.log("LOL", e.message, props.sdf);
     setCompileError(true);
     return true;
   };
@@ -133,6 +133,7 @@ export default function ShaderGL(props: {sdf: string, primitives: string, width:
     onMouseUp={handleMouseUp}
     onMouseLeave={handleMouseLeave}
   >
+    {props.sdf}
     <ReactScrollWheelHandler
         timeout={0}
         preventScroll={true}

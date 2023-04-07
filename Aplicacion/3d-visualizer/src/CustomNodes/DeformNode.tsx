@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from "react";
-import CustomNode from "../CustomNodes/CustomNode";
+import CustomNode from "./CustomNode";
 import Slider from '@mui/material/Slider';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import FloatSlider from "../CustomComponents/FloatSlider";
@@ -20,29 +20,20 @@ const DeformOperations = {
   Twist: "Twist",
 };
 
-function DeformNode({ data, id }) {
+function DeformNode(props: {data:NodeSDFData, id: string }) {
   const [operation, setOperation] = React.useState(DeformOperations.Bend);
-  const [k, setK] = React.useState(0.0);
-
+  const [k, setK] = React.useState("0.0");
   const [sdf, setSdf] = React.useState("");
 
   useEffect(() => {
-    console.log(
-      `SE HAN MODIFICADO LOS SDF EN NODO DEFORM ${id}. AHORA HAY ${Object.keys(data.inputs).length
-      }`
-    );
     
-    let input = data.inputs[Object.keys(data.inputs)[0]];
-    console.log("INPUTS: ", input);
+    let input = props.data.inputs[Object.keys(props.data.inputs)[0]];
     if(input){
-      console.log("OLD: " + input);
-      console.log(input.replace("p,", `sdf${operation}(p, ${k}),`));
       setSdf(input.replace("p,", `sdf${operation}(p, ${k}),`));
-
     }
-  }, [data, operation, k]);
+  }, [props.data, operation, k]);
 
-  const handleChange = (ev, val) => {
+  const handleChange = (ev: any, val: string) => {
     setK(parseFloat(val).toFixed(4));
   }
 
@@ -50,8 +41,7 @@ function DeformNode({ data, id }) {
     <ThemeProvider theme={theme}>
     <CustomNode
       title={"Deform"}
-      id={id}
-      data={data}
+      id={props.id}
       dropdownOptions={Object.values(DeformOperations)}
       onChangeOption={setOperation}
       sdf={sdf}
@@ -60,20 +50,10 @@ function DeformNode({ data, id }) {
       body={
         <div style={{ margin: 10 }}>
             Amount
-         
             <FloatSlider
               handleChange={handleChange}
               range={[0, 5]}
             />
-            {/* <Slider
-              size="small"
-              value={k}
-              label="k"
-              onChange={(e, v) => setK(parseFloat(v))}
-              min={0}
-              max={5}
-              step={0.1}
-          />           */}
         </div>
       }
     />
