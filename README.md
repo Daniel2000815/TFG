@@ -9,7 +9,7 @@
 ### Estructura
 Se pueden elegir diferentes pestañas desde la barra superior:
 #### Graph
-Aquí se pueden realizar operaciones sobre las primitivas existentes. A la izquierda aparece un canvas con un shader de prueba que no hace nada de momento. A la derecha aparece el editor de nodos. Cada nodo tiene un canvas de previsualización. Los puertos de entrada son los de la izquierda y los de salida los de la derecha.
+Aquí se pueden realizar operaciones sobre las primitivas existentes. A la derecha aparece un canvas con la superficie final. A la izquierda aparece el editor de nodos. Cada nodo tiene un canvas de previsualización. Los puertos de entrada son los de la izquierda y los de salida los de la derecha.
 
 ##### Controles
 - Creación de nodos:
@@ -24,6 +24,7 @@ Aquí se pueden realizar operaciones sobre las primitivas existentes. A la izqui
     - Sobre un nodo: seleccionar/mover nodo.
     - Sobre una conexión: eliminar conexión.
     - Sobre shader: rotar vista
+  - `doble click` sobre un nodo (no en el shader): marcar como shader final
   - `rueda ratón` sobre el fondo o sobre un shader: hacer zoom.
   - `retroceso`: elimina el nodo seleccionado anteriormente.
   - `s`: colapsar/expandir todos los nodos
@@ -41,7 +42,7 @@ En esta página se pueden crear nuevas superficies. Por defecto aparecen 3. Para
 
 - *Surfaces*:
   - [ ] No se pueden usar parámetros cuando el tipo de ecuación es "Parametric". 
-  - [ ] En el modo "SDF" si hay algún fallo no te avisa, simplemente no se visualiza nada.
+  - [x] En el modo "SDF" si hay algún fallo no te avisa, simplemente no se visualiza nada.
   - [x] El botón de editar no funciona.
 - *Graph*
   - [ ] Rendimiento.
