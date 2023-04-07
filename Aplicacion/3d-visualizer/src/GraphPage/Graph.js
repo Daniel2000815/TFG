@@ -165,10 +165,60 @@ function Graph() {
       console.error("TRYING TO DELETE UNEXISTING EDGE");
       return;
     }
-    var newEdges = edges.filter((edge) => {
+
+    var newEdges = [];
+    if(edge.target.includes("bool")){
+      let targetNode = nodes.find(n=>n.id === edge.target);
+      // let newNodeDataInputs = {...targetNode.data.inputs};
+      // console.log("OLD ", newNodeDataInputs);
+      // delete newNodeDataInputs[edge.source];
+      // console.log("NEW ", newNodeDataInputs);
+      // targetNode.data = {...targetNode.data, inputs: newNodeDataInputs};
+      setNodes((nds)=>nds.map((node)=>{
+        if(node.id === targetNode.id){
+          const e = edge.source;
+          node.data.inputs = {...node.data.inputs, e};
+          node.data.inputs[edge.source] = undefined;
+          // node.data.inputs[edge.source] = undefined;
+          // delete node.data.inputs[edge.source];
+          console.log("asa", node);
+          return node;
+        }
+        else{
+          return node;
+        }
+      }));
+
+
+      let found = false;
+      let length = edges.length;
+      for(let i=0; i<length; i++){
+        if(edges[i].id === edgeId){
+          found = true;
+        }
+
+        if(found ){
+          if(i<length-1){
+          var newEdge = edges[i];
+          newEdge.source = edges[i+1].source;
+          newEdge.targetHandle = edges[i].targetHandle;
+          length--;
+          newEdges.push(newEdge);
+          }
+        }
+        else{
+          newEdges.push(edges[i]);
+        }
+        
+      }
+    }
+    else{
+
+    newEdges = edges.filter((edge) => {
       console.log(edge.source);
       return edge.id !== edgeId;
     });
+  }
 
     setEdges(newEdges);
     removeChild(edge.source, edge.target);

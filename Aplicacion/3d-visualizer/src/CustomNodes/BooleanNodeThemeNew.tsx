@@ -1,19 +1,37 @@
 import React, { useEffect, memo } from "react";
-import CustomNode from "../CustomNodes/CustomNode";
+import CustomNode from "./CustomNode";
 import FloatSlider from "../CustomComponents/FloatSlider";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import { NextUIProvider, useTheme,createTheme } from '@nextui-org/react';
+// import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { NextUIProvider, useTheme,createTheme, Text } from '@nextui-org/react';
+
+// const theme = createTheme({
+//   palette: {
+//     primary: {
+//       light: '#ff8787',
+//       main: '#ff5858',
+//       dark: '#ff2323',
+//       contrastText: 'white',
+//     },
+//   },
+// });
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      light: '#ff8787',
-      main: '#ff5858',
-      dark: '#ff2323',
-      contrastText: 'white',
+  type: "dark", // it could be "light" or "dark"
+  theme: {
+    colors: {
+      // brand colors
+      primaryLight: '#ff8787',          // Dropdown fondo
+      primaryLightHover: '#ff7979',     // Dropdown hover
+      primaryLightContrast: '#bf1818',  // Dropdown letras
+      
+      primary: '#ff5858',               // Borde nodo
+      
+      primaryShadow: '#ff2323',         // Sombra hover
     },
-  },
-});
+    space: {},
+    fonts: {}
+  }
+})
 
 
 const BooleanOperations = {
@@ -59,7 +77,7 @@ function BooleanNode(props: { data: NodeSDFData, id: string }) {
   
 
   return (
-    <ThemeProvider theme={theme}>
+    <NextUIProvider theme={theme}>
       {Object.values(props.data.inputs)}
       <CustomNode
         title={"Boolean"}
@@ -71,7 +89,7 @@ function BooleanNode(props: { data: NodeSDFData, id: string }) {
         nInputs={Math.max(2, Object.values(props.data.inputs).length + 1)}
         body={
           <div style={{ margin: 10 }}>
-            Smoothness
+            <Text>Smoothness</Text>
 
             <FloatSlider
               handleChange={handleChange}
@@ -81,7 +99,7 @@ function BooleanNode(props: { data: NodeSDFData, id: string }) {
           </div>
         }
       />
-    </ThemeProvider>
+    </NextUIProvider>
   );
 }
 

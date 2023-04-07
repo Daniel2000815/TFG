@@ -1,21 +1,21 @@
 import React, { memo, useEffect, useContext } from "react";
 import Shader from "../CustomComponents/ShaderGL";
-import { useTheme } from "@mui/material/styles";
-import Dropdown from "../CustomComponents/ShaderPage/Dropdown";
+import { useTheme } from '@nextui-org/react';
+import Dropdown from "../CustomComponents/ShaderPage/DropdownTS";
 import CustomHandle from "./CustomHandleTS";
 import GraphContext from "../GraphPage/GraphContext.js";
 import ToggleButton from "../CustomComponents/ShaderPage/ToggleButton";
-import newId from "../Utils/uniqueIdHook";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 
-function CustomNode(props) {
+function CustomNode(props: {id:string, sdf: string, title: string, currOption: string, dropdownOptions: string[], nInputs: number, onChangeOption: (e: string)=>void, body: ReactJSXElement}) {
   const [showMore, setShowMore] = React.useState(true);
   const [isHover, setIsHover] = React.useState(false);
 
-  const sharedFunctions = useContext(GraphContext);
-  const theme = useTheme();
+  const sharedFunctions : any = useContext(GraphContext);
+  const { theme } = useTheme();
   const width = 200;
 
-  const nodeStyle = {
+  const nodeStyle : any = {
     position: "relative",
     width: `${width}px`,
     display: "flex",
@@ -29,18 +29,18 @@ function CustomNode(props) {
       : "0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)",
 
     border: isHover
-      ? `1px solid ${theme.palette.primary.dark}`
-      : `1px solid ${theme.palette.primary.main}`,
+      ? `1px solid ${theme?.colors.primaryShadow}`
+      : `1px solid ${theme?.colors.primary}`,
 
     "&:hover": {
       transition: "box-shadow 200ms ease",
       boxShadow:
         "0 6px 12px rgba(0, 0, 0, 0.25), 0 6px 12px rgba(0, 0, 0, 0.25)",
-      border: `1px solid ${theme.palette.primary.dark}`,
-    },
+      border: `1px solid ${theme?.colors.primaryShadow}`,
+    }
   };
 
-  const headerStyle = {
+  const headerStyle : any = {
     height: showMore ? "20px" : "40px",
     width: `${width}px`,
     color: "#EFF7FF",
@@ -50,7 +50,7 @@ function CustomNode(props) {
     fontSize: showMore ? "14px" : "24px",
     letterSpacing: "0.1px",
     justifyContent: "flex-start",
-    backgroundColor: `${theme.palette.primary.main}`,
+    backgroundColor: `${theme?.colors.primary}`,
   };
 
   const footerStyle = {
@@ -58,7 +58,7 @@ function CustomNode(props) {
     width: `${width}px`,
     color: "#EFF7FF",
     borderRadius: "0px 0px 5px 5px",
-    backgroundColor: `${theme.palette.primary.main}`,
+    backgroundColor: `${theme?.colors.primary}`,
   };
 
   const handleMouseEnter = () => {
@@ -75,7 +75,7 @@ function CustomNode(props) {
   }, [props.sdf]);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: any) => {
       if (e.key.toLowerCase() === "s") setShowMore(!showMore);
     };
 
@@ -119,9 +119,9 @@ function CustomNode(props) {
               <Shader
                 sdf={props.sdf}
                 primitives=""
-                style={{ margin: "10px", height: "100%" }}
                 width={width*0.9}
                 height={100}
+                onError={(e)=>console.log("ERROR IN SHADER: ", e)}
               />
             </>
           ) : null}
@@ -142,7 +142,7 @@ function CustomNode(props) {
 
       {[...Array(props.nInputs)].map(function (e, i) {
         return (
-          <div key={newId("targetHandleContainer_")}>
+          <div key={`${props.id}_targetHandleContainer_${i}`}>
             <CustomHandle
               nodeId={props.id}
               inputNumber={`${i}`}
@@ -154,11 +154,9 @@ function CustomNode(props) {
       })}
 
       <CustomHandle
-        handleConnect={(params) => console.log("YES: ", params)}
         nodeId={props.id}
         inputNumber="0"
         type="source"
-        onConnect={(params) => console.log("handle onsConnect", params)}
         style={{ top: "50%" }}
       />
     </div>

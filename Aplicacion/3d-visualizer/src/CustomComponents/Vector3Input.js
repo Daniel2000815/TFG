@@ -43,6 +43,7 @@ export default function Vector3Input(props) {
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
+                sasa
                 <Grid container spacing={0} columns={{ xs: 4, sm: 8, md: 12 }}>
                     <Grid item xs={2} sm={4} md={4} key={1}><Header color='red'>x</Header></Grid>
                     <Grid item xs={2} sm={4} md={4} key={2}><Header color="green">y</Header></Grid>

@@ -49,38 +49,7 @@ struct Surface{
         return mat2(c,-s,s,c);
     }
 
-    // Rotation matrix around the X axis.
-    mat3 sdfRotateX(float theta){
-    float c=cos(theta);
-    float s=sin(theta);
-    return mat3(
-        vec3(1.,0.,0.),
-        vec3(0.,c/(c*c+s*s),s/(c*c+s*s)),
-        vec3(0.,-s/(c*c+s*s),c/(c*c+s*s))
-    );
-    }
-
-    // Rotation matrix around the Y axis.
-    mat3 sdfRotateY(float theta){
-    float c=cos(theta);
-    float s=sin(theta);
-    return mat3(
-        vec3(c/(c*c+s*s),0.,-s/(c*c+s*s)),
-        vec3(0.,1.,0.),
-        vec3(s/(c*c+s*s),0.,c)
-    );
-    }
-
-    // Rotation matrix around the Z axis.
-    mat3 sdfRotateZ(float theta){
-    float c=cos(theta);
-    float s=sin(theta);
-    return mat3(
-        vec3(c/(c*c+s*s),s/(c*c+s*s),0.),
-        vec3(-s/(c*c+s*s),c/(c*c+s*s),0.),
-        vec3(0.,0.,1.)
-    );
-    }
+    
 
     // Identity matrix.
     mat3 identity(){
