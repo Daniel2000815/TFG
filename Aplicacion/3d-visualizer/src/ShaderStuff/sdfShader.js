@@ -164,7 +164,8 @@ mat3 camera(vec3 cameraPos,vec3 lookAtPoint){
       vec3 Ip = mat.ambient*ambient;
       
       for(int i=0;i<2;i++){
-          vec3 Lm = normalize(lights_pos[i] - p);
+          //vec3 Lm = normalize(lights_pos[i] - p);
+          vec3 Lm = normalize(lights_pos[i]);
           vec3 Rm = normalize(2.0*(dot(Lm,n))*n - Lm); // reflect(-Lm, n)
           vec3 V  = normalize(eye - p);
           
