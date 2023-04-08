@@ -8,7 +8,7 @@ import ReactFlow, {
   useEdgesState,
   MarkerType,
 } from "react-flow-renderer";
-import { Container, Row, Col } from "@nextui-org/react";
+import { Container, Row, Col, Button, Modal, Text, Input } from "@nextui-org/react";
 import PrimitiveNode from "../CustomNodes/PrimitiveNode.tsx";
 import BooleanNode from "../CustomNodes/BooleanNode";
 import DeformNode from "../CustomNodes/DeformNode";
@@ -24,7 +24,8 @@ import useLocalStorage from "../Utils/storageHook";
 import { Box, Tabs } from "@mui/material";
 import { isMobile } from "react-device-detect";
 import { SizeMe } from "react-sizeme";
-
+import { CiDatabase } from "react-icons/ci";
+import SaveSurfaceDialog from "../CustomComponents/ShaderPage/SaveSurfaceDialog";
 import { ContextMenuTrigger } from "react-contextmenu";
 
 var lodash = require("lodash");
@@ -82,6 +83,7 @@ const initialNodes = [
     data: { inputs: {}, sdf: "", children: [] },
   },
 ];
+
 function Graph() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -89,10 +91,10 @@ function Graph() {
   const [id, setId] = React.useState(3);
   const [mouseCoor, setMouseCoor] = useState([0, 0]);
   const { width, height, ref } = useResizeDetector();
-  const [storage] = useLocalStorage("user_implicits", {});
+  
   const reactFlowRef = useRef(null);
   const [finalSdf, setFinalSdf] = useState("");
-
+  const [saveModalVisible, setSaveModalVisible] = useState(false);
   const updateNodeSdf = (id, newSdf) => {
     console.log("ACTUALIZADONDO SDF DE " + id);
 
@@ -364,6 +366,9 @@ function Graph() {
   };
 
   const handleKey = (e) => {
+    if(saveModalVisible)
+      return;
+      
     console.log(e);
 
     let node;
@@ -450,7 +455,10 @@ function Graph() {
               width={size.width}
               height={size.width}
               />
-              
+              <Button disabled={finalSdf === ""} onPress={()=>setSaveModalVisible(true)} icon={<CiDatabase size={24} fill="currentColor" />} >
+        Save
+      </Button>
+      <SaveSurfaceDialog sdf={finalSdf} visible={saveModalVisible} onClose={()=>setSaveModalVisible(false)} onSubmit={()=>{}}/>
         </Col>)}
         </SizeMe>
       </Row>

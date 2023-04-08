@@ -20,6 +20,7 @@ export default function EquationInput(
     <Input
       initialValue={val}
       defaultValue=""
+      clearable
       onChange={(e) => setVal(e.target.value, idx)}
       id={label}
       status={errorMsg !== "" ? "error" : "default"}

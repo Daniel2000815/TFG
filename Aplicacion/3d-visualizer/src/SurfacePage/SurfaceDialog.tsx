@@ -36,6 +36,7 @@ var Latex = require("react-latex");
 
 require("nerdamer/Calculus");
 
+
 export default function App(props: {
   initialID: string;
   handleClose: Function;
@@ -242,7 +243,7 @@ export default function App(props: {
   };
 
   const handleSave = () => {
-    const id = inputName.replace(" ", "").toLowerCase();
+    const id = inputName.replaceAll(" ", "").toLowerCase();
 
     if (nameInUse(inputName)) {
       return;
@@ -346,7 +347,7 @@ export default function App(props: {
   };
 
   function nameInUse(name: string) {
-    const id = name.replace(" ", "").toLowerCase();
+    const id = name.replaceAll(" ", "").toLowerCase();
     if (props.initialID === "") return id in storage;
     else {
       return id !== props.initialID && id in storage;
