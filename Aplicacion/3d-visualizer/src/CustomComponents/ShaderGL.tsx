@@ -133,7 +133,6 @@ export default function ShaderGL(props: {sdf: string, primitives: string, width:
     onMouseUp={handleMouseUp}
     onMouseLeave={handleMouseLeave}
   >
-    {props.sdf}
     <ReactScrollWheelHandler
         timeout={0}
         preventScroll={true}

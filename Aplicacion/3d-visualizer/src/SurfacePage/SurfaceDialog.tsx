@@ -31,6 +31,7 @@ import ParameterTable from "../CustomComponents/MaterialPage/ParameterTable";
 import MaterialInput from "../CustomComponents/MaterialPage/MaterialInput";
 import "katex/dist/katex.min.css";
 import { defaultMaterial } from "../Defaults/defaultMaterial";
+import transformToValidName from "../Utils/transformToValidName";
 
 var Latex = require("react-latex");
 
@@ -243,7 +244,7 @@ export default function App(props: {
   };
 
   const handleSave = () => {
-    const id = inputName.replaceAll(" ", "").toLowerCase();
+    const id = transformToValidName(inputName);
 
     if (nameInUse(inputName)) {
       return;
@@ -347,7 +348,7 @@ export default function App(props: {
   };
 
   function nameInUse(name: string) {
-    const id = name.replaceAll(" ", "").toLowerCase();
+    const id = transformToValidName(name);
     if (props.initialID === "") return id in storage;
     else {
       return id !== props.initialID && id in storage;

@@ -3,6 +3,7 @@ import useLocalStorage from "../../Utils/storageHook";
 import { useEffect, useState } from "react";
 import EquationInput from "../MaterialPage/EquationInput";
 import { InputMode } from "../../Types/InputMode";
+import transformToValidName from "../../Utils/transformToValidName";
 
 export default function SaveSurfaceDialog(props:{sdf:string, visible: boolean, onClose: ()=>void, onSubmit: ()=>void}){
     const [storage, setStorage] = useLocalStorage("user_implicits");
@@ -15,6 +16,7 @@ export default function SaveSurfaceDialog(props:{sdf:string, visible: boolean, o
     }
 
     useEffect(()=>{
+        console.log(transformToValidName(name));
         if(name === ""){
             setErrorMsg("Introduce a name");
         }
@@ -29,7 +31,7 @@ export default function SaveSurfaceDialog(props:{sdf:string, visible: boolean, o
     }, [name])
 
     const handleSave = () => {
-        const id = name.replaceAll(" ", "").toLowerCase();
+        const id = transformToValidName(name);
 
 
       let newData: any = {...storage};
