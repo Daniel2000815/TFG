@@ -90,7 +90,6 @@ function Graph() {
   const [rfInstance, setRfInstance] = useState(null);
   const [id, setId] = React.useState(3);
   const [mouseCoor, setMouseCoor] = useState([0, 0]);
-  const { width, height, ref } = useResizeDetector();
   
   const reactFlowRef = useRef(null);
   const [finalSdf, setFinalSdf] = useState("");
@@ -169,61 +168,72 @@ function Graph() {
     }
 
     var newEdges = [];
-    if(edge.target.includes("bool")){
+    
       let targetNode = nodes.find(n=>n.id === edge.target);
-      // let newNodeDataInputs = {...targetNode.data.inputs};
-      // console.log("OLD ", newNodeDataInputs);
-      // delete newNodeDataInputs[edge.source];
-      // console.log("NEW ", newNodeDataInputs);
-      // targetNode.data = {...targetNode.data, inputs: newNodeDataInputs};
+      
       setNodes((nds)=>nds.map((node)=>{
-        if(node.id === targetNode.id){
-          const e = edge.source;
-          node.data.inputs = {...node.data.inputs, e};
-          node.data.inputs[edge.source] = undefined;
-          // node.data.inputs[edge.source] = undefined;
-          // delete node.data.inputs[edge.source];
-          console.log("asa", node);
-          return node;
+        // eliminar datos en el hijo
+        if(node.id === targetNode.id){  
+          console.log("OLD DATA: ", node.data.inputs);
+          const {[edge.source]: removedEdge, ...newInput} = node.data.inputs;    
+          node.data = {
+            ...node.data,
+            inputs: newInput
+          };
+          console.log("NEW DATA: ", newInput);
+          
         }
-        else{
-          return node;
+        // eliminar datos en el padre
+        else if(node.id === edge.source){
+          var newChildren = node.data.children;
+          newChildren = newChildren.filter((c) => c !== edge.target);
+
+          node.data = {
+            ...node.data,
+            children: newChildren,
+          };          
         }
+        
+        return node;
+        
       }));
 
-
+    if(edge.target.includes("bool")){
       let found = false;
-      let length = edges.length;
+      
+      const otherInputEdges = edges.filter((e)=>e.target === edge.target);
+      newEdges = edges.filter((e)=>e.target !== edge.target);
+
+      let length = otherInputEdges.length;
+
       for(let i=0; i<length; i++){
-        if(edges[i].id === edgeId){
+        if(otherInputEdges[i].id === edgeId){
           found = true;
         }
 
-        if(found ){
+        if(found){
           if(i<length-1){
-          var newEdge = edges[i];
-          newEdge.source = edges[i+1].source;
-          newEdge.targetHandle = edges[i].targetHandle;
-          length--;
-          newEdges.push(newEdge);
+            var newEdge = otherInputEdges[i];
+            newEdge.source = otherInputEdges[i+1].source;
+            newEdge.targetHandle = otherInputEdges[i].targetHandle;
+            length--;
+            newEdges.push(newEdge);
           }
         }
         else{
-          newEdges.push(edges[i]);
-        }
-        
+          newEdges.push(otherInputEdges[i]);
+        }        
       }
     }
     else{
-
-    newEdges = edges.filter((edge) => {
-      console.log(edge.source);
-      return edge.id !== edgeId;
-    });
-  }
+      console.log("ELIMINANDO EDGE ", edgeId, " DE ", edges);
+      newEdges = edges.filter((edge) => {
+        return edge.id !== edgeId;
+      });
+    }
 
     setEdges(newEdges);
-    removeChild(edge.source, edge.target);
+    // removeChild(edge.source, edge.target);
   };
 
   const onChangeFinalSdf = (sdf) => {console.log("FINAL",sdf);setFinalSdf(sdf)};
@@ -237,8 +247,15 @@ function Graph() {
   const onConnect = (params) => {
     console.log(params);
     const sourceNode = nodes.find((n) => n.id === params.source);
+    const parentNode = nodes.find((n) => n.id === params.target);
+
     if (sourceNode === undefined) {
       console.error("CAN'T FIND CONNECTING NODE");
+      return;
+    }
+
+    if(params.source in parentNode.data.inputs && parentNode.data.inputs[params.source]!=="" ){
+      console.log("INTENTAS CONECTAR A UN NODA YA CONECTADO");
       return;
     }
 
@@ -302,18 +319,18 @@ function Graph() {
   //   console.log(nodes);
   // }, [nodes]);
 
-  useEffect(() => {
-    console.log("NUEVO EDGE:");
-    console.log(edges);
-  }, [edges]);
+  // useEffect(() => {
+  //   console.log("NUEVO EDGE:");
+  //   console.log(edges);
+  // }, [edges]);
 
-  useEffect(() => {
-    console.log("ME VUELVO A CARGAR:");
-  }, []);
+  // useEffect(() => {
+  //   console.log("ME VUELVO A CARGAR:");
+  // }, []);
 
-  useEffect(() => {
-    console.log("NODOS ACTUALIZADOS:");
-  }, [nodes]);
+  // useEffect(() => {
+  //   console.log("NODOS ACTUALIZADOS:");
+  // }, [nodes]);
 
   const onSave = () => {
     if (rfInstance) {
@@ -353,13 +370,13 @@ function Graph() {
     };
   };
 
-  const createAddNodeMousePos = (nodeType) => {
+  const createAddNodeMousePos = (nodeType, e) => {
     // if (rfInstance === undefined) {
     //   console.log("RF INSTANCE UDNEFINED");
     //   return;
     // }
 
-    const { x, y } = rfInstance.project({ x: mouseCoor[0], y: mouseCoor[1] });
+    const { x, y } = rfInstance.project({ x: e.clientX, y: e.clientY });
     let node = newNode(nodeType, x, y);
     setNodes((nds) => nds.concat(node));
     // onNodesChange([node]); ??
@@ -396,13 +413,18 @@ function Graph() {
   //   setMouseCoor([e.clientX,e.clientY]);
   // };
 
-  const handleMouse = React.useCallback(
-    lodash.throttle((e) => {
-      const bounds = reactFlowRef.current.getBoundingClientRect();
-      setMouseCoor([e.clientX - bounds.left, e.clientY - bounds.top]);
-    }, 500),
-    []
-  );
+  // const handleMouse = React.useCallback(
+  //   lodash.throttle((e) => {
+  //     const bounds = reactFlowRef.current.getBoundingClientRect();
+  //     setMouseCoor([e.clientX - bounds.left, e.clientY - bounds.top]);
+  //   }, 500),
+  //   []
+  // );
+
+  // const handleMouse = (e) => {
+  //   const bounds = reactFlowRef.current.getBoundingClientRect();
+  //     setMouseCoor([e.clientX - bounds.left, e.clientY - bounds.top]);
+  // }
 
   return (
     <Container fluid xl>
@@ -416,7 +438,7 @@ function Graph() {
               sx={{ height: "100vh" }}
               tabIndex={0}
               onKeyDown={handleKey}
-              onMouseMove={handleMouse}
+              // onMouseMove={handleMouse}
             >
               <GraphProvider value={sharedFunctions}>
                 <ReactFlow

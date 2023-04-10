@@ -32,7 +32,7 @@ function TransformNode(props: { data: NodeSDFData, id: string }) {
 
   useEffect(() => {
     console.log(
-      `SE HAN MODIFICADO LOS SDF EN NODO TRANSFORM ${props.id}. AHORA HAY ${Object.keys(props.data.inputs).length
+      `SE HAN MODIFICADO LOS SDF EN NODO TRANSFORM ${props.id}. AHORA HAY ${Object.keys(props.data.inputs)
       }`
     );
 
@@ -52,6 +52,9 @@ function TransformNode(props: { data: NodeSDFData, id: string }) {
         setSdf(input.replace("p,", `(p/${s}) * ${s},`));
       }
 
+    }
+    else{
+      setSdf("");
     }
 
   }, [props.data, operation, transformVal]);

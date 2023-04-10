@@ -164,5 +164,5 @@ function CustomNode(props: {id:string, sdf: string, title: string, currOption: s
   );
 }
 
-export default memo(CustomNode);
+export default CustomNode;
 

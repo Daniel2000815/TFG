@@ -36,8 +36,10 @@ function BooleanNode(props: { data: NodeSDFData, id: string }) {
 
     // minimum of 2 inputs
     const keys = Object.keys(props.data.inputs);
-    if(keys.length < 2)
+    if(keys.length < 2){
+      setSdf("");
       return;
+    }
 
     let newSdf = `sdfSmooth${operation}(${props.data.inputs[keys[0]]}, ${props.data.inputs[keys[1]]}, ${k.toFixed(4)})`;
 
@@ -60,7 +62,6 @@ function BooleanNode(props: { data: NodeSDFData, id: string }) {
 
   return (
     <ThemeProvider theme={theme}>
-      {Object.values(props.data.inputs)}
       <CustomNode
         title={"Boolean"}
         id={props.id}
@@ -68,7 +69,7 @@ function BooleanNode(props: { data: NodeSDFData, id: string }) {
         onChangeOption={setOperation}
         sdf={sdf}
         currOption={operation}
-        nInputs={Math.max(2, Object.values(props.data.inputs).length + 1)}
+        nInputs={Math.max(2, Object.values(props.data.inputs).filter((val: string) => val!=="").length + 1)}
         body={
           <div style={{ margin: 10 }}>
             Smoothness

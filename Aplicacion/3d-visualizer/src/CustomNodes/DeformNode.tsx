@@ -31,6 +31,9 @@ function DeformNode(props: {data:NodeSDFData, id: string }) {
     if(input){
       setSdf(input.replace("p,", `sdf${operation}(p, ${k}),`));
     }
+    else{
+      setSdf("");
+    }
   }, [props.data, operation, k]);
 
   const handleChange = (ev: any, val: string) => {

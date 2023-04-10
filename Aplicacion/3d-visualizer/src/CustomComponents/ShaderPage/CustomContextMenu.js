@@ -28,7 +28,7 @@ export default function CustomContextMenu(props) {
 
     <ContextMenu onShow={()=>console.log("MENU")} id="contextmenu" hideOnLeave={true}>
       {Object.keys(NodeTypes).map((type, index) =>
-        <MenuItem key={index} onClick={()=>props.newNode(Object.values(NodeTypes)[index],0,0)}>
+        <MenuItem key={index} onClick={(e)=>props.newNode(Object.values(NodeTypes)[index],e)}>
           {icons[index]}
           <Typography align="left" style={{marginLeft: "10px"}} variant="body1" color="text.primary">
             {type}

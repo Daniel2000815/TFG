@@ -35,6 +35,7 @@ export default function Vector3InputTS(props: {
         initialValue={"0.0"}
           onChange={(e) => setX(Number(e.target.value).toFixed(4))}
           bordered
+          aria-label="inputX"
           size="sm"
         />
       </Grid>
@@ -44,6 +45,7 @@ export default function Vector3InputTS(props: {
           onChange={(e) => setY(Number(e.target.value).toFixed(4))}
           bordered
           size="sm"
+          aria-label="inputY"
         />
       </Grid>
       <Grid xs={2} sm={4} md={4} key="zInput">
@@ -52,6 +54,7 @@ export default function Vector3InputTS(props: {
           onChange={(e) => setZ(Number(e.target.value).toFixed(4))}
           bordered
           size="sm"
+          aria-label="inputZ"
         />
       </Grid>
     </Grid.Container>
