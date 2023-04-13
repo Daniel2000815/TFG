@@ -1,10 +1,27 @@
 import React from "react";
-import { Navbar, Button, Link, Text, Container, Col } from "@nextui-org/react";
+import {
+  Navbar,
+  Button,
+  Link,
+  Text,
+  Container,
+  Col,
+  Tooltip,
+  Modal,
+  Row,
+  Grid,
+  Checkbox,
+  Badge,
+  Spacer,
+} from "@nextui-org/react";
 import { Layout } from "./Layout.js";
 import { AcmeLogo } from "./AcmeLogo.js";
 import { createTheme, NextUIProvider } from "@nextui-org/react";
 import Graph from "../GraphPage/Graph.js";
 import SurfacePage from "../SurfacePage/SurfacePage.js";
+import help from "react-useanimations/lib/help";
+import UseAnimations from "react-useanimations";
+import { graphControls, GraphHelpText, SurfaceHelpText } from "../Utils/help";
 
 const lightTheme = createTheme({
   type: "light", // it could be "light" or "dark"
@@ -69,10 +86,55 @@ const darkTheme = createTheme({
 export default function App() {
   const [tab, setTab] = React.useState(0);
   const [theme, setTheme] = React.useState(lightTheme);
+  const [showHelp, setShowHelp] = React.useState(false);
+
+  function Help() {
+    return (
+      <Modal
+        closeButton
+        aria-labelledby="modal-title"
+        open={showHelp}
+        width="40%"
+        onClose={() => setShowHelp(false)}
+      >
+        <Modal.Header>
+          <Text b size={18}>
+            Help
+          </Text>
+        </Modal.Header>
+
+        <Modal.Body>
+          <Text>
+            {tab===0 ? <GraphHelpText/> : <SurfaceHelpText/>}
+          </Text>
+          {tab==0 &&
+          <Grid.Container gap={1}>
+          {Object.entries(graphControls).map((val: [string, string]) =>
+          <>
+          <Grid xs={4}>
+            <Badge isSquared variant="bordered">
+              {val[0]}
+            </Badge>
+            </Grid>
+
+            <Grid xs={8}>
+            {val[1]}
+            </Grid>
+            </>
+          )}
+          </Grid.Container>
+        }
+
+        
+
+        </Modal.Body>
+      
+      </Modal>
+    );
+  }
 
   return (
-    
-    <NextUIProvider theme={theme}>
+    <NextUIProvider>
       <Navbar maxWidth="fluid" isCompact isBordered variant="sticky">
         <Navbar.Brand>
           <Text b color="inherit" hideIn="xs">
@@ -89,20 +151,22 @@ export default function App() {
         </Navbar.Content>
         <Navbar.Content hideIn="xs">
           <Navbar.Item>
-            <Button auto flat onClick={()=>setTheme(theme===lightTheme
-               ? darkTheme : lightTheme)}>
-              Test Button
-            </Button>
+            <Tooltip content="Help">
+              <Button
+                light
+                onClick={() => setShowHelp(true)}
+                icon={<UseAnimations size={32} animation={help} />}
+                auto
+              />
+            </Tooltip>
           </Navbar.Item>
         </Navbar.Content>
       </Navbar>
       <Container gap={2} xl fluid>
-      
-      {tab === 0 && <Graph />}
-      {tab === 1 && <SurfacePage />}
-      
+        {tab === 0 && <Graph />}
+        {tab === 1 && <SurfacePage />}
+        <Help />
       </Container>
     </NextUIProvider>
-    
   );
 }

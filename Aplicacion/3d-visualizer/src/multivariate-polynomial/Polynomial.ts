@@ -33,14 +33,12 @@ export class Polynomial {
       try {
         if (p.length == 0) pol = "0";
         else pol = nerdamer(p).expand().toString();
-        console.log("EXPAND: ", pol);
       } catch (e) {
         throw new Error(`ERROR PARSING POLYNOMIAL ${p}`);
       }
 
       this.monomials = [];
       this.computeCoefficients(pol);
-      console.log("FINISH COEFS");
     } else {
       if(p.every(m => 
           m.getExp().length === this.vars.length &&
@@ -73,7 +71,6 @@ export class Polynomial {
    * @param pol string representation of the polynomial
    */
   private computeCoefficients(pol: string) : void {
-    console.log("COMPUTING COEFS");
     // if (firstIt) {
     //   this.monomials = [];
     // }
@@ -128,7 +125,6 @@ export class Polynomial {
       const c = coef === "-" ? -1 : eval(coef);
       
       const e = this.vars.map(function (v) {
-        console.log("CHEKANDO 2", nerdamerjs('deg(t+x^2+2*x+ x*y, x*y)').toString());
         return parseFloat(nerdamerjs(`deg(${variable}, ${v})`).toString());
       });
 
@@ -532,7 +528,7 @@ export class Polynomial {
    *
    * String representation of the polynomial using *lex*
    */
-  toString() {
+  toString(showProductChar : boolean = false) {
     let res = "";
 
     for (var i = 0; i < this.monomials.length; i++) {
@@ -541,7 +537,7 @@ export class Polynomial {
 
       res += `${i > 0 ? " " : ""}${
         !["+", "-"].includes(monSt[0]) && i > 0 ? "+ " : ""
-      }${mon.toString()}`;
+      }${mon.toString(showProductChar)}`;
 
       if (i < this.monomials.length - 1 && this.monomials.length > 1) res += "";
     }
@@ -929,31 +925,37 @@ export class Polynomial {
    * @param fz Parametrization for z
    * @returns Generator of the smallest variety containing the image of (`fx`,`fy`,`fz`)
    */
-  static implicitateR3(fx: Polynomial, fy: Polynomial, fz: Polynomial){
+  static implicitateR3(fx: Polynomial, fy: Polynomial, fz: Polynomial, parameters: string[]){
     if(!fx.sameVars(fy) || !fx.sameVars(fz))
       throw new Error("PARAMETRIZATIONS IN DIFFERENT RINGS")
 
-      const elimVars = fx.getVars();
+      const elimVars = fx.getVars().filter(v => !parameters.includes(v));
 
+      console.log("VARS: " + elimVars);
     if(elimVars.some(v => ["x","y","z"].includes(v)))
       throw new Error("PARAMETRIZATIONS CAN'T USE X,Y,Z VARIABLES");
 
-    const resVars = ["x","y","z"];
+    const resVars = parameters.concat(["x","y","z"]);
     const impVars = elimVars.concat(resVars);
 
 
+    console.log("TEST1");
     const x = new Polynomial("x", impVars);
     const y = new Polynomial("y",impVars);
     const z = new Polynomial("z",impVars);
+    console.log("TEST2");
     fx.pushVariables(resVars);
     fy.pushVariables(resVars);
     fz.pushVariables(resVars);
+    
 
-    const I = new Ideal([x.minus(fx), y.minus(fy), z.minus(fz)]);
+    const I = new Ideal([x.minus(fx), y.minus(fy), z.minus(fz)].concat());
     let J : Polynomial[] = [];
     
     I.getGenerators().forEach(gen => {
+      console.log("TEST: " + gen);
       if(!gen.useAnyVariables(elimVars)){
+        console.log("AÑADO " + gen);
         J.push(gen);
       }
     })

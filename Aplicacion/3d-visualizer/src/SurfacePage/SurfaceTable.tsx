@@ -1,4 +1,4 @@
-import { Table, Text, Row, Col, Tooltip, Badge, Button } from "@nextui-org/react";
+import { Table, Text, Row, Col, Tooltip, Badge, Button, Container } from "@nextui-org/react";
 import "@fontsource/fira-code";
 import useLocalStorage from "../Utils/storageHook";
 import React, { useEffect, useState } from "react";
@@ -12,12 +12,14 @@ import "katex/dist/katex.min.css";
 var Latex = require("react-latex");
 
 const columns = [
-  { name: "NAME", uid: "name", width: "20%" },
-  { name: "TYPE", uid: "inputMode", width: "10%" },
-  { name: "INPUT", uid: "input", width: "50%" },
-  { name: "PARAMETERS", uid: "parameters",width: "10%" },
+  { name: "", uid: "actions", width: 10 },
+  { name: "NAME", uid: "name", width:50 },
+  { name: "TYPE", uid: "inputMode", width: 20 },
+  { name: "PARAMETERS", uid: "parameters",width: 30 },
+  { name: "INPUT", uid: "input", width: 700 },
+  
 //   { name: "SDF", uid: "sdf", minWidth: 100 },
-  { name: "", uid: "actions", width: "10%" },
+  
 ];
 
 const renderCell = (data: EquationData, col: React.Key, handleEdit: Function, handleDelete: Function) => {
@@ -47,21 +49,20 @@ const renderCell = (data: EquationData, col: React.Key, handleEdit: Function, ha
 //   } 
     else if (col === "actions") {
     return (
-      <Row justify="center" align="center">
-        <Col css={{ d: "flex" }}>
+        <Row>
+
           <Tooltip content="Edit">
           <Button auto light icon={<CiEdit size={24} />} onClick={() => handleEdit(data.id)}/>
           </Tooltip>
-        </Col>
-        <Col css={{ d: "flex" }}>
+
           <Tooltip
             content="Delete"
             color="error"
           >
             <Button auto light color="error" icon={<CiTrash size={24} />} onClick={() => handleDelete(data.id)}/>
           </Tooltip>
-        </Col>
-      </Row>
+     
+        </Row>
     );
   }
 };
@@ -131,8 +132,9 @@ export default function SurfaceTable(props: {handleNew: Function, handleEdit: Fu
           <Table.Column
             key={column.uid}
             align={column.uid === "actions" ? "center" : "start"}
+            width={column.width}
           >
-            {column.uid!=="actions" ? column.name : <Row><AddButton/><RestoreButton/></Row>}
+            {column.uid!=="actions" ? column.name : <><AddButton/><RestoreButton/></>}
               
           </Table.Column>
         )}

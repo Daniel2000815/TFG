@@ -155,6 +155,9 @@ export default function App(props: {
       input === "" ? "Introduce equation" : ""
     );
 
+    if(newErrorMsg.some(m => m!==""))
+      return [null, newErrorMsg];
+
     inputMath.forEach((input, idx) => {
       try {
         fs.push(
@@ -171,7 +174,8 @@ export default function App(props: {
 
     // PARAM -> IMPLICIT
     try {
-      implicit = Polynomial.implicitateR3(fs[0], fs[1], fs[2]).toString();
+      implicit = Polynomial.implicitateR3(fs[0], fs[1], fs[2], inputParameters.map((p) => p.symbol)).toString(true);
+      console.log("AQUI: ", fs[0].toString(), fs[1].toString(), fs[2].toString(), implicit);
     } catch (error: any) {
       newErrorMsg.fill(Error(error).message);
       return [null, newErrorMsg];
@@ -400,21 +404,21 @@ console.log(errorMessage);
             direction="row"
           >
             <Row align="center" justify="flex-start">
-              <Button.Group color="primary" bordered auto>
+              <Button.Group  auto>
                 <Button
-                  flat={eqInputMode === InputMode.Implicit}
+                  flat={eqInputMode===InputMode.Implicit}
                   onClick={() => setEqInputMode(InputMode.Implicit)}
                 >
                   Implicit
                 </Button>
                 <Button
-                  flat={eqInputMode === InputMode.Parametric}
+                flat={eqInputMode===InputMode.Parametric}
                   onClick={() => setEqInputMode(InputMode.Parametric)}
                 >
                   Parametric
                 </Button>
                 <Button
-                  flat={eqInputMode === InputMode.SDF}
+                flat={eqInputMode===InputMode.SDF}
                   onClick={() => setEqInputMode(InputMode.SDF)}
                 >
                   SDF
@@ -444,8 +448,9 @@ console.log(errorMessage);
                 </Grid>
                 <Grid.Container gap={2}>
                   <Grid xs={12}>
-                    <Collapse.Group shadow splitted>
+                    <Collapse.Group bordered >
                       <Collapse
+      
                         title={
                           <Row align="center">
                             <Text h4>Parameters</Text>

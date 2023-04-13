@@ -91,7 +91,6 @@ function CustomNode(props: {id:string, sdf: string, title: string, currOption: s
       </div>
       {showMore ? (
         <div
-          className="nodeBody"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           style={nodeStyle}
@@ -120,7 +119,7 @@ function CustomNode(props: {id:string, sdf: string, title: string, currOption: s
               <Shader
                 sdf={props.sdf}
                 primitives=""
-                width={width*0.9}
+                width={width*0.99}
                 height={100}
                 onError={(e)=>console.log("ERROR IN SHADER: ", e)}
               />

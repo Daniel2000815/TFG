@@ -12,6 +12,7 @@ import {
 import { CiCirclePlus, CiTrash } from "react-icons/ci";
 import UseAnimations from 'react-useanimations';
 import trash2 from 'react-useanimations/lib/trash2'
+import plusToX from 'react-useanimations/lib/plusToX'
 
 
 const defaultParameter = {
@@ -210,9 +211,10 @@ export default function ParameterTable(props: {
               <Grid xs={1}>
                 <Tooltip content="Delete parameter">
                   <Button
+                    light
                     color="error"
                     onClick={() => handleDeleteParam(i)}
-                    icon={<UseAnimations animation={trash2} />}
+                    icon={<UseAnimations strokeColor="#FF0000" animation={trash2} />}
                     auto
                   />
                 </Tooltip>

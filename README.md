@@ -13,10 +13,6 @@ Aquí se pueden realizar operaciones sobre las primitivas existentes. A la derec
 
 ##### Controles
 - Creación de nodos:
-  - `P`: crear nodo de primitiva.
-  - `B`: crear nodo de operación booleana.
-  - `D`: crear nodo de deformación.
-  - `T`: crear nodo de movimiento rígido (transformación).
   - `click derecho`:  menú contextual.
 - Navegación / Edición:
   - `click izquierdo`: 
@@ -41,15 +37,20 @@ En esta página se pueden crear nuevas superficies. Por defecto aparecen 3. Para
 ### Fallos conocidos / TODO
 
 - *Surfaces*:
-  - [ ] No se pueden usar parámetros cuando el tipo de ecuación es "Parametric". 
+  - [ ] Error al introducir operador de división al crear superficie paramétrica.
+  - [ ] Algunos campos de texto tienen errores de focus
+  - [x] No se pueden usar parámetros cuando el tipo de ecuación es "Parametric". 
   - [x] En el modo "SDF" si hay algún fallo no te avisa, simplemente no se visualiza nada.
   - [x] El botón de editar no funciona.
+  
 - *Graph*
+  - [ ] La primera vez que se selecciona un desplegable se cierra solo
   - [ ] Rendimiento.
   - [ ] Save / Load ?
-  - [ ] Faltan algunas operaciones
-  - [ ] Operador de escalado no funciona
-  - [ ] Eliminar conexiones hace que deje de funcionar
+  - [ ] Etiquetas de parámetros con espacios no se muestran bien
+  - [x] Faltan algunas operaciones
+  - [x] Operador de escalado no funciona
+  - [x] Eliminar conexiones hace que deje de funcionar
 
 ## Memoria
 - El archivo compilado se encuentra en [./Memoria/TFG.pdf](./Memoria/TFG.pdf).
