@@ -37,7 +37,8 @@ En esta página se pueden crear nuevas superficies. Por defecto aparecen 3. Para
 ### Fallos conocidos / TODO
 
 - *Surfaces*:
-  - [ ] Añadir controles de ayuda 
+  - [ ] Añadir controles de ayuda .
+  - [ ] Modificar el material solo tiene efecto en la previsualización al crear la superficie.
   - [x] Error al introducir operador de división al crear superficie paramétrica.
   - [x] Algunos campos de texto tienen errores de focus
   - [x] No se pueden usar parámetros cuando el tipo de ecuación es "Parametric". 
@@ -45,13 +46,13 @@ En esta página se pueden crear nuevas superficies. Por defecto aparecen 3. Para
   - [x] El botón de editar no funciona.
   
 - *Graph*
-  - [ ] La primera vez que se selecciona un desplegable se cierra solo
+  - [ ] La primera vez que se selecciona un desplegable se cierra solo.
   - [ ] Rendimiento.
   - [ ] Save / Load ?
-  - [ ] Etiquetas de parámetros con espacios no se muestran bien
-  - [x] Faltan algunas operaciones
-  - [x] Operador de escalado no funciona
-  - [x] Eliminar conexiones hace que deje de funcionar
+  - [ ] Etiquetas de parámetros con espacios no se muestran bien.
+  - [x] Faltan algunas operaciones.
+  - [x] Operador de escalado no funciona.
+  - [x] Eliminar conexiones hace que deje de funcionar.
 
 ## Memoria
 - El archivo compilado se encuentra en [./Memoria/TFG.pdf](./Memoria/TFG.pdf).
