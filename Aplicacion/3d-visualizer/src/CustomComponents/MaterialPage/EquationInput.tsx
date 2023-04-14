@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 
 import { Input } from "@nextui-org/react";
+import { PropaneSharp } from "@mui/icons-material";
 
 // export default function EquationInput(idx: number, val: string, label: string, setVal: Function, validEq: boolean, errorMsg: string, adornmentPos: "end"|"start", adornment: string) {
 //   return <Input onChange={(e) => setVal(e.target.value, idx)} placeholder="Next UI" />;
@@ -14,13 +15,14 @@ export default function EquationInput(
   setVal: Function,
   errorMsg: string,
   adornmentPos: "right" | "left",
-  adornment: string
+  adornment: string,
+  clearable: boolean = true
 ) {
   return (
     <Input
       initialValue={val}
       defaultValue=""
-      clearable
+      clearable={clearable}
       onChange={(e) => setVal(e.target.value, idx)}
       id={label}
       status={errorMsg !== "" ? "error" : "default"}
@@ -74,7 +76,8 @@ export function ImplicitInput(
     (e: string) => onChange([e, value[1], value[2]]),
     errorMsg,
     "right",
-    "=0"
+    "=0",
+    false
   );
 }
 
@@ -90,7 +93,8 @@ export function SDFInput(
     (e: string) => onChange([e, value[1], value[2]]),
     errorMsg,
     "left",
-    ""
+    "",
+    false
   );
 }
 
@@ -110,7 +114,8 @@ export function ParametricInput(
           (e: string, idx: number) => onChange([e, value[1], value[2]], idx),
           errorMsg[0],
           "left",
-          "x="
+          "x=",
+          false
         )}
       </Grid>
       <Grid xs={12}>
@@ -121,7 +126,8 @@ export function ParametricInput(
           (e: string, idx: number) => onChange([value[0], e, value[2]], idx),
           errorMsg[1],
           "left",
-          "y="
+          "y=",
+          false
         )}
       </Grid>
       <Grid xs={12}>
@@ -132,7 +138,8 @@ export function ParametricInput(
           (e: string, idx: number) => onChange([value[0], value[1], e], idx),
           errorMsg[2],
           "left",
-          "z="
+          "z=",
+          false
         )}
       </Grid>
     </Grid>

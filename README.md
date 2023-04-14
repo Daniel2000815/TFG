@@ -37,8 +37,9 @@ En esta página se pueden crear nuevas superficies. Por defecto aparecen 3. Para
 ### Fallos conocidos / TODO
 
 - *Surfaces*:
-  - [ ] Error al introducir operador de división al crear superficie paramétrica.
-  - [ ] Algunos campos de texto tienen errores de focus
+  - [ ] Añadir controles de ayuda 
+  - [x] Error al introducir operador de división al crear superficie paramétrica.
+  - [x] Algunos campos de texto tienen errores de focus
   - [x] No se pueden usar parámetros cuando el tipo de ecuación es "Parametric". 
   - [x] En el modo "SDF" si hay algún fallo no te avisa, simplemente no se visualiza nada.
   - [x] El botón de editar no funciona.

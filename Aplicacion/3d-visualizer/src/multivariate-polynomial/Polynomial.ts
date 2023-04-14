@@ -925,7 +925,7 @@ export class Polynomial {
    * @param fz Parametrization for z
    * @returns Generator of the smallest variety containing the image of (`fx`,`fy`,`fz`)
    */
-  static implicitateR3(fx: Polynomial, fy: Polynomial, fz: Polynomial, parameters: string[]){
+  static implicitateR3(fx: Polynomial, fy: Polynomial, fz: Polynomial, parameters: string[] = []){
     if(!fx.sameVars(fy) || !fx.sameVars(fz))
       throw new Error("PARAMETRIZATIONS IN DIFFERENT RINGS")
 

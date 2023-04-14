@@ -13,6 +13,7 @@ import { CiCirclePlus, CiTrash } from "react-icons/ci";
 import UseAnimations from 'react-useanimations';
 import trash2 from 'react-useanimations/lib/trash2'
 import plusToX from 'react-useanimations/lib/plusToX'
+import FloatInput from "../FloatInput";
 
 
 const defaultParameter = {
@@ -154,12 +155,24 @@ export default function ParameterTable(props: {
     console.log(errorMsgs);
     const color = errorMsgs[i][field] === "" ? "default" : "error";
 
+    if(type === "number"){
+      return(
+      <FloatInput
+      initialVal={value}
+        onChange={(newVal) => editParam(i, field, newVal.toString())}
+        label={label}
+        
+        errorMsg={errorMsgs[i][field]}
+        adornmentPos="left"
+      />)
+    }
+    
     return (
+      
       <Input
         onChange={(e) => editParam(i, field, e.target.value.toString())}
         color={color}
         helperColor={color}
-        type={type}
         value={value}
         aria-label={label}
         fullWidth

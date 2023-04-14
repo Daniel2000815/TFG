@@ -321,8 +321,8 @@ export class Monomial {
       if (this.isOne()) return "1";
       let mon: string = "";
   
-      if (this.coef === -1) mon = "-";
-      else if (this.coef === 1) mon = "";
+      if (this.coef === -1 && this.exp.some(e=>e!==0)) mon = "-";
+      else if (this.coef === 1 && !this.exp.every(e=>e===0)) mon = "";
       else mon = this.coef.toString();
   
       // Separar - del coeficiente
@@ -332,7 +332,7 @@ export class Monomial {
         const e = this.exp[idx];
         let added = 0;
         if (this.exp[idx] !== 0){
-           mon += `${v}${e > 1 ? `^${this.exp[idx]}` : ""} ${added>0 && idx<this.vars.length-1 && showProductChar ? "*":""}`;
+           mon += `${v}${e!==0 && e!==1 ? `^${this.exp[idx]}` : ""}${added>0 && idx<this.vars.length-1 && showProductChar ? "*":""}`;
            added++;
         }
       });

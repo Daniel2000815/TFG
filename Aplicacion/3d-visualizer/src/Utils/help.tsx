@@ -1,4 +1,4 @@
-import { Text, Spacer } from "@nextui-org/react";
+import { Text, Spacer, Grid, Badge } from "@nextui-org/react";
 
 export const graphControls: Record<string, string> = {
   "left click + drag": "move view",
@@ -9,6 +9,15 @@ export const graphControls: Record<string, string> = {
   s: "collapse/expand all nodes",
 };
 
+export const surfaceFunctions: Record<string, string> = {
+  "rotate(angX, angY, angZ)": "rotation in axis Z,Y,X",
+  "rotateX, rotateY, rotateZ": "rotation in the specified axis",
+  "union": "select node",
+  "right click": "contextual menu",
+  scrollwheel: "zoom",
+  backspace: "delete selected node",
+  s: "collapse/expand all nodes",
+};
 
   export function GraphHelpText() {
     return (
@@ -25,8 +34,9 @@ export function SurfaceHelpText() {
     <>
       <Text>
         Here you can define your own primitives through its parametric and
-        implicit equations, or giving the explicit SDF in glsl syntax.
+        implicit equations, or giving the explicit SDF in glsl syntax. You can also use any of the existing primitives by their NFD form and the following functions: 
       </Text>
+      TODO
       <Spacer y={1}/>
       <Text>
         In the parameter menu, you can create specify values to be controlled in

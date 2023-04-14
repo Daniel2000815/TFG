@@ -14,11 +14,12 @@ export default function FloatInput(props: {
       initialValue={props.initialVal.toString()}
       defaultValue="0"
       onChange={(e) => props.onChange(parseFloat(e.target.value))}
+      type="number"
       id={props.label}
-      status={props.errorMsg !== undefined ? "error" : "default"}
-      color={props.errorMsg !== undefined ? "error" : "default"}
+      status={props.errorMsg !== undefined && props.errorMsg!=="" ? "error" : "default"}
+      color={props.errorMsg !== undefined && props.errorMsg!=="" ? "error" : "default"}
       helperText={props.errorMsg}
-      helperColor={props.errorMsg !== undefined ? "error" : "default"}
+      helperColor={props.errorMsg !== undefined && props.errorMsg!=="" ? "error" : "default"}
       labelRight={props.adornmentPos === "right" ? props.adornment : null}
       labelLeft={props.adornmentPos === "left" ? props.adornment : null}
       placeholder={props.label}

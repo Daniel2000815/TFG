@@ -167,6 +167,7 @@ export default function App(props: {
           )
         );
       } catch (e: any) {
+        console.log("ERROR AQUI ", idx);
         newErrorMsg[idx] = Error(e).message;
         return [null, newErrorMsg];
       }
@@ -174,8 +175,10 @@ export default function App(props: {
 
     // PARAM -> IMPLICIT
     try {
-      implicit = Polynomial.implicitateR3(fs[0], fs[1], fs[2], inputParameters.map((p) => p.symbol)).toString(true);
-      console.log("AQUI: ", fs[0].toString(), fs[1].toString(), fs[2].toString(), implicit);
+      const res = Polynomial.implicitateR3(fs[0], fs[1], fs[2], inputParameters.map((p) => p.symbol));
+      implicit = res.toString(true);
+      console.log("AQUI2 ", res);
+      console.log("AQUI: ", fs[0].toString(), ",", fs[1].toString(),",", fs[2].toString(),",", implicit);
     } catch (error: any) {
       newErrorMsg.fill(Error(error).message);
       return [null, newErrorMsg];
