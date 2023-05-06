@@ -30,6 +30,7 @@ export function DropdownTS(props:{items: string[], defaultValue: string, onChang
         {selectedValue}
       </Dropdown.Button>
       <Dropdown.Menu
+      disallowEmptySelection={true}
         selectionMode="single"
         selectedKeys={selected}
         onSelectionChange={setSelected}

@@ -51,6 +51,8 @@ export function BooleanNode(props: { id: string; data: any }) {
         }, ${newSdf}, ${smooth})`;
       }
     }
+
+    console.log("res ", newSdf);
     updateSdf(newSdf);
   };
 
