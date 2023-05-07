@@ -53,7 +53,7 @@ export default function CustomContextMenu(props) {
 }
 */
 import { shallow } from "zustand/shallow";
-import { useStore } from "../../store";
+import { useStore } from "../../graphStore";
 
 import { Menu, Item, Separator, Submenu } from "react-contexify";
 

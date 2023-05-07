@@ -2,7 +2,7 @@ import React from "react";
 import { getBezierPath } from "reactflow";
 import { shallow } from "zustand/shallow";
 import { tw } from "twind";
-import { useStore } from "../../../store";
+import { useStore } from "../../../graphStore";
 import "./edgeStyles.css";
 
 const foreignObjectSize = 40;

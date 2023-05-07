@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Handle } from "reactflow";
 import { shallow } from "zustand/shallow";
 import { tw } from "twind";
-import { useStore } from "../../store";
+import { useStore } from "../../graphStore";
 import { useTheme } from '@nextui-org/react';
 
 import {CustomNode} from "./CustomNode";

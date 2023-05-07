@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Edge, Handle } from "reactflow";
 import { shallow } from "zustand/shallow";
 import { tw } from "twind";
-import { useStore } from "../../store";
+import { useStore } from "../../graphStore";
 import {Slider} from "../../Components/Slider";
 import {CustomNode} from "./CustomNode";
 import { TransformOperations } from "../../Types/NodeOperations";

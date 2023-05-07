@@ -4,7 +4,7 @@ import ReactFlow, {
   Panel,
 } from "reactflow";
 import { shallow } from "zustand/shallow";
-import { useStore } from "../store";
+import { useStore } from "../graphStore";
 import { tw } from "twind";
 import { CustomEdge } from "./nodes/parts/CustomEdge";
 import { PrimitiveNode } from "./nodes/PrimitiveNode";
@@ -38,6 +38,7 @@ const selector = (store) => ({
   addEdge: store.addEdge,
   
   addNode: (type, x, y) => store.createNode(type, x, y),
+  saveToLocalStorage: () => store.saveToLocalStorage()
 });
 
 
@@ -81,17 +82,17 @@ export function Graph() {
         }
         fitView
       >
-        <Panel className={tw("space-x-4")} position="top-right">
-          <button
+        <Panel onClick={()=>store.saveToLocalStorage()} className={tw("space-x-4")} position="top-right">
+          {/* <button
             className={tw("px-2 py-1 rounded bg-white shadow")}
           >
-            Add Osc
+            Save
           </button>
           <button
             className={tw("px-2 py-1 rounded bg-white shadow")}
           >
             Add Amp
-          </button>
+          </button> */}
         </Panel>
         <Background />
       </ReactFlow>

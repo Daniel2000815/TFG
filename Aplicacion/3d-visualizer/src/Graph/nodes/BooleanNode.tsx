@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { shallow } from "zustand/shallow";
-import { useStore } from "../../store";
+import { useStore } from "../../graphStore";
 import {Slider} from "../../Components/Slider";
 import {CustomNode} from "./CustomNode";
 import { BooleanOperations } from "../../Types/NodeOperations";

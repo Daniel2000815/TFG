@@ -3,7 +3,7 @@ import { Shaders, Node, GLSL, Visitor, ShaderIdentifier } from "gl-react";
 import { Surface } from "gl-react-dom";
 // import { useResizeDetector } from 'react-resize-detector';
 
-import { useStore } from "../store";
+import { useStore } from "../graphStore";
 import { shallow } from "zustand/shallow";
 import { useEffect } from "react";
 import { fs } from "./fragmentShader";

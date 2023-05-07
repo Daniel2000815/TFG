@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { shallow } from "zustand/shallow";
 import { tw } from "twind";
-import { useStore } from "../../store";
+import { useStore } from "../../graphStore";
 import {CustomHandle} from "./parts/CustomHandle";
 import {Shader} from "../../Shader/Shader";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";

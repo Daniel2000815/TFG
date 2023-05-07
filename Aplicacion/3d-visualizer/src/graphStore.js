@@ -18,88 +18,103 @@ import {
 //   disconnect,
 // } from "./Graph/audio";
 
+const defaultNodes = [
+  {
+    id: "primitive",
+    type: "primitive",
+    position: { x: -150, y: 200 },
+    data: { sdf: "cube(p,1.0)", inputs: {}, children: [] },
+  },
+  {
+    id: "primitive2",
+    type: "primitive",
+    position: { x: -150, y: -200 },
+    data: { sdf: "cube(p,1.0)", inputs: new Map(), children: [] },
+  },
+  {
+    id: "deform",
+    type: "deform",
+    position: { x: 150, y: 200 },
+    data: { sdf: "", inputs: new Map(), children: [] },
+  },
+  {
+    id: "boolean",
+    type: "boolean",
+    position: { x: 150, y: -100 },
+    data: { sdf: "", inputs: new Map(), children: [] },
+  },
+  {
+    id: "transform",
+    type: "transform",
+    position: { x: 150, y: -400 },
+    data: { sdf: "", inputs: new Map(), children: [] },
+  },
+];
+
+const defaultPrimitives = [
+  {
+    id: "sphere",
+    name: "Sphere",
+    inputMode: InputMode.Implicit,
+    input: ["x^2 + y^2 + z^2 - r", "", ""],
+    parsedInput: "length(p)-r",
+    parameters: [{ symbol: "r", label: "Radius", defaultVal: 1.0 }],
+    fHeader: "sphere(vec3 p, float r)",
+  },
+  {
+    id: "torus",
+    name: "Torus",
+    inputMode: InputMode.SDF,
+    input: ["length(vec2(length(p.xz)-R,p.y)) - r", "", ""],
+    parsedInput: "length(vec2(length(p.xz)-R,p.y)) - r",
+    parameters: [
+      { symbol: "R", label: "Radius 1", defaultVal: 2.0 },
+      { symbol: "r", label: "Radius 2", defaultVal: 1.0 },
+    ],
+    fHeader: "torus(vec3 p, float R, float r)",
+  },
+  {
+    id: "cube",
+    name: "Cube",
+    inputMode: InputMode.SDF,
+    input: [
+      "length(max(abs(p) - vec3(l),0.0)) + min(max(abs(p.x) - l,max(abs(p.y) - l,abs(p.z) - l)),0.0)",
+      "",
+      "",
+    ],
+    parsedInput:
+      "length(max(abs(p) - vec3(l),0.0)) + min(max(abs(p.x) - l,max(abs(p.y) - l,abs(p.z) - l)),0.0)",
+    parameters: [{ symbol: "l", label: "side", defaultVal: 1.0 }],
+    fHeader: "cube(vec3 p, float l)",
+  },
+  {
+    id: "ellipsoid",
+    name: "Ellipsoid",
+    inputMode: InputMode.Parametric,
+    input: ["s", "t", "s^2+t^2"],
+    parsedInput:
+      "(-z + pow(x, 2.0000) + pow(y, 2.0000)) * pow(sqrt(1.0000 + 4.0000 * pow(x, 2.0000) + 4.0000 * pow(y, 2.0000)), -1.0000)",
+    parameters: [],
+    fHeader: "ellipsoid(vec3 p)",
+  },
+];
+
+const getInitialLoggedIn = () => {
+  // localStorage.clear();
+  if(localStorage.getItem("graph_storage") !==null){
+    console.log("ALGO HAY: ", JSON.parse(localStorage.getItem("graph_storage")));
+    
+    return JSON.parse(localStorage.getItem("graph_storage"));
+  }
+
+  return defaultNodes;
+};
+
 export const useStore = create((set, get) => ({
-  nodes: [
-    {
-      id: "primitive",
-      type: "primitive",
-      position: { x: -150, y: 200 },
-      data: { sdf: "cube(p,1.0)", inputs: {}, children: [] },
-    },
-    {
-      id: "primitive2",
-      type: "primitive",
-      position: { x: -150, y: -200 },
-      data: { sdf: "cube(p,1.0)", inputs: new Map(), children: [] },
-    },
-    {
-      id: "deform",
-      type: "deform",
-      position: { x: 150, y: 200 },
-      data: { sdf: "", inputs: new Map(), children: [] },
-    },
-    {
-      id: "boolean",
-      type: "boolean",
-      position: { x: 150, y: -100 },
-      data: { sdf: "", inputs: new Map(), children: [] },
-    },
-    {
-      id: "transform",
-      type: "transform",
-      position: { x: 150, y: -400 },
-      data: { sdf: "", inputs: new Map(), children: [] },
-    },
-  ],
+  nodes: getInitialLoggedIn() ,
   edges: [],
   needsToUpdate: { primitive: false, deform: false, boolean: false, primitive2: false, transform: false },
-  primitives: [
-    {
-      id: "sphere",
-      name: "Sphere",
-      inputMode: InputMode.Implicit,
-      input: ["x^2 + y^2 + z^2 - r", "", ""],
-      parsedInput: "length(p)-r",
-      parameters: [{ symbol: "r", label: "Radius", defaultVal: 1.0 }],
-      fHeader: "sphere(vec3 p, float r)",
-    },
-    {
-      id: "torus",
-      name: "Torus",
-      inputMode: InputMode.SDF,
-      input: ["length(vec2(length(p.xz)-R,p.y)) - r", "", ""],
-      parsedInput: "length(vec2(length(p.xz)-R,p.y)) - r",
-      parameters: [
-        { symbol: "R", label: "Radius 1", defaultVal: 2.0 },
-        { symbol: "r", label: "Radius 2", defaultVal: 1.0 },
-      ],
-      fHeader: "torus(vec3 p, float R, float r)",
-    },
-    {
-      id: "cube",
-      name: "Cube",
-      inputMode: InputMode.SDF,
-      input: [
-        "length(max(abs(p) - vec3(l),0.0)) + min(max(abs(p.x) - l,max(abs(p.y) - l,abs(p.z) - l)),0.0)",
-        "",
-        "",
-      ],
-      parsedInput:
-        "length(max(abs(p) - vec3(l),0.0)) + min(max(abs(p.x) - l,max(abs(p.y) - l,abs(p.z) - l)),0.0)",
-      parameters: [{ symbol: "l", label: "side", defaultVal: 1.0 }],
-      fHeader: "cube(vec3 p, float l)",
-    },
-    {
-      id: "ellipsoid",
-      name: "Ellipsoid",
-      inputMode: InputMode.Parametric,
-      input: ["s", "t", "s^2+t^2"],
-      parsedInput:
-        "(-z + pow(x, 2.0000) + pow(y, 2.0000)) * pow(sqrt(1.0000 + 4.0000 * pow(x, 2.0000) + 4.0000 * pow(y, 2.0000)), -1.0000)",
-      parameters: [],
-      fHeader: "ellipsoid(vec3 p)",
-    },
-  ],
+  primitives: defaultPrimitives,
 
   onNodesChange(changes) {
     set({
@@ -136,6 +151,11 @@ export const useStore = create((set, get) => ({
       
     // }
   },
+
+  saveToLocalStorage(){
+    localStorage.setItem("graph_storage", JSON.stringify(get().nodes));
+  },
+
 
   updateNode(id, data) {
     // update node logic -> update data
@@ -317,6 +337,27 @@ export const useStore = create((set, get) => ({
 
     console.log("new edges: ", get().edges);
     get().removeChild(source, target);
+  },
+  updatePrimitive(id, data) {
+
+    // Update and find source
+    set({
+      primitives: get().primitives.map((p) => {
+        if (p.id === id) {
+          return { ...p, data: Object.assign(p.data, data) };
+        } else {
+          return p;
+        }
+      }),
+    });
+  },
+
+  deletePrimitive(id){
+    set({primitives: get().primitives.filter((p) => p.id !== id)});
+  },
+
+  restorePrimitives(){
+    set({primitives: defaultPrimitives});
   },
 
   onEdgesDelete(deleted) {

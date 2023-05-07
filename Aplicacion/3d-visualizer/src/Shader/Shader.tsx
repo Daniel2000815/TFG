@@ -1,7 +1,7 @@
 //@flow
 import React, { useState, useEffect, memo, useRef } from "react";
 
-import { useStore } from "../store";
+import { useStore } from "../graphStore";
 import { shallow } from "zustand/shallow";
 import UseAnimations from "react-useanimations";
 import alertCircle from "react-useanimations/lib/alertCircle";
