@@ -72,6 +72,8 @@
 \mathtoolsset{showonlyrefs=true}      % sólo se numeran las ecuaciones que se usan
 \usepackage[mathscr]{eucal} 					% Proporciona el comando \mathscr para
                                       % fuentes de tipo manuscrito en modo matemático sin sobreescribir el comando \mathcal
+\usepackage{cancel}
+
 \usepackage[ruled]{algorithm2e}
 
 % TIPOGRAFÍA 
@@ -90,7 +92,7 @@
 % Si el paquete cabin da error usar el siguiente comando en su lugar
 % \renewcommand{\sfdefault}{iwona} 
 \usepackage{inconsolata}
-
+\usepackage{subfigure}
 
 % Selecciona el tipo de fuente para los títulos (capítulo, sección, subsección) del documento.
 \setkomafont{disposition}{\sffamily\bfseries}
@@ -219,6 +221,7 @@
 
 \input{capitulos/capitulo01}
 \input{capitulos/capitulo02}
+\input{capitulos/capitulo03}
 
 % --------------------------------------------------------------------
 % APPENDIX: Opcional
@@ -245,10 +248,10 @@
 
 % BIBLIOGRAFÍA
 %-------------------------------------------------------------------
-\bibliographystyle{alpha}
+\bibliographystyle{ieeetr}
 \begin{small} % Normalmente la bibliografía se imprime en un tamaño de letra más pequeño.
 
-  \bibliography{./library.bib}
+  \bibliography{library.bib}
 \end{small}
 
 

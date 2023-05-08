@@ -1,26 +1,25 @@
 % !TeX root = ../libro.tex
 % !TeX encoding = utf8
-
 \chapter{Función Distancia con Signo}
 Tenemos como objetivo representar superficies en $\R^3$. En general, estas pueden estar definidas de multitud de formas, siendo una de las más usuales a través de una función implícita. Nosotros nos centraremos en un tipo especial de funciones implícitas, que introducimos a continuación.
 
 \begin{definicion}
   Sea $\Omega \subseteq \R^3$. Una \textbf{función distancia} es aquella que a cada punto de $\R^3$ le asigna su menor distancia a la frontera de $\Omega$:
     \begin{align*}
-          d_{\Omega} \colon \R^3 &\to \R_0^+\\
-          x &\mapsto \inf\{\Vert x-y\Vert) \colon y \in \delta\Omega\}
+          d_{\Omega} \colon \R^3 &\to \R_0^+.\\
+          x &\mapsto \inf\{\Vert x-y\Vert) \colon y \in \delta\Omega\}.
     \end{align*}
 
     Cuando $\Omega$ sea cerrado, podremos usar el mínimo en lugar del ínfimo.
 \end{definicion}
  
 \begin{definicion}[SDF]\label{d:sdf}
-  Sea $\Omega \subseteq \R^3$. Una \textbf{función distancia con signo} es una función implícita de la forma:
+  Sea $\Omega \subseteq \R^3$. Una \textbf{función distancia con signo} es una función de la forma:
   \begin{align*}
-          \phi_{\Omega} \colon \R^3 &\to \R\\
+          \phi_{\Omega} \colon \R^3 &\to \R.\\
           x &\mapsto \begin{cases}
-      d_{\Omega}(x),  &x\in \R^3\setminus \mathring{\Omega} \\
-      -d_{\Omega}(x), &x\in \mathring{\Omega}
+      d_{\Omega}(x),  &x\in \R^3\setminus \mathring{\Omega}. \\
+      -d_{\Omega}(x), &x\in \mathring{\Omega}.
     \end{cases}
     \end{align*}
 
@@ -28,118 +27,252 @@ Tenemos como objetivo representar superficies en $\R^3$. En general, estas puede
 \end{definicion}
 
 \begin{definicion}
-  Dada una función $\phi\colon \R^3 \to \R$ y $k\in\R$, llamamos \textbf{isosuperficie} al conjunto:
+  Dada una función $\phi\colon \R^3 \to \R$ y $k\in\R$, llamamos \textbf{isosuperficie de $\boldsymbol{\phi}$ con valor $\boldsymbol{k}$} al conjunto:
   \begin{equation*}
-      S_{\phi,k} = \{(x,y,z) :  \phi(x,y,z)=k\}
+      S_{\phi,k} = \{(x,y,z) :  \phi(x,y,z)=k\}.
   \end{equation*}
   Sin pérdida de generalidad podemos suponer $k=0$, pues de no ser el caso, tomamos la función $\phi'(x,y,z)=\phi(x,y,z)-k$ y tenemos que $S_{\phi',0} = S_{\phi,k}$. Por tanto, la denotaremos como $S_\phi$.
 \end{definicion}
 
-Nuestra intención será entonces construir una escena definida como la isosuperficie generada por un SDF.
+Nuestra intención será entonces construir una escena definida como la isosuperficie generada por un SDF. A partir de ahora, tomaremos $p=(x,y,z)\in\R^3$.
 
 \begin{ejemplo}
-    Ejemplos simples de SDF $\phi$ para un punto $p=(x,y,z)$ en diferentes conjuntos $\Omega$ son:
+    Ejemplos simples de SDF $\phi$ en $p$ para diferentes conjuntos $\Omega$ son:
     \begin{itemize}
         \item \textbf{Esfera de radio $\boldsymbol{r}$ centrada en el origen.}
         \begin{equation*}
-            \Omega=\{x\in \R^3 : \Vert x\Vert = r\},\quad \phi(p) = \Vert p\Vert - r
+            \Omega=\{x\in \R^3 : \Vert x\Vert = r\},\quad \phi(p) = \Vert p\Vert - r.
         \end{equation*}
-        \item \textbf{Plano con vector normal $\boldsymbol{n=(a,b,c)}$ pasando por el origen}.
+        \item \textbf{Plano con vector normal unitario $\boldsymbol{n=(a,b,c)}$ y pasando por el origen}.
         \begin{equation*}
-            \Omega=\{p\in\R^3 : ax+by+cz = 0\},\quad \phi(p) = p\cdot n
+            \Omega=\{p\in\R^3 : ax+by+cz = 0\},\quad \phi(p) = p\cdot n.
         \end{equation*}
-        \item \textbf{Toro de radios $\boldsymbol{R>r}$}:
+        \item \textbf{Toro de radios $\boldsymbol{R}$ y $\boldsymbol{r}$, con $\boldsymbol{R>r}$}:
         \begin{equation*}
-            \Omega=\left\{p\in \R^3 : \left(R-\sqrt{x^2+y^2}\right)^2 + z^2 = r^2\right\},\quad \phi(p)= \bigg\Vert (\Vert(x,0,z)\Vert - R, y) \bigg\Vert - r
+            \Omega=\left\{p\in \R^3 : \left(R-\sqrt{x^2+y^2}\right)^2 + z^2 = r^2\right\},\quad \phi(p)= \bigg\Vert (\Vert(x,0,z)\Vert - R, y) \bigg\Vert - r.
         \end{equation*}
     \end{itemize}
 \end{ejemplo}
 
+
 \section{Operaciones sobre SDF}
-Si bien estas primitivas son fáciles de generar, también son muy simples y nos serán insuficientes si queremos construir escenas más complejas. Una de las ventajas de los SDF es que se pueden generar nuevas formas a partir de primitivas de forma muy sencilla.\\
+Si bien estas primitivas son fáciles de generar, también son muy simples y nos serán insuficientes si queremos construir escenas más complejas. Una de las ventajas de los SDF es que se pueden generar nuevas formas a partir de primitivas de forma muy sencilla. Para ello, una de las técnicas más útiles es la geometría de sólidos constructiva, que utiliza operaciones booleanas para combinar múltiples primitivas. Por la naturaleza de los SDF, estas operaciones se implementan fácilmente usando las funciones $\Max$ y $\Min$.
 
-En lo siguiente, tomaremos $p=(x,y,z)\in\R^3$.
-
-\begin{proposicion}[Operaciones Booleanas]\label{p:boolean}
-    Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente. Definimos los SDF para las operaciones:
+\begin{definicion}[Operaciones Booleanas]\label{p:boolean}
+    Sean $A$ y $B$ isosuperficies generadas por $\phi$ y $\gamma$ respectivamente. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
-        \item \textbf{Unión: } $\sdf_{A\cup B} = \min(\phi, \gamma)$,
-        \item \textbf{Intersección: } $\sdf_{A\cap B} = \max(\phi, \gamma)$,
-        \item \textbf{Diferencia: } $\sdf_{A\setminus B} = \max(\phi, -\gamma)$.
+        \item \textbf{Unión: } $\sdf_{A\cup B}(p) = \Min(\phi(p), \gamma(p))$,
+        \item \textbf{Intersección: } $\sdf_{A\cap B}(p) = \Max(\phi(p), \gamma(p))$,
+        \item \textbf{Diferencia: } $\sdf_{A\setminus B}(p) = \Max(\phi(p), -\gamma(p))$.
     \end{itemize}
-\end{proposicion}
+\end{definicion}
 
 \begin{observacion}
-    Solo en el caso de la unión se obtiene un SDF según lo establecido en \autoref{d:sdf}, ya que al aplicar $\max$ en el interior (donde $\phi < 0$), las funciones resultado pueden ser solo una cota superior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies, así que podemos obviar este problema.
+    Solo en el caso de la unión se obtiene un SDF según lo establecido en la \autoref{d:sdf}, ya que al aplicar $\Max$ en el interior (donde $\phi < 0$), las funciones resultado pueden ser solo una cota superior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies, así que podemos obviar este problema.
 \end{observacion}
 
-Un problema de usar estas transformaciones es que produce discontinuidades en la derivada del SDF resultante. Trataremos de evitar esta situación, además de por motivos analíticos, por motivos visuales, ya que el resultado de estas operaciones produce bordes muy acusados en la intersección de ambas superficies. Existen muchas formas de combinar SDF de forma más natural. Una de las más sencillas es la interpolación lineal.
+Un problema de usar estas transformaciones es que produce discontinuidades en la derivada del SDF resultante. Trataremos de evitar esta situación, además de por motivos analíticos, por motivos visuales, ya que el resultado de estas operaciones produce bordes muy acusados en la intersección de ambas superficies. Existen muchas formas de combinar SDF de forma más natural. Usaremos una de las más extendidas, usada por programas de modelado 3D como Blender \cite{repo:blender} o videojuegos como \cite{game:dreams}, y ha sido estudiada por Íñigo Quilez en su web \cite{article:smooth}.
 
-\begin{proposicion}[Operaciones Booleanas Suavizadas]
-    Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente. Definimos los SDF para las operaciones suavizadas:
+\begin{observacion}
+    Para mayor claridad, en las figuras se representarán funciones de variable real, a pesar de que en nuestro caso sería en $\R^3$.
+\end{observacion}
+
+Empezamos centrándonos en la unión. La idea es, dadas $\phi$ y $\gamma$, añadir una corrección para cada punto a la función $\Min$ original para que cumpla ciertos requisitos. Además esta función tendrá un parámetro $k\in\R$ que permita controlar su influencia. Llamaremos a esta corrección $\omega\colon \R^3\times \R^+_0\to\R$, de forma que la versión suavizada de $\Min$ será:
+\begin{align*}
+          \smin\colon \R^3\times \R^+_0 &\to \R.\\
+          (p,k) &\mapsto \Min(\phi(p),\gamma(p)) - \omega(p,k).
+    \end{align*}
+
+Como no queremos que este cambio afecte al algoritmo de \textit{raymarching}, debe cumplirse $\Min(p)\ge \smin(p) \ \forall p \in \R^3$, esto es, $\omega(p)\ge 0\ \forall p \in \R^3$. 
+Si estudiamos como se comporta la versión real de $\Min$ en la \autoref{fig:min_real}, vemos que hay que corregirla cerca de las intersecciones de $\phi$ y $\gamma$, es decir, cuando $\phi$ y $\gamma$ estén arbitrariamente cerca. En el resto de puntos no queremos modificar la función original, luego estudiamos el comportamiento de $\smin$ en la bola cerrada centrada en $p$ de radio $k$:
+\begin{equation*}
+    B_{p,k} = \{p\in\R^3 : |\phi(p)-\gamma(p)| \le k\}, \ p\in \R^3,\ k\in\R^+_0
+\end{equation*}
+
+siendo $\omega(p) = 0$ cuando $p\notin B_{p,k}$. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/smooth_real.png}
+    \caption{Gráfica de $\Min\colon \R\to\R$}
+    \label{fig:min_real}
+\end{figure}
+
+Como queremos que $\smin$ sea continua en la frontera de $B_{p,k}$, imponemos la condición $\omega(p) = 0\ \forall p \in \delta B_{p,k}$. Por otro lado, es lógico que $\omega$ alcance su valor máximo en el punto de intersección, luego imponemos también $\omega(p) = s$, donde $s\in\R$ es el máximo de $\omega$ en $B_{p,k}$, y deberemos ajustarlo más adelante. Con estos requisitos, tenemos una primera aproximación para $\omega$ dado $p\in B_{p,k}$:
+\begin{equation*}
+    \omega(p,k) = s\left( 1-\frac{|\phi(p)-\gamma(p)|}{k} \right)^n = \begin{cases}
+        s\left( 1-\frac{\phi(p)-\gamma(p)}{k}\right)^n,\ \phi(p)>\gamma(p) \\[10pt]
+        s\left( 1+\frac{\phi(p)-\gamma(p)}{k}\right)^n,\ \phi(p)\le \gamma(p)\\[10pt]
+    \end{cases}  ,\ s\in\R,\ n\in\N,
+\end{equation*}
+donde hemos añadido el parámetro $n$ para añadir más control al resultado final. Es evidente que está bien definida, pues:
+\begin{equation*}
+    \phi(p)=\gamma(p) \implies \frac{\phi(p)-\gamma(p)}{k} = 0\implies \omega(p) = s
+\end{equation*}
+
+
+\begin{figure}[!h]
+     \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_1.png}
+        \caption{$k=0.6$}
+     \end{minipage}
+     \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_2.png}
+        \caption{$k=0.1$}
+     \end{minipage}
+     \caption{Primera aproximación de $smin(p,k)$ con $s=0.05$ y $n=2$}
+     \label{fig:smooth1}
+\end{figure}
+
+ Pasamos ahora a solucionar el problema inicial, el de la continuidad de la derivada. 
+\begin{align*}
+    \smin'(p,k) &=  \left(\Min(\phi(p),\gamma(p))\right)' - \omega(p,k)'\\[10pt] &= \begin{cases}
+        \gamma'(p) + sn\left(1-\frac{\phi(p)-\gamma(p)}{k}\right)^{n-1}\left(\frac{\phi'(p)-\gamma'(p)}{k}\right),\ \phi(p)>\gamma(p) \\[10pt] 
+        \phi'(p) - sn\left(1+\frac{\phi(p)-\gamma(p)}{k}\right)^{n-1}\left(\frac{\phi'(p)-\gamma'(p)}{k}\right),\ \phi(p)\le \gamma(p)
+    \end{cases}
+\end{align*}
+
+Dado $c\in\R^3$ tal que $\phi(p) = \gamma(p)$, veamos cuando está bien definida:
+\begin{align*}
+    \phi' - sn\left(1+\frac{\phi-\gamma}{k}\right)^{n-1}\left(\frac{\phi'-\gamma'}{k}\right) &= \gamma' + sn\left(1-\frac{\phi-\gamma}{k}\right)^{n-1}\left(\frac{\phi'-\gamma'}{k}\right)
+\end{align*}
+Evaluando en $c$:
+\begin{align*}
+    \cancel{\phi'(c) -  \gamma'(c)} &= 2sn\left(1+\frac{\phi(c)-\gamma(c)}{k}\right)^{n-1}\left(\frac{\cancel{\phi'(c)-\gamma'(c)}}{k}\right);\\
+    s &= \frac{k}{2n}\left(1-\frac{\cancelto{0}{\phi(c)-\gamma(c)}}{k}\right);\\
+    s &= \frac{k}{2n}
+\end{align*}
+    
+
+
+Hemos llegado a la expresión final
+\begin{align*}
+    \omega(p,k) &= \begin{cases}
+        \frac{k}{2n}\left( 1-\frac{|\phi(p)-\gamma(p)|}{k} \right)^n,\ &|\phi(p)-\gamma(p)|\le k,\\[10pt]
+        0,\ &\text{ otro caso }
+    \end{cases}\\[10pt] &= \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}  ,\ s\in\R,\ n\in\N,
+\end{align*}
+
+Podemos observar los resultados en la \autoref{fig:smooth2}.
+\begin{figure}[!h]
+     \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_3.png}
+        \caption{$k=0.1,\ n=2$}
+     \end{minipage}
+     \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_4.png}
+        \caption{$k=0.1,\ n=3$}
+     \end{minipage}
+     \caption{Resultado final de $smin(p,k)$ }
+     \label{fig:smooth2}
+\end{figure}
+
+Finalmente, para obtener una versión suavizada del máximo, es fácil comprobar que 
+\begin{equation*}
+    \smax(\phi,\gamma,k) =  - \smin(-\phi,-\gamma,k)
+\end{equation*}
+
+Recogemos los resultados obtenidos a continuación.
+
+
+
+% Por tanto, dadas $\phi$ y $\gamma$, queremos obtener una versión suavizada de $\Min(\phi,\gamma)$ usando interpolación lineal, que llamaremos $\smin$ y tendrá la forma
+% \begin{align*}
+%           \smin\colon \R^3 &\to \R^3.\\
+%           p &\mapsto h(p)\cdot \phi(p) + (1-h(p))\gamma(p) \text{, donde } h \colon \R^3 \to [0,1].
+%     \end{align*}
+
+
+% Pasamos a buscar $h$. Solo queremos modificar la función en los entornos de los puntos en los que intersecan $\phi$ y $\gamma$, de forma que para el resto de puntos debería ser $h=\{0,1\}$. Los puntos de intersección vienen dados como las soluciones de $m(p)=\gamma(p) - \phi(p)$. Podemos además acotar $m(p)$ en el intervalo $[0,1]$ usando $\Min$ y $\Max$, obteniendo un candidato a valor de $h(p)$:
+% \begin{equation}
+%     \Min\left(\Max\left(\phi(p)-\gamma(p),0\right),1\right) = \Min\left(\Max\left(m(p),0\right),1\right) \in [0,1]
+% \end{equation}
+
+% Sin embargo, podemos ver que la interpolación comienza justo en la intersección, mientras que nos gustaría que esto ocurriese antes. Modificamos la expresión anterior para hacer que la intersección sea el punto medio de la interpolación ($h=0.5$):
+% \begin{equation}
+%    \Min\left(\Max\left(m(p) + \frac{1}{2},0\right),1\right)
+% \end{equation}
+
+% Podemos ver los resultados de esta primera aproximación en la \autoref{fig:smooth1}.
+
+% \begin{figure}[!h]
+%      \begin{minipage}[c]{0.49\linewidth}
+%         \centering
+%         \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smoothV1_a.png}
+%         \caption{$h(p)=0$ en la intersección}
+%      \end{minipage}
+%      \begin{minipage}[c]{0.49\linewidth}
+%         \centering
+%         \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smoothV1_b.png}
+%         \caption{$h(p)=0.5$ en la intersección}
+%      \end{minipage}
+%      \caption{Primera aproximación de la obtención de $h(p)$}
+%      \label{fig:smooth1}
+% \end{figure}
+
+% Observamos que ahora tenemos un nuevo problema
+
+\begin{definicion}[Operaciones Booleanas Suavizadas]
+    Sean $A$ y $B$ isosuperficies generadas por $\phi$ y $\gamma$ respectivamente. Definimos los SDF para las operaciones suavizadas como sigue.
     \begin{itemize}
-        \item \textbf{Unión suavizada: } $\sdf_{unionS} = li(\gamma, \phi, h_1) - k\cdot h_1 \cdot (1-h_1)$,
-        \item \textbf{Intersección suavizada: } $\sdf_{interS} = li(\gamma, \phi, h_2) + k\cdot h_2 \cdot (1-h_2)$,
-        \item \textbf{Diferencia suavizada: } $\sdf_{difS} = li(\phi, -\gamma, h_3) + k\cdot h_3 \cdot (1-h_3)$.
+        \item \textbf{Unión suavizada: } $\sdf_{unionS}(p) = \Min(\phi(p),\gamma(p)) - \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}$,
+        \item \textbf{Intersección suavizada: } $\sdf_{interS}(p) = -\Min(-\phi(p),-\gamma(p)) + \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}$,
+        \item \textbf{Diferencia suavizada: } $\sdf_{difS}(p) = -\Min(-\phi(p),\gamma(p)) + \frac{\Max\left( k - |\phi(p) + \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}$,
     \end{itemize}
 
-    donde:
-    \begin{itemize}
-        \item $k\in \R$ un coeficiente de suavizado,
-        \item $li(x,y,a)\colon \R\times\R\times\R\to \R = (1-a)\cdot x + a\cdot y$ interpola linealmente $x$ e $y$ según $a$,
-        \item $h_1 = c\left(\frac{1}{2} + \frac{\gamma - \phi}{2k}\right)$,\quad $h_2 = c\left( \frac{1}{2} - \frac{\gamma - \phi}{2k} \right)$,\quad $h_3 = c\left( \frac{1}{2} - \frac{\gamma + \phi}{2k}\right)$,
-        \item $c\colon \R\to \R = \min(\max(x, 0), 1)$ acota $x$ en $[0,1]$.
-    \end{itemize}
-\end{proposicion}
+    donde $k\in \R^+_0$ es un coeficiente del suavizado.        
+\end{definicion}
 
-Pasamos ahora a estudiar otro tipo de operaciones, que nos resultarán útiles para generar nuevas formas a partir de un único SDF. 
+Observamos que los operadores definidos en la \autoref{p:boolean} no son más que un caso particular de estos últimos cuando $k= 0$.\newline
 
-\begin{proposicion}[Operaciones afines]\label{p:afines}
-    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+
+Pasamos ahora a estudiar otro tipo de operaciones, que nos resultarán útiles para generar nuevas formas a partir de un único SDF. Todas ellas se basarán en, dada $\phi$, aplicar una transformación $t:\R^3\to \R^3$ a cada punto de la isosuperficie $S_{\phi}$ para obtener una nueva $S_{\gamma}$. Si queremos saber si un punto $q\in\R^3$ está en $S_{\gamma}$, tenemos que comprobar si su preimagen por la transformación pertenece a $S_{\phi}$. Por tanto, bastará evaluar el SDF original en $t^{-1}(p)$, obteniendo que
+\begin{equation*}
+    \gamma(p) = \phi(t^{-1}(p))
+\end{equation*}
+
+Esto funciona bien para transformaciones como las traslaciones o rotaciones, ya que mantienen las distancias. Sin embargo, este no es el caso del escalado, ya que si tomamos $l(p) = sp$ con $s\in \R^+_0$:
+\begin{equation*}
+    \Vert p-p'\Vert = l(d) \implies  \Vert l(p)-l(p')\Vert = \Vert sp-sp'\Vert = s\Vert p-p'\Vert = s\cdot d,\  \text{ donde } p,p' \in A
+\end{equation*}
+
+Como las distancias se escalan, deberemos hacer lo propio con el nuevo SDF, aplicándole el mismo factor de escalado $s$ como muestra la \autoref{d:afines}.
+
+\begin{definicion}[Operaciones afines]\label{d:afines}
+    Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
-        \item \textbf{Traslación de vector $v$: } $\sdf_{traslacion}(p) = \sdf_{A}(p - v)$,
-        \item \textbf{Escalado uniforme de dimensiones $s$: } $\sdf_{escalado}(p) = \sdf_{A}(p/s)\cdot s$,
-        \item \textbf{Rotaciones de ángulo $\alpha$ sobre los ejes $x,y,z$: }
-        \begin{equation*}
-            \sdf_{rotX}(p) = \sdf_{A}(R_x^{-1}(\alpha)\cdot p^t),\quad \sdf_{rotY}(p) = \sdf_{A}(R_y^{-1}(\alpha)\cdot p^t),\quad \sdf_{rotZ}(p) = \sdf_{A}(R_z^{-1}(\alpha)\cdot p^t)
-        \end{equation*}
-    \end{itemize}
-    donde:
-    \begin{equation*}
-        R_x(\alpha) = \begin{pmatrix}
-            1&0&0\\
-            0&\cos(\alpha) & -\sin(\alpha) \\
-            0&\sin(\alpha) & \cos(\alpha) 
-            \end{pmatrix}\begin{pmatrix}
-            x \\
-            y \\
-            z
-            \end{pmatrix}
-        \quad,
-        R_y(\alpha) = \begin{pmatrix}
+        \item \textbf{Traslación de vector $\boldsymbol{v}$: } $\sdf_{traslacion}(p) = \sdf_{A}(p - v)$,
+        \item \textbf{Escalado uniforme de dimensiones $\boldsymbol{s}$: } $\sdf_{escalado}(p) = \sdf_{A}(p/s)\cdot s$,
+        \item \textbf{Rotaciones de ángulo $\boldsymbol{\alpha}$ sobre los ejes $\boldsymbol{x,y,z}$: }
+        \begin{align*}
+            \sdf_{rotX}(p) &= \sdf_{A}(R_x^{-1}(\alpha)\cdot p^t),\ R_x(\alpha) = 
+            \begin{pmatrix}
+                1&0&0\\
+                0&\cos(\alpha) & -\sin(\alpha) \\
+                0&\sin(\alpha) & \cos(\alpha) 
+                \end{pmatrix},\\[10pt] 
+            \sdf_{rotY}(p) &= \sdf_{A}(R_y^{-1}(\alpha)\cdot p^t),\ R_y(\alpha) = \begin{pmatrix}
             \cos(\alpha) &0& \sin(\alpha)\\
             0&1&0\\
             -\sin(\alpha) &0& \cos(\alpha) 
-            \end{pmatrix},
-        \quad
-        R_z(\alpha) = \begin{pmatrix}
+            \end{pmatrix},\\[10pt]
+            \sdf_{rotZ}(p) &= \sdf_{A}(R_z^{-1}(\alpha)\cdot p^t),\ R_z(\alpha) = \begin{pmatrix}
             \cos(\alpha) & -\sin(\alpha) & 0\\
             \sin(\alpha) & \cos(\alpha) & 0\\
             0&0&1
-            \end{pmatrix}
-    \end{equation*}
-\end{proposicion}
-\begin{proof}
-    Las operaciones enumeradas son ya bien conocidas en $\R^3$. Si queremos saber si un punto $q$ pertenece a la superficie afín, tenemos que comprobar si su preimagen por la transformación pertenece a $A$. Por tanto, si $\phi$ es la transformación afín, bastará con evaluar el SDF original en $\phi^{-1}(p)$. Sin embargo, esto es cierto solo si $\phi$ mantiene las distancias, lo cual no ocurre para el escalado: 
-    \begin{equation*}
-        \Vert p-p'\Vert = d \implies = \Vert \phi(p)-\phi(p')\Vert = \Vert sp-sp'\Vert = s\Vert p-p'\Vert = s\cdot d,\ \forall p,p' \in A
-    \end{equation*}
+            \end{pmatrix}.
+        \end{align*}
+        
+    \end{itemize}
+\end{definicion}
 
-    Como las distancias se escalan, hacemos lo propio con nuestra función distancia aplicándole el mismo factor de escalado $s$.
-\end{proof}
-
-\begin{proposicion}[Operaciones Deformantes]
-    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+Siguiendo el mismo razonamiento, podemos definir operaciones que modifiquen la geometría de la superficie.
+\begin{definicion}[Operaciones Deformantes]
+    Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
         
         \item \textbf{Torsión: } $\sdf_{torsion}(p) = \sdf_{A}(p')$, con $p' = R_z(ky)\cdot (x,z,y)^t$,
@@ -148,42 +281,43 @@ Pasamos ahora a estudiar otro tipo de operaciones, que nos resultarán útiles p
         \item \textbf{Desplazamiento: } $\sdf_{desplazamiento}(p) = \sdf_{A}(\delta(p))$.
     \end{itemize}
 
-    donde:
+    donde
     \begin{itemize}
-        \item $k\in \R$ es un coeficiente de deformación,
+        \item $k\in \R^+_0$ es un coeficiente de deformación,
         \item $\delta\colon \R^3\to \R^3$ es un patrón de desplazamiento,
-        \item $R_z(\alpha)\in \mathcal{M}_3(\R)$ es la matriz de rotación de ángulo $\alpha$ sobre el eje $z$ definida en \autoref{p:afines}.
+        \item $R_z(\alpha)\in \mathcal{M}_3(\R)$ es la matriz de rotación de ángulo $\alpha$ sobre el eje $z$ dada en la \autoref{d:afines}.
     \end{itemize}
-\end{proposicion}
+\end{definicion}
 
-\begin{proposicion}[Operadores de Posicionamiento]\label{p:posicionamiento}
-    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+Introducimos por último operaciones que permiten generar copias de otras superficies.
+\begin{definicion}[Operadores de Posicionamiento]\label{d:posicionamiento}
+    Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
-        \item \textbf{Simetrías sobre los ejes $x,y,z$:}
+        \item \textbf{Simetrías sobre los ejes $\boldsymbol{x,y,z}$:}
+        \begin{gather*}
+            \sdf_{simX}(p) = \sdf_{A}(\vert x\vert, y, z),\quad \sdf_{simY}(p) = \sdf_{A}(x, \vert y\vert,  z),\\[5pt] \sdf_{simZ}(p) = \sdf_{A}(x,y,\vert z\vert),
+        \end{gather*}
+        \item \textbf{Simetrías sobre los planos $\boldsymbol{xy,xz,yz}$:}
+        \begin{gather*}
+            \sdf_{simXY}(p) = \sdf_{A}(\vert x\vert, \vert y\vert, z),\quad \sdf_{simXZ}(p) = \sdf_{A}(\vert x\vert, y,  \vert z\vert),\\[5pt]\sdf_{simYZ}(p) = \sdf_{A}(x,\vert y\vert ,\vert z\vert),
+        \end{gather*}
+        \item \textbf{Repetición $\boldsymbol{l\in \N^3}$ veces en los ejes $\boldsymbol{x,y,z}$ con separación $\boldsymbol{s\in\R}$:} 
         \begin{equation*}
-            \sdf_{simX}(p) = \sdf_{A}(\vert x\vert, y, z),\quad \sdf_{simY}(p) = \sdf_{A}(x, \vert y\vert,  z),\quad \sdf_{simZ}(p) = \sdf_{A}(x,y,\vert z\vert)
-        \end{equation*}
-        \item \textbf{Simetrías sobre los planos $xy,xz,yz$:}
-        \begin{equation*}
-            \sdf_{simXY}(p) = \sdf_{A}(\vert x\vert, \vert y\vert, z),\quad \sdf_{simXZ}(p) = \sdf_{A}(\vert x\vert, y,  \vert z\vert),\quad \sdf_{simYZ}(p) = \sdf_{A}(x,\vert y\vert ,\vert z\vert)
-        \end{equation*}
-        \item \textbf{Repetición $l\in \N^3$ veces en los ejes $x,y,z$ con separación $s\in\R$:} 
-        \begin{equation*}
-            \sdf_{repeticion}(p) = \sdf_{A}(p - s\cdot c\left(r(p/s)), -l, l\right)
+            \sdf_{rep}(p) = \sdf_{A}(p - s\cdot c\left(r(p/s)), -l, l\right),
         \end{equation*}
         \item \textbf{Repetición infinita:}
         \begin{equation*}
-            \sdf_{repeticion\infty}(p) = \sdf_{A}\left((p+\frac{l}{2}\mod l )- \frac{l}{2}\right)
+            \sdf_{repInf}(p) = \sdf_{A}\left((p+\frac{l}{2}\mod l )- \frac{l},{2}\right)
         \end{equation*}
     \end{itemize}
     donde:
     \begin{itemize}
-        \item $c\colon \R\times\R\times\R\to \R,\ c(x,a,b) = \min(\max(x, a), b)$ acota $x$ en $[a,b]$,
+        \item $c\colon \R\times\R\times\R\to \R,\ c(x,a,b) = \Min(\Max(x, a), b)$ acota $x$ en $[a,b]$,
         \item $r\colon \R^3 \to \R^3$ redondea las componentes de un vector a sus enteros más cercanos.
     \end{itemize}
-\end{proposicion}
+\end{definicion}
 \begin{observacion}
-    Hay casos en los que los SDF definidos en \autoref{p:posicionamiento} podrían no ser exactos, al igual que ocurría con la intersección y la diferencia en \autoref{p:boolean}:
+    Hay casos en los que los SDF definidos en la \autoref{d:posicionamiento} podrían no ser exactos, al igual que ocurría con la intersección y la diferencia en la \autoref{p:boolean}:
     \begin{enumerate}
         \item Para las simetrías, cuando el objeto interseca el plano de simetría,
         \item Para las repeticiones, cuando las dimensiones del objeto sean mayores o iguales a $l/2$.
