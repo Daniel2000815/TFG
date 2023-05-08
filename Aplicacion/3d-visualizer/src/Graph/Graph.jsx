@@ -2,6 +2,7 @@ import React from "react";
 import ReactFlow, {
   Background,
   Panel,
+  useUpdateNodeInternals 
 } from "reactflow";
 import { shallow } from "zustand/shallow";
 import { useStore } from "../graphStore";
@@ -51,18 +52,27 @@ export function Graph() {
   const store = useStore(selector, shallow);
 
   const [rfInstance, setRfInstance] = React.useState(null);
+  const updateNodeInternals = useUpdateNodeInternals();
 
   const createAddNodeMousePos = (nodeType, e) => {
     const { x, y } = rfInstance.project({ x: e.clientX, y: e.clientY });
     console.log(e);
     store.addNode(nodeType, x, y);
+    console.log(JSON.stringify(store.nodes));
   };
+
+  const handleNewConnect = (con) => {
+    store.addEdge(con);
+    updateNodeInternals(con.target);
+  }
+
 
   return (
     <div
       style={{ width: "100%", height: "100%" }}
       onContextMenu={(e) => show({ event: e })}
     >
+      {/* {JSON.stringify(store.edges)} */}
       <ContextMenu newNode={createAddNodeMousePos} />
       <ReactFlow
         nodeTypes={nodeTypes}
@@ -73,7 +83,7 @@ export function Graph() {
         onNodesDelete={store.onNodesDelete}
         onEdgesChange={store.onEdgesChange}
         onEdgesDelete={store.onEdgesDelete}
-        onConnect={store.addEdge}
+        onConnect={handleNewConnect}
         onInit={setRfInstance}
         isValidConnection={(connection) =>
           !store.nodes

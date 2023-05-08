@@ -42,10 +42,12 @@ export function BooleanNode(props: { id: string; data: any }) {
       newSdf = it.next().value;
     }
     if (keys >= 2) {
+      console.log("KEYS ", keys);
       newSdf = `sdfSmooth${operation}(${it.next().value}, ${it.next().value}, ${smooth})`;
 
       // Add the rest of inputs
-      for (let i = 0; i < keys.length - 2; i++) {
+      for (let i = 0; i < keys - 2; i++) {
+        console.log("new");
         newSdf = `sdfSmooth${operation}(${
           it.next().value
         }, ${newSdf}, ${smooth})`;
@@ -70,7 +72,7 @@ export function BooleanNode(props: { id: string; data: any }) {
 
   return (
     <CustomNode
-      title={"Deform"}
+      title={"Boolean"}
       id={props.id}
       data={props.data}
       dropdownOptions={dropdownOptions}
@@ -78,9 +80,9 @@ export function BooleanNode(props: { id: string; data: any }) {
       nInputs={Math.max(2, props.data.inputs.size + 1)}
       theme={theme}
     >
-      UPDATE: {needsToUpdate?.toString()}
-        SDF: {props.data.sdf}
-        INPUTS: {props.data.inputs.values().toString()};
+      {/* UPDATE: {needsToUpdate?.toString()} */}
+        {/* SDF: {props.data.sdf} */}
+        {/* INPUTS: {JSON.stringify(props.data.inputs)} */}
         Amount: {smooth}
       <Slider value={smooth} onChange={setSmooth} theme={theme} />
     </CustomNode>

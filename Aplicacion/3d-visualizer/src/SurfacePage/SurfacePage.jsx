@@ -29,7 +29,7 @@ export function SurfacePage(){
   }
 
   return (
-    <Container>
+    <Container responsive >
       <SurfaceTable handleEdit={(id) => handleEdit(id)} handleNew={()=>handleNew()}/>
       <SurfaceDialog
         initialID={editID} 

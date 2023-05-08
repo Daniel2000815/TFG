@@ -89,18 +89,6 @@ const renderCell = (
   }
 };
 
-const computeRows = (primitives: any) => {
-    let newRows: EquationData[] = [];
-    console.log("COMPUTING DATA");
-    Object.keys(primitives).forEach(function (key, index) {
-      const item: EquationData = primitives[key];
-      console.log("DATA ", item);
-      newRows.push(item);
-    });
-
-    return newRows;
-    
-}
 
 const selector = () => (store: any) => ({
   primitives: store.primitives,
@@ -113,11 +101,12 @@ export function SurfaceTable(props: {
   handleNew: Function;
   handleEdit: Function;
 }) {
-  const { primitives, rows, restorePrimitives, deletePrimitive } = useStore(
+  const { primitives, restorePrimitives, deletePrimitive } = useStore(
     selector(),
     shallow
   );
 
+  const rows : EquationData[] = useStore(state => Object.values(state.primitives) as EquationData[]);
   const handleEdit = (id: string) => {
     props.handleEdit(id);
   };
@@ -140,8 +129,9 @@ export function SurfaceTable(props: {
     return (<Tooltip content="Restore dafult"><Button auto light icon={<CiRedo size={24} />} onClick={() => handleRestore()}/></Tooltip>);
   }
 
-  return(
+  return(<>
   <Table
+    key={JSON.stringify(rows)}
     bordered
     shadow={true}
     aria-label="Example static bordered collection table"
@@ -181,5 +171,5 @@ export function SurfaceTable(props: {
         </Table.Row>
       )}
     </Table.Body>
-  </Table>);
+  </Table></>);
 }

@@ -33,12 +33,12 @@ export const operators = () => `
 
     float sdfDifference( float d1, float d2 ) {
         
-        return max(-d1,d2);
+        return max(d1,-d2);
     }
 
     float sdfSmoothDifference( float d1, float d2, float k ) {
         float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
-        return mix( d2, -d1, h ) + k*h*(1.0-h); 
+        return mix( d1, -d2, h ) + k*h*(1.0-h); 
     }
 
     float sdfIntersection( float d1, float d2 ) {

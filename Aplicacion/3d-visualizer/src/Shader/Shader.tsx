@@ -73,7 +73,7 @@ function MyShader(props: {
   height: number | null;
   onError?: (e: string) => void;
   uniforms?: any[];
-  material?: Material;
+  material: Material;
 }) {
   const { savedPrimitives } = useStore(selector(), shallow);
 
@@ -84,11 +84,10 @@ function MyShader(props: {
   const draggingLastPos = useRef([0, 0]);
   const mousePos = useRef([0,0]);
   const [angle, setAngle] = useState([10, 0]);
-  const [material, setMaterial] = useState(defaultMaterial);
   
   const [compileError, setCompileError] = useState(false);
   const [shader, setShader] = useState<ShaderIdentifier>(
-    CreateShader(props.sdf, "").helloGL
+    CreateShader(props.sdf, props.primitives).helloGL
   );
 
 
@@ -116,13 +115,14 @@ function MyShader(props: {
 
   useEffect(() => {
     setCompileError(false);
-    setShader(CreateShader(props.sdf, "").helloGL);
-  }, [props.sdf]);
+    setShader(CreateShader(props.sdf, props.primitives).helloGL);
+  }, [props.sdf, props.primitives]);
 
   
   
 
   function CreateShader(sdf: string, primitives: string) {
+    console.log(" creating shader with ", primitives);
     return Shaders.create({
       helloGL: {
         frag: GLSL`${fs(sdf, String(savedPrimitives).concat(primitives))}`,
@@ -175,9 +175,6 @@ function MyShader(props: {
     dragging.current = false;
   };
 
-  useEffect(()=>{
-    console.log("NEW MAT ", material);
-  }, [material])
   const handleScroll = (e: any) => {
     e.preventDefault();
     console.log("SCROLL", e.deltaY);
@@ -188,56 +185,6 @@ function MyShader(props: {
     }
   };
 
-  function Result() {
-    // if (compileError) {
-    //   return (
-        // <UseAnimations
-        //   size={props.width ? 0.6 * props.width : 24}
-        //   animation={alertCircle}
-        // />
-    //   );
-    // }
-    return (
-      <div
-        // ref={ref}
-        style={{ height: "100%", width: "100%" }}
-        onMouseMove={handleMouseMove}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
-      >
-        <ReactScrollWheelHandler
-          preventScroll={true}
-          upHandler={(e) => setZoom(zoom + zoomIncrement)}
-          downHandler={(e) => setZoom(zoom - zoomIncrement)}
-          disableSwipeWithMouse={true}
-        >
-          <Surface
-          
-            visitor={visitor}
-            width={props.width || 100}
-            height={props.height || 100}
-          >
-            <Node
-            
-            
-              shader={shader}
-              uniforms={{
-                u_resolution: [props.width, props.height],
-                // u_mouse: [0, 0],
-                u_specular: material.specular,
-                u_diffuse: material.diffuse,
-                u_ambient: material.ambient,
-                u_smoothness: material.smoothness,
-                u_cameraAng: angle,
-                u_zoom: zoom,
-              }}
-            />
-          </Surface>
-        </ReactScrollWheelHandler>
-      </div>
-    );
-  }
 
   return <div>
     {compileError && <UseAnimations
@@ -253,6 +200,7 @@ function MyShader(props: {
         onMouseLeave={handleMouseLeave}
       >
         <ReactScrollWheelHandler
+          timeout={0}
           preventScroll={true}
           upHandler={(e) => setZoom(zoom + zoomIncrement)}
           downHandler={(e) => setZoom(zoom - zoomIncrement)}
@@ -271,10 +219,10 @@ function MyShader(props: {
               uniforms={{
                 u_resolution: [props.width, props.height],
                 // u_mouse: [0, 0],
-                u_specular: material.specular,
-                u_diffuse: material.diffuse,
-                u_ambient: material.ambient,
-                u_smoothness: material.smoothness,
+                u_specular: props.material.specular,
+                u_diffuse: props.material.diffuse,
+                u_ambient: props.material.ambient,
+                u_smoothness: props.material.smoothness,
                 u_cameraAng: angle,
                 u_zoom: zoom,
               }}

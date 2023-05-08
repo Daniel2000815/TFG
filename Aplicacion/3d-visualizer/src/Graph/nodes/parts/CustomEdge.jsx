@@ -1,5 +1,5 @@
 import React from "react";
-import { getBezierPath } from "reactflow";
+import { getBezierPath, useUpdateNodeInternals } from "reactflow";
 import { shallow } from "zustand/shallow";
 import { tw } from "twind";
 import { useStore } from "../../../graphStore";
@@ -33,7 +33,14 @@ export function CustomEdge({
     targetPosition,
   });
 
+  const updateNodeInternals = useUpdateNodeInternals();
+
   const { deleteEdge } = useStore(selector(id), shallow);
+  
+  const handleDeleteEdge = (source, target) => {
+    deleteEdge(source, target);
+    updateNodeInternals(target);
+  }
 
   return (
     <>
@@ -57,7 +64,7 @@ export function CustomEdge({
             className="edgebutton"
             onClick={(e) => {
               e.stopPropagation();
-              deleteEdge(source, target);
+              handleDeleteEdge(source, target);
             }}
           >
             ×

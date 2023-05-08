@@ -105,7 +105,7 @@ export function TransformNode(props: { id: string; data: any }) {
       theme={theme}
     >
       {/* UPDATE: {needsToUpdate.toString()} */}
-      SDF: {props.data.sdf}
+      {/* SDF: {props.data.sdf} */}
       {/* INPUTS: {JSON.stringify(props.data.inputs)} */}
       {[TransformOperations.Translate, TransformOperations.RotateXYZ].includes(
         operation
