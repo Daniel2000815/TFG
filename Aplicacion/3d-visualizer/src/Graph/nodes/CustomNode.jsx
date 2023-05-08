@@ -21,9 +21,7 @@ export function CustomNode({
   title,
   dropdownOptions,
   onChangeDropdownOption,
-  theme,
-
-
+  theme
 }) {
   const { setGain } = useStore(selector(id), shallow);
   const [showMore, setShowMore] = React.useState(true);
@@ -56,7 +54,7 @@ export function CustomNode({
             
             {children}
             {/* {data.sdf}       */}
-            <Shader sdf={data.sdf} primitives="" width={180} height={100} material={defaultMaterial}/>
+            <Shader sdf={data.sdf} primitives="" width={180} height={100} material={data.material }/>
           
         </div>
       )}

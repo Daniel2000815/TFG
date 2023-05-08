@@ -30,7 +30,7 @@ export function TransformNode(props: { id: string; data: any }) {
   );
 
   const [operation, setOperation] = React.useState(
-    TransformOperations.Translate
+    TransformOperations.RotateX
   );
   const [transformVal, setTransformVal] = React.useState(["0", "0", "0"]);
 

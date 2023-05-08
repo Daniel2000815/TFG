@@ -12,8 +12,8 @@ import {
 import {ColorPicker} from "./ColorPicker";
 import { defaultMaterial } from "../../Shader/defaultMaterial";
 
-export function MaterialInput(props: {handleChange: Function}) {
-  const [material, setMaterial] = React.useState<Material>(defaultMaterial);
+export function MaterialInput(props: {defaultValue: Material, handleChange: Function}) {
+  const [material, setMaterial] = React.useState<Material>(props.defaultValue);
 
   useEffect(()=>{
     props.handleChange(material);

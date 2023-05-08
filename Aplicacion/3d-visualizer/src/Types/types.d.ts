@@ -12,6 +12,7 @@ declare global {
     parsedInput: string,
     parameters: Parameter[],
     fHeader: string,
+    material: Material
   }
 
   type Material = {

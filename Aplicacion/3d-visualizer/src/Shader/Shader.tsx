@@ -116,6 +116,8 @@ function MyShader(props: {
   useEffect(() => {
     setCompileError(false);
     setShader(CreateShader(props.sdf, props.primitives).helloGL);
+
+    console.log("HELLO ", props.material)
   }, [props.sdf, props.primitives]);
 
   

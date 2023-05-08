@@ -53,6 +53,7 @@ export function SurfaceDialog(props: {
     parsedInput: "",
     parameters: [""],
     fHeader: "",
+    material: defaultMaterial
   });
 
   // PREVIEW
@@ -102,6 +103,7 @@ export function SurfaceDialog(props: {
       setInputName(initialSurf.name);
 
       setInputParameters(initialSurf.parameters);
+      setInputMaterial(initialSurf.material);
       console.log("computing example sdf");
       computeExampleSDF(initialSurf.parsedInput);
     } else {
@@ -285,6 +287,7 @@ export function SurfaceDialog(props: {
       fHeader: `${id}(vec3 p ${
         inputParameters.length > 0 ? "," : ""
       }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
+      material: inputMaterial
     };
 
     if(!nameInUse(inputName)){
@@ -462,6 +465,7 @@ export function SurfaceDialog(props: {
                         }
                       >
                         <MaterialInput
+                        defaultValue={inputMaterial}
                           handleChange={(m: Material) => setInputMaterial(m)}
                         />
                       </Collapse>

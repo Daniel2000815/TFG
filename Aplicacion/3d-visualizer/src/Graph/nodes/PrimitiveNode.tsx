@@ -10,7 +10,7 @@ import {FloatInput} from "../../Components/FloatInput";
 
 const selector = (id: any) => (store: any) => ({
   primitives: store.primitives,
-  changePrimitive: (newP: string) => store.updateNode(id, { sdf: newP }),
+  changePrimitive: (newP: string, mat: Material) => store.updateNode(id, { sdf: newP, material:  mat}),
 });
 
 const theme : Theme = {
@@ -55,7 +55,7 @@ export function PrimitiveNode(props: { id: string; data: any }) {
       Object.keys(parameters).map((_, idx: number) => parameters[idx].label)
     );
     
-    changePrimitive(sdf);
+    changePrimitive(sdf, newPrimitive.material);
   };
 
   const handleInputChange = (newVal: number, idx: number) => {
@@ -76,7 +76,7 @@ export function PrimitiveNode(props: { id: string; data: any }) {
       .map((p, idx) => `${newInputs[idx].toFixed(4)}`)
       .join(",")})`;
       
-    changePrimitive(sdf);
+    changePrimitive(sdf, primitive.material);
   };
 
   return (

@@ -8,6 +8,7 @@ import {
   DeformOperations,
   TransformOperations,
 } from "./Types/NodeOperations";
+import { defaultMaterial } from "./Shader/defaultMaterial";
 
 // import {
 //   isRunning,
@@ -24,31 +25,31 @@ const defaultNodes = [
     id: "primitive",
     type: "primitive",
     position: { x: -150, y: 200 },
-    data: { sdf: "cube(p,1.0)", inputs: {}, children: [] },
+    data: { sdf: "cube(p,1.0)", inputs: {}, children: [], material: defaultMaterial },
   },
   {
     id: "primitive2",
     type: "primitive",
     position: { x: -150, y: -200 },
-    data: { sdf: "cube(p,1.0)", inputs: new Map(), children: [] },
+    data: { sdf: "cube(p,1.0)", inputs: new Map(), children: [] , material: defaultMaterial },
   },
   {
     id: "deform",
     type: "deform",
     position: { x: 150, y: 200 },
-    data: { sdf: "", inputs: new Map(), children: [] },
+    data: { sdf: "", inputs: new Map(), children: [] , material: defaultMaterial },
   },
   {
     id: "boolean",
     type: "boolean",
     position: { x: 150, y: -100 },
-    data: { sdf: "", inputs: new Map(), children: [] },
+    data: { sdf: "", inputs: new Map(), children: [], material: defaultMaterial },
   },
   {
     id: "transform",
     type: "transform",
     position: { x: 150, y: -400 },
-    data: { sdf: "", inputs: new Map(), children: [] },
+    data: { sdf: "", inputs: new Map(), children: [], material: defaultMaterial },
   },
 ];
 
@@ -208,6 +209,12 @@ const defaultPrimitives = [
     parsedInput: "length(p)-r",
     parameters: [{ symbol: "r", label: "Radius", defaultVal: 1.0 }],
     fHeader: "sphere(vec3 p, float r)",
+    material: {
+      specular: [1.0, 1.0, 1.0],
+      diffuse: [0.0, 1.0, 0.0],
+      ambient: [0.2, 0.2, 0.2],
+      smoothness: 10.0
+    }
   },
   {
     id: "torus",
@@ -220,6 +227,12 @@ const defaultPrimitives = [
       { symbol: "r", label: "Radius 2", defaultVal: 1.0 },
     ],
     fHeader: "torus(vec3 p, float R, float r)",
+    material: {
+      specular: [1.0, 1.0, 1.0],
+      diffuse: [1.0, 0.0, 0.0],
+      ambient: [0.2, 0.2, 0.2],
+      smoothness: 10.0
+    }
   },
   {
     id: "cube",
@@ -234,6 +247,13 @@ const defaultPrimitives = [
       "length(max(abs(p) - vec3(l),0.0)) + min(max(abs(p.x) - l,max(abs(p.y) - l,abs(p.z) - l)),0.0)",
     parameters: [{ symbol: "l", label: "side", defaultVal: 1.0 }],
     fHeader: "cube(vec3 p, float l)",
+    material: {
+      specular: [1.0, 1.0, 1.0],
+      diffuse: [0.0, 0.0, 1.0],
+      ambient: [0.2, 0.2, 0.2],
+      smoothness: 10.0
+    }
+
   },
   {
     id: "ellipsoid",
@@ -244,12 +264,19 @@ const defaultPrimitives = [
       "(-z + pow(x, 2.0000) + pow(y, 2.0000)) * pow(sqrt(1.0000 + 4.0000 * pow(x, 2.0000) + 4.0000 * pow(y, 2.0000)), -1.0000)",
     parameters: [],
     fHeader: "ellipsoid(vec3 p)",
+    material: {
+      specular: [1.0, 1.0, 1.0],
+      diffuse: [1.0, 1.0, 0.0],
+      ambient: [0.2, 0.2, 0.2],
+      smoothness: 10.0
+    }
+
   },
   {
     id: "cylinder",
     name: "Cylinder",
     inputMode: InputMode.SDF,
-    inputs: [
+    input: [
       "min(max((abs(vec2(length(p.xz),p.y))-vec2(r,h)).x, (abs(vec2(length(p.xz),p.y))-vec2(r,h)).y),0.)+length(max(abs(vec2(length(p.xz),p.y))-vec2(r,h),0.))",
       "",
       "",
@@ -261,6 +288,13 @@ const defaultPrimitives = [
       { symbol: "r", label: "radius", defaultVal: 0.5 },
     ],
     fHeader: "cylinder(vec3 p, float h, float r)",
+    material: {
+      specular: [1.0, 1.0, 1.0],
+      diffuse: [0.0, 1.0, 1.0],
+      ambient: [0.2, 0.2, 0.2],
+      smoothness: 10.0
+    }
+
   },
 ];
 
@@ -298,7 +332,7 @@ export const useStore = create((set, get) => ({
 
   createNode(type, x, y) {
     const id = nanoid();
-    const data = { sdf: "", inputs: new Map(), children: [] };
+    const data = { sdf: "", inputs: new Map(), children: [], material: defaultMaterial };
     const position = { x: x, y: y };
 
     set({ nodes: [...get().nodes, { id, type, data, position }] });
