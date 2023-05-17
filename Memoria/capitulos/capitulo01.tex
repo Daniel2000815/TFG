@@ -96,7 +96,7 @@ Como no queremos que este cambio afecte al algoritmo de \textit{raymarching}, de
 \omega(p)\ge 0,\ \forall p\in \R^3,\ \forall k\in \R^+_0.
 \end{equation*}
 
-Si estudiamos como se comporta la versión real de $\Min$ en la \autoref{fig:min_real}, vemos que los puntos de conflicto se encuentran cerca de las intersecciones de $\phi$ y $\gamma$, es decir, cuando $\phi$ y $\gamma$ están arbitrariamente cerca. En el resto de puntos no queremos modificar la función original, luego estudiamos el comportamiento de $\smin$ en los entornos de la forma
+Si estudiamos como se comporta la versión real de $\Min$ en la \autoref{fig:min_real}, vemos que los puntos de conflicto se encuentran cerca de las intersecciones de $\phi$ y $\gamma$, es decir, cuando $\phi$ y $\gamma$ están arbitrariamente cerca. En el resto de puntos no queremos modificar la función original, luego estudiamos el comportamiento de $\smin$ en el conjunto de entornos de las intersecciones
 \begin{equation*}
     B_{k} = \{p\in\R^3 : |\phi(p)-\gamma(p)| \le k\},
 \end{equation*}
@@ -524,7 +524,7 @@ A partir de ahora, pensamos en que nuestra escena no es la de OpenGL, sino aquel
 \begin{itemize}
     \item \textbf{Plano de visión:} rejilla en el plano XY y centrada en el origen, donde cada uno de sus cuadrados corresponde a un píxel del lienzo,
     \item \textbf{Punto de la cámara $\boldsymbol{c_o}$:} punto del espacio desde donde se observa la escena,
-    \item \textbf{Punto objetivo o \textit{lookat point} $\boldsymbol{l}$:} hacia que punto del espacio debe mirar la cámara. Tomaremos siempre $l=(0,0,0)$.
+    \item \textbf{Punto de atención o \textit{lookat point} $\boldsymbol{l}$:} hacia que punto del espacio debe mirar la cámara. Tomaremos siempre $l=(0,0,0)$.
 \end{itemize}
 
 El método del \textit{raymarching} consiste en trazar rayos a partir de $c_o$ hacia el centro de cada uno de los cuadrados del plano de visión, de forma que si el rayo interseca con $S_\phi$ significa que ese píxel corresponde a un punto de la superficie, y será coloreado como tal.
@@ -613,7 +613,7 @@ Ahora que ya tenemos toda la información del rayo, falta comprobar si este inte
     \label{a:raymarching}
 \end{figure}
 
-Una desventaja de esta técnica es que puede ser bastante lenta, ya que cuanto más alejados estén los puntos de $S_\phi$ del observador, mayor es el número de iteraciones necesarias para encontrar la intersección, si es que la hay. En el peor de los casos en el que tal intersección no exista, se habrá realizado el número máximo de iteraciones, que deberá ser bastante alto, pues si no queremos perder ninguna intersección como ocurre en la \autoref{fig:miss}, el valor de incremento $\delta$ deberá de ser pequeño.\newline
+Una desventaja de esta técnica es que puede ser bastante lenta, ya que cuanto más alejados estén los puntos de $S_\phi$ del observador, mayor es el número de iteraciones necesarias para encontrar la intersección en caso de que la haya. En el peor de los casos en el que tal intersección no exista, se habrá realizado el número máximo de iteraciones, que deberá ser bastante alto, pues si no queremos perder ninguna intersección como ocurre en la \autoref{fig:miss}, el valor de incremento $\delta$ tenddrá que ser pequeño.\newline
 
 La solución a este problema es el uso de \textit{spheretracing}, que reduce drásticamente el número de iteraciones y por tanto evaluaciones de $\phi$, necesarias para detectar la intersección. Su funcionamiento es similar al \textit{raymarching}, con la diferencia de que el incremento en la posición del rayo no es fija, sino que es la máxima que podemos tomar en cada momento asegurándonos de no perder información. Esta distancia será la mínima del punto actual del rayo a $S_\phi$, que no es más que evaluar $\phi$ en dicho punto.\newline
 
