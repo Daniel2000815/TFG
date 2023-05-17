@@ -81,7 +81,7 @@ export function StringToSDF (node: any, parametersInput: Parameter[], evaluate: 
     return "";
   };
 
-export default function ImplicitToSDF(implicit: string, parameters: Parameter[], evaluate: boolean = false) : string{
+export function ImplicitToSDF(implicit: string, parameters: Parameter[], evaluate: boolean = false) : string{
   let f: string | null = null; // Parsed string by nerdamer
   let res = "";
 

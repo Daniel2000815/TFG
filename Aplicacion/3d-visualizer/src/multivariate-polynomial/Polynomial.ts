@@ -3,7 +3,7 @@ import nerdamerjs from "nerdamer";
 import {Monomial} from "./Monomial";
 import {Ideal} from "./Ideal";
 
-require("nerdamer/Algebra");
+require("nerdamer/Algebra");  
 
 /**
  * Represents a polynomial as a collection of monomials in a specified ring and using the *lex* monomial order
@@ -125,6 +125,7 @@ export class Polynomial {
       const c = coef === "-" ? -1 : eval(coef);
       
       const e = this.vars.map(function (v) {
+        // console.log("CHEKANDO 2", nerdamerjs('deg(t+x^2+2*x+ x*y, x*y)').toString());
         return parseFloat(nerdamerjs(`deg(${variable}, ${v})`).toString());
       });
 
@@ -960,8 +961,12 @@ export class Polynomial {
       }
     })
 
+    console.log("PARAM: " + J);
     const intersection = J[0];
+
+    console.log("removing");
     intersection.removeVariables(elimVars);
+    console.log("end remov", intersection.toString());
 
     return intersection !== undefined ? intersection : new Polynomial("0", resVars);
   }

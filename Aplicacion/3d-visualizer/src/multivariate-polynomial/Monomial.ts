@@ -1,4 +1,3 @@
-import { add } from "lodash";
 import {Polynomial} from "./Polynomial";
 
 /**
@@ -332,7 +331,7 @@ export class Monomial {
         const e = this.exp[idx];
         let added = 0;
         if (this.exp[idx] !== 0){
-           mon += `${v}${e!==0 && e!==1 ? `^${this.exp[idx]}` : ""}${added>0 && idx<this.vars.length-1 && showProductChar ? "*":""}`;
+           mon += `${v}${e !== 0 && e!==1 ? `^${this.exp[idx]}` : ""}${added>0 && idx<this.vars.length-1 && showProductChar ? "*":""}`;
            added++;
         }
       });

@@ -1,50 +1,50 @@
-import React from "react";
-import {
-  Modal,
-  Grid,
-  Row,
-  Col,
-  Button,
-  Text,
-  Collapse,
-  Input,
-} from "@nextui-org/react";
 import { useState, useEffect } from "react";
+
+import { useStore } from "../graphStore";
+import { shallow } from "zustand/shallow";
+import { Modal, Grid, Row, Button, Text, Collapse } from "@nextui-org/react";
+
 import { SizeMe } from "react-sizeme";
-
-import "katex/dist/katex.min.css";
-import useLocalStorage from "../Utils/storageHook";
-import Shader from "../CustomComponents/ShaderGL";
-import { Polynomial } from "../multivariate-polynomial/Polynomial";
-import EquationInput from "../CustomComponents/MaterialPage/EquationInput";
-import {
-  SDFInput,
-  ParametricInput,
-  ImplicitInput,
-} from "../CustomComponents/MaterialPage/EquationInput";
-
-import ColorPick from "../CustomComponents/MaterialPage/ColorPicker";
-import ImplicitToSDF from "../Utils/StringToSDF";
-
 import { InputMode } from "../Types/InputMode";
-import ParameterTable from "../CustomComponents/MaterialPage/ParameterTable";
-import MaterialInput from "../CustomComponents/MaterialPage/MaterialInput";
-import "katex/dist/katex.min.css";
-import { defaultMaterial } from "../Defaults/defaultMaterial";
-import transformToValidName from "../Utils/transformToValidName";
 
+import {
+  EquationInput,
+  ImplicitInput,
+  ParametricInput,
+  SDFInput,
+} from "../Components/EquationInput";
+import { MaterialInput } from "../Components/SurfacePage/MaterialInput";
+import { ParameterTable } from "./ParameterTable";
+// import {
+//     EquationInput,
+//     SDFInput,
+//     ParametricInput,
+//     ImplicitInput,
+//   } from "../CustomComponents/MaterialPage/EquationInput";
+import { defaultMaterial } from "../Shader/defaultMaterial";
+import { StringToSDF, ImplicitToSDF } from "../Utils/StringToSDF";
+import { TransformToValidName } from "../Utils/transformToValidName";
+import { Polynomial } from "../multivariate-polynomial/Polynomial";
+import { Shader } from "../Shader/Shader";
+
+import "katex/dist/katex.min.css";
 var Latex = require("react-latex");
 
-require("nerdamer/Calculus");
+const selector = () => (store: any) => ({
+  primitives: store.primitives,
+  createPrimitive: (prim: EquationData) => store.addPrimitive(prim),
+  updatePrimitive: (id: string, data: EquationData) =>store.updatePrimitive(id, data),
+});
 
-
-export default function App(props: {
+export function SurfaceDialog(props: {
   initialID: string;
   handleClose: Function;
   open: boolean;
 }) {
-  const [storage, setStorage] = useLocalStorage("user_implicits");
-
+  const { primitives, updatePrimitive, createPrimitive } = useStore(
+    selector(),
+    shallow
+  );
   const [eqData, setEqData] = useState({
     id: "",
     name: "",
@@ -53,6 +53,7 @@ export default function App(props: {
     parsedInput: "",
     parameters: [""],
     fHeader: "",
+    material: defaultMaterial
   });
 
   // PREVIEW
@@ -72,15 +73,6 @@ export default function App(props: {
   const [eqInputMode, setEqInputMode] = useState(InputMode.Implicit);
 
   useEffect(() => {
-    // if (!props.data) return;
-    // setEqInputMode(props.data.inputMode);
-    // setInputMath([...props.data.input]);
-    // setInputParameters(props.data.parameters);
-    // handleNewName(props.data.name);
-    // computeExampleSDF();
-  }, [props.initialID]);
-
-  useEffect(() => {
     console.log("INPUT MATH NEW ", inputMath);
     handleNewEquation();
   }, [eqInputMode, inputParameters, inputMath]);
@@ -90,7 +82,9 @@ export default function App(props: {
   }, [inputName]);
 
   useEffect(() => {
-    const initialSurf: EquationData = storage[props.initialID];
+    const initialSurf: EquationData = primitives.find(
+      (p: EquationData) => p.id === props.initialID
+    );
     if (initialSurf) {
       setEqInputMode(initialSurf.inputMode);
       console.log("TEST ", initialSurf);
@@ -109,6 +103,8 @@ export default function App(props: {
       setInputName(initialSurf.name);
 
       setInputParameters(initialSurf.parameters);
+      setInputMaterial(initialSurf.material);
+      console.log("computing example sdf");
       computeExampleSDF(initialSurf.parsedInput);
     } else {
       setInputMath(["", "", ""]);
@@ -118,32 +114,48 @@ export default function App(props: {
     }
   }, [props.open]);
 
-  // const latexInfo = () => {
-  //   const implicit =
-  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.f.toString()) : "";
-  //   const dx =
-  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dx.toString()) : "";
-  //   const dy =
-  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dy.toString()) : "";
-  //   const dz =
-  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.dz.toString()) : "";
-  //   const norm =
-  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.norm.toString()) : "";
-  //   const sdf =
-  //     eqData && validEq ? nerdamer.convertToLaTeX(eqData.sdf.toString()) : "";
+  const computeExampleSDF = (parsedSDF: string) => {
+    let exampleHeader = `exampleSDF(vec3 p ${
+      inputParameters.length > 0 ? "," : ""
+    }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`;
 
-  //   return `\\begin{align*}
-  //         f(x,y,z) &=  ${implicit} \\\\[10pt]
-  //         \\nabla f(x,y,z) &= \\left(
-  //           ${dx},
-  //           ${dy},
-  //           ${dz}
-  //         \\right) \\\\[10pt]
-  //         \\Vert \\nabla f(x,y,z) \\Vert &= ${norm} \\\\[10pt]
-  //         \\text{sdf}(x,y,z) &= ${sdf}
-  //       \\end{align*}`;
-  // };
+    let shaderFunction = `float ${exampleHeader}{
+            float x = p.r;
+            float y = p.g;
+            float z = p.b;
+      
+            return ${parsedSDF};
+        }\n`;
 
+    console.log("res ", shaderFunction);
+    setExampleShaderFunction(shaderFunction);
+    setExampleSDF(
+      `exampleSDF(p${inputParameters.length > 0 ? "," : ""}${inputParameters
+        .map((p, idx) => `${p.defaultVal.toFixed(4)}`)
+        .join(",")})`
+    );
+  };
+
+  function nameInUse(name: string) {
+    const id = TransformToValidName(name);
+    if (props.initialID === "")
+      return primitives.some((p: EquationData) => p.id === id);
+    else {
+      return (
+        id !== props.initialID &&
+        primitives.some((p: EquationData) => p.id === id)
+      );
+    }
+  }
+
+  function handleNewName() {
+    if (inputName === "") setNameErrorMsg("Introduce a name");
+    else if (nameInUse(inputName)) {
+      setNameErrorMsg("Name already in use");
+    } else {
+      setNameErrorMsg("");
+    }
+  }
   const handleNewEquationParam = (): [string | null, string[]] => {
     console.log("HANDLING PARAMETRIC ", mathErrorMsg);
     let implicit = "";
@@ -155,8 +167,7 @@ export default function App(props: {
       input === "" ? "Introduce equation" : ""
     );
 
-    if(newErrorMsg.some(m => m!==""))
-      return [null, newErrorMsg];
+    if (newErrorMsg.some((m) => m !== "")) return [null, newErrorMsg];
 
     inputMath.forEach((input, idx) => {
       try {
@@ -175,10 +186,24 @@ export default function App(props: {
 
     // PARAM -> IMPLICIT
     try {
-      const res = Polynomial.implicitateR3(fs[0], fs[1], fs[2], inputParameters.map((p) => p.symbol));
+      const res = Polynomial.implicitateR3(
+        fs[0],
+        fs[1],
+        fs[2],
+        inputParameters.map((p) => p.symbol)
+      );
       implicit = res.toString(true);
       console.log("AQUI2 ", res);
-      console.log("AQUI: ", fs[0].toString(), ",", fs[1].toString(),",", fs[2].toString(),",", implicit);
+      console.log(
+        "AQUI: ",
+        fs[0].toString(),
+        ",",
+        fs[1].toString(),
+        ",",
+        fs[2].toString(),
+        ",",
+        implicit
+      );
     } catch (error: any) {
       newErrorMsg.fill(Error(error).message);
       return [null, newErrorMsg];
@@ -251,58 +276,47 @@ export default function App(props: {
   };
 
   const handleSave = () => {
-    const id = transformToValidName(inputName);
+    const id = TransformToValidName(inputName);
+    const e: EquationData = {
+      id: id,
+      name: inputName,
+      inputMode: eqInputMode,
+      input: inputMath,
+      parsedInput: eqData.parsedInput,
+      parameters: inputParameters,
+      fHeader: `${id}(vec3 p ${
+        inputParameters.length > 0 ? "," : ""
+      }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
+      material: inputMaterial
+    };
 
-    if (nameInUse(inputName)) {
-      return;
-    } else {
-      let newData: any = {};
-      const e: EquationData = {
-        id: id,
-        name: inputName,
-        inputMode: eqInputMode,
-        input: inputMath,
-        parsedInput: eqData.parsedInput,
-        parameters: inputParameters,
-        fHeader: `${id}(vec3 p ${
-          inputParameters.length > 0 ? "," : ""
-        }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`,
-      };
-
-      Object.keys(storage).forEach((k: string) => {
-        if (props.initialID === id || k !== props.initialID)
-          newData[k] = storage[k];
-      });
-
-      newData[id] = e;
-      console.log("STORING ", e);
-      setStorage(newData);
-      console.log(storage);
+    if(!nameInUse(inputName)){
+        if(props.initialID === ""){
+            createPrimitive(e);
+        }
+        else{
+            console.log("SI AQUI");
+            updatePrimitive(props.initialID, e);
+        }
+    }
+    else{
+        if(id === props.initialID){
+            updatePrimitive(props.initialID, e);
+        }
     }
 
     props.handleClose();
   };
 
-  const computeExampleSDF = (parsedSDF: string) => {
-    let exampleHeader = `exampleSDF(vec3 p ${
-      inputParameters.length > 0 ? "," : ""
-    }${inputParameters.map((p) => `float ${p.symbol}`).join(",")})`;
+  function handleShaderError(e: string) {
+    const regex = /ERROR: 0:255: ([^\n]+)/;
+    const match = e.match(regex);
+    const errorMessage = match ? match[1] : "No error message found";
 
-    let shaderFunction = `float ${exampleHeader}{
-        float x = p.r;
-        float y = p.g;
-        float z = p.b;
-  
-        return ${parsedSDF};
-    }\n`;
+    console.log(errorMessage);
 
-    setExampleShaderFunction(shaderFunction);
-    setExampleSDF(
-      `exampleSDF(p${inputParameters.length > 0 ? "," : ""}${inputParameters
-        .map((p, idx) => `${p.defaultVal.toFixed(4)}`)
-        .join(",")})`
-    );
-  };
+    setMathErrorMsg([errorMessage, "", ""]);
+  }
 
   const displayInput = () => {
     switch (eqInputMode) {
@@ -354,33 +368,6 @@ export default function App(props: {
     }
   };
 
-  function nameInUse(name: string) {
-    const id = transformToValidName(name);
-    if (props.initialID === "") return id in storage;
-    else {
-      return id !== props.initialID && id in storage;
-    }
-  }
-
-  function handleNewName() {
-    if (inputName === "") setNameErrorMsg("Introduce a name");
-    else if (nameInUse(inputName)) {
-      setNameErrorMsg("Name already in use");
-    } else {
-      setNameErrorMsg("");
-    }
-  }
-
-  function handleShaderError(e: string){
-    const regex = /ERROR: 0:255: ([^\n]+)/;
-const match = e.match(regex);
-const errorMessage = match ? match[1] : "No error message found";
-
-console.log(errorMessage);
-
-    setMathErrorMsg([errorMessage,"",""])
-  }
-
   return (
     <div>
       <Modal
@@ -407,21 +394,21 @@ console.log(errorMessage);
             direction="row"
           >
             <Row align="center" justify="flex-start">
-              <Button.Group  auto>
+              <Button.Group auto>
                 <Button
-                  flat={eqInputMode===InputMode.Implicit}
+                  flat={eqInputMode === InputMode.Implicit}
                   onClick={() => setEqInputMode(InputMode.Implicit)}
                 >
                   Implicit
                 </Button>
                 <Button
-                flat={eqInputMode===InputMode.Parametric}
+                  flat={eqInputMode === InputMode.Parametric}
                   onClick={() => setEqInputMode(InputMode.Parametric)}
                 >
                   Parametric
                 </Button>
                 <Button
-                flat={eqInputMode===InputMode.SDF}
+                  flat={eqInputMode === InputMode.SDF}
                   onClick={() => setEqInputMode(InputMode.SDF)}
                 >
                   SDF
@@ -451,9 +438,8 @@ console.log(errorMessage);
                 </Grid>
                 <Grid.Container gap={2}>
                   <Grid xs={12}>
-                    <Collapse.Group bordered >
+                    <Collapse.Group bordered>
                       <Collapse
-      
                         title={
                           <Row align="center">
                             <Text h4>Parameters</Text>
@@ -479,6 +465,7 @@ console.log(errorMessage);
                         }
                       >
                         <MaterialInput
+                        defaultValue={inputMaterial}
                           handleChange={(m: Material) => setInputMaterial(m)}
                         />
                       </Collapse>
@@ -496,7 +483,7 @@ console.log(errorMessage);
                     material={inputMaterial}
                     width={size.width}
                     height={size.height}
-                    onError={(e:string) => handleShaderError(e)}
+                    onError={(e: string) => handleShaderError(e)}
                   />
                 </Grid>
               )}

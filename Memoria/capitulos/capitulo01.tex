@@ -1,26 +1,25 @@
 % !TeX root = ../libro.tex
 % !TeX encoding = utf8
-
 \chapter{Función Distancia con Signo}
 Tenemos como objetivo representar superficies en $\R^3$. En general, estas pueden estar definidas de multitud de formas, siendo una de las más usuales a través de una función implícita. Nosotros nos centraremos en un tipo especial de funciones implícitas, que introducimos a continuación.
 
 \begin{definicion}
   Sea $\Omega \subseteq \R^3$. Una \textbf{función distancia} es aquella que a cada punto de $\R^3$ le asigna su menor distancia a la frontera de $\Omega$:
     \begin{align*}
-          d_{\Omega} \colon \R^3 &\to \R_0^+\\
-          x &\mapsto \inf\{\Vert x-y\Vert) \colon y \in \delta\Omega\}
+          d_{\Omega} \colon \R^3 &\to \R_0^+.\\
+          x &\mapsto \inf\{\Vert x-y\Vert) \colon y \in \delta\Omega\}.
     \end{align*}
 
     Cuando $\Omega$ sea cerrado, podremos usar el mínimo en lugar del ínfimo.
 \end{definicion}
  
 \begin{definicion}[SDF]\label{d:sdf}
-  Sea $\Omega \subseteq \R^3$. Una \textbf{función distancia con signo} es una función implícita de la forma:
+  Sea $\Omega \subseteq \R^3$. Una \textbf{función distancia con signo} es una función de la forma:
   \begin{align*}
-          \phi_{\Omega} \colon \R^3 &\to \R\\
+          \phi_{\Omega} \colon \R^3 &\to \R.\\
           x &\mapsto \begin{cases}
-      d_{\Omega}(x),  &x\in \R^3\setminus \mathring{\Omega} \\
-      -d_{\Omega}(x), &x\in \mathring{\Omega}
+      d_{\Omega}(x),  &x\in \R^3\setminus \mathring{\Omega}. \\
+      -d_{\Omega}(x), &x\in \mathring{\Omega}.
     \end{cases}
     \end{align*}
 
@@ -28,118 +27,282 @@ Tenemos como objetivo representar superficies en $\R^3$. En general, estas puede
 \end{definicion}
 
 \begin{definicion}
-  Dada una función $\phi\colon \R^3 \to \R$ y $k\in\R$, llamamos \textbf{isosuperficie} al conjunto:
+  Dada una función $\phi\colon \R^3 \to \R$ y $k\in\R$, llamamos \textbf{isosuperficie de $\boldsymbol{\phi}$ con valor $\boldsymbol{k}$} al conjunto:
   \begin{equation*}
-      S_{\phi,k} = \{(x,y,z) :  \phi(x,y,z)=k\}
+      S_{\phi,k} = \{(x,y,z) :  \phi(x,y,z)=k\}.
   \end{equation*}
   Sin pérdida de generalidad podemos suponer $k=0$, pues de no ser el caso, tomamos la función $\phi'(x,y,z)=\phi(x,y,z)-k$ y tenemos que $S_{\phi',0} = S_{\phi,k}$. Por tanto, la denotaremos como $S_\phi$.
 \end{definicion}
 
-Nuestra intención será entonces construir una escena definida como la isosuperficie generada por un SDF.
+Nuestra intención será entonces construir una escena definida como la isosuperficie generada por un SDF. A partir de ahora, tomaremos $p=(x,y,z)\in\R^3$.
 
 \begin{ejemplo}
-    Ejemplos simples de SDF $\phi$ para un punto $p=(x,y,z)$ en diferentes conjuntos $\Omega$ son:
+    Ejemplos simples de SDF $\phi$ en $p$ para diferentes conjuntos $\Omega$ son:
     \begin{itemize}
         \item \textbf{Esfera de radio $\boldsymbol{r}$ centrada en el origen.}
         \begin{equation*}
-            \Omega=\{x\in \R^3 : \Vert x\Vert = r\},\quad \phi(p) = \Vert p\Vert - r
+            \Omega=\{x\in \R^3 : \Vert x\Vert = r\},\quad \phi(p) = \Vert p\Vert - r.
         \end{equation*}
-        \item \textbf{Plano con vector normal $\boldsymbol{n=(a,b,c)}$ pasando por el origen}.
+        \item \textbf{Plano con vector normal unitario $\boldsymbol{n=(a,b,c)}$ y pasando por el origen}.
         \begin{equation*}
-            \Omega=\{p\in\R^3 : ax+by+cz = 0\},\quad \phi(p) = p\cdot n
+            \Omega=\{p\in\R^3 : ax+by+cz = 0\},\quad \phi(p) = p\cdot n.
         \end{equation*}
-        \item \textbf{Toro de radios $\boldsymbol{R>r}$}:
+        \item \textbf{Toro de radios $\boldsymbol{R}$ y $\boldsymbol{r}$, con $\boldsymbol{R>r}$}:
         \begin{equation*}
-            \Omega=\left\{p\in \R^3 : \left(R-\sqrt{x^2+y^2}\right)^2 + z^2 = r^2\right\},\quad \phi(p)= \bigg\Vert (\Vert(x,0,z)\Vert - R, y) \bigg\Vert - r
+            \Omega=\left\{p\in \R^3 : \left(R-\sqrt{x^2+y^2}\right)^2 + z^2 = r^2\right\},\quad \phi(p)= \bigg\Vert (\Vert(x,0,z)\Vert - R, y) \bigg\Vert - r.
         \end{equation*}
     \end{itemize}
 \end{ejemplo}
 
+
 \section{Operaciones sobre SDF}
-Si bien estas primitivas son fáciles de generar, también son muy simples y nos serán insuficientes si queremos construir escenas más complejas. Una de las ventajas de los SDF es que se pueden generar nuevas formas a partir de primitivas de forma muy sencilla.\\
+Si bien estas primitivas son fáciles de generar, también son muy simples y nos serán insuficientes si queremos construir escenas más complejas. Una de las ventajas de los SDF es que se pueden generar nuevas formas a partir de primitivas de forma muy sencilla. Para ello, una de las técnicas más útiles es la geometría de sólidos constructiva, que utiliza operaciones booleanas para combinar múltiples primitivas. Por la naturaleza de los SDF, estas operaciones se implementan fácilmente usando las funciones $\Max$ y $\Min$.
 
-En lo siguiente, tomaremos $p=(x,y,z)\in\R^3$.
-
-\begin{proposicion}[Operaciones Booleanas]\label{p:boolean}
-    Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente. Definimos los SDF para las operaciones:
+\begin{definicion}[Operaciones Booleanas]\label{p:boolean}
+    Sean $A$ y $B$ isosuperficies generadas por $\phi$ y $\gamma$ respectivamente. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
-        \item \textbf{Unión: } $\sdf_{A\cup B} = \min(\phi, \gamma)$,
-        \item \textbf{Intersección: } $\sdf_{A\cap B} = \max(\phi, \gamma)$,
-        \item \textbf{Diferencia: } $\sdf_{A\setminus B} = \max(\phi, -\gamma)$.
+        \item \textbf{Unión: } $\sdf_{A\cup B}(p) = \Min(\phi(p), \gamma(p))$,
+        \item \textbf{Intersección: } $\sdf_{A\cap B}(p) = \Max(\phi(p), \gamma(p))$,
+        \item \textbf{Diferencia: } $\sdf_{A\setminus B}(p) = \Max(\phi(p), -\gamma(p))$.
     \end{itemize}
-\end{proposicion}
+\end{definicion}
 
 \begin{observacion}
-    Solo en el caso de la unión se obtiene un SDF según lo establecido en \autoref{d:sdf}, ya que al aplicar $\max$ en el interior (donde $\phi < 0$), las funciones resultado pueden ser solo una cota superior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies, así que podemos obviar este problema.
+    Solo en el caso de la unión se obtiene un SDF según lo establecido en la \autoref{d:sdf}, ya que al aplicar $\Max$ en el interior de la superficie (donde $\phi(p) < 0$), el resultado puede ser solo una cota inferior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies así que podemos obviar este problema, con la salvedad de que el algoritmo de \textit{raymarching} requiera de más iteraciones.
 \end{observacion}
 
-Un problema de usar estas transformaciones es que produce discontinuidades en la derivada del SDF resultante. Trataremos de evitar esta situación, además de por motivos analíticos, por motivos visuales, ya que el resultado de estas operaciones produce bordes muy acusados en la intersección de ambas superficies. Existen muchas formas de combinar SDF de forma más natural. Una de las más sencillas es la interpolación lineal.
+Un problema de usar estas transformaciones es que produce discontinuidades en la derivada del SDF resultante. Trataremos de evitar esta situación, además de por motivos analíticos, por motivos visuales, ya que esto produce bordes muy acusados en la intersección de ambas superficies. Existen muchas formas de combinar SDF de forma más natural. Usaremos una de las más extendidas, usada por programas de modelado 3D como Blender \cite{repo:blender} o videojuegos como Dreams \cite{game:dreams}, y que ha sido estudiada por Íñigo Quílez en su web \cite{article:smooth}.
 
-\begin{proposicion}[Operaciones Booleanas Suavizadas]
-    Sean $A$,$B$ isosupercies generadas por $\phi,\gamma$ respectivamente. Definimos los SDF para las operaciones suavizadas:
+\begin{observacion}
+    Para mayor claridad del razonamiento, en las figuras se representarán funciones de variable real, a pesar de que nosotros trabajamos en $\R^3$.
+\end{observacion}
+
+Empezamos trabajando con la unión. La idea es, dadas $\phi$ y $\gamma$, añadir una corrección para cada punto a la función $\Min$ original para que cumpla ciertos requisitos. Por comodidad, definiremos 
+\begin{align*}
+      \Min_{\phi,\gamma}\colon \R^3 &\to \R,\\
+      p &\mapsto \Min(\phi(p),\gamma(p)),
+\end{align*}
+y siguiendo un abuso de notación, escribiremos $\Min(p)$ cuando no haya lugar a dudas.
+
+Llamaremos a la mencionada corrección $\omega\colon \R^3\times \R^+_0\to\R$, de forma que la versión suavizada de la función $\Min$ original será
+\begin{align*}
+      \smin_{\phi,\gamma}\colon \R^3\times \R^+_0 &\to \R,\\
+      (p,k) &\mapsto \Min(p) - \omega(p,k),
+\end{align*}
+donde la variable $k\in\R^+_0$ controlará la intensidad del suavizado. Siempre que no haya confusión, denotaremos $\smin_{\phi,\gamma} = \smin$.\newline
+
+Como no queremos que este cambio afecte al algoritmo de \textit{raymarching}, debemos asegurar que se cumpla $\Min(p)\ge \smin(p,k)$, esto es,
+\begin{equation*}
+\omega(p)\ge 0,\ \forall p\in \R^3,\ \forall k\in \R^+_0.
+\end{equation*}
+
+Si estudiamos como se comporta la versión real de $\Min$ en la \autoref{fig:min_real}, vemos que los puntos de conflicto se encuentran cerca de las intersecciones de $\phi$ y $\gamma$, es decir, cuando $\phi$ y $\gamma$ están arbitrariamente cerca. En el resto de puntos no queremos modificar la función original, luego estudiamos el comportamiento de $\smin$ en el conjunto de entornos de las intersecciones
+\begin{equation*}
+    B_{k} = \{p\in\R^3 : |\phi(p)-\gamma(p)| \le k\},
+\end{equation*}
+
+siendo $\omega(p) = 0$ cuando $p\notin B_{k}$.\newline
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Plantilla-TFG-master/img/smooth_real.png}
+    \caption{Gráfica de $\Min\colon \R\to\R$}
+    \label{fig:min_real}
+\end{figure}
+
+Para asegurar que $\smin$ sea continua en la frontera de $B_{k}$, imponemos la condición 
+
+\begin{equation*}
+    \omega(p) = 0,\ \forall p \in \delta B_{k}.
+\end{equation*}
+
+Por otro lado, es lógico que $\omega$ tenga su mayor influencia justo en las intersecciones, luego imponemos también 
+\begin{equation*}
+    \omega(c) = s, \text{ donde } c \in I \equiv \{p\in\R^3 : \phi(p) = \gamma(p)\},\ s\in \R.
+\end{equation*}
+
+El valor $s$ es el que deberemos ajustar para que $\smin$ cumpla nuestros requisitos. Fijado un $p\in B_{k}$, ya tenemos una primera aproximación para $\omega$ :
+\begin{equation*}
+    \omega(p,k) = s\left( 1-\frac{|\phi(p)-\gamma(p)|}{k} \right)^n = \begin{cases}
+        s\left( 1-\frac{\phi(p)-\gamma(p)}{k}\right)^n,\ \phi(p)>\gamma(p), \\[10pt]
+        s\left( 1+\frac{\phi(p)-\gamma(p)}{k}\right)^n,\ \phi(p)\le \gamma(p)\\[10pt]
+    \end{cases}  ,\ s\in\R,\ n\in\N,
+\end{equation*}
+donde hemos añadido el parámetro $n$ para añadir más control sobre el resultado final.\newline 
+\begin{figure}[!h]
+     \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_1.png}
+        \caption{$k=0.6$}
+     \end{minipage}
+     \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_2.png}
+        \caption{$k=0.1$}
+     \end{minipage}
+     \caption{Primera aproximación de $smin(p,k)$ con $s=0.05$ y $n=2$}
+     \label{fig:smooth1}
+\end{figure}
+
+Es evidente que $\omega$ está bien definida, pues:
+\begin{equation*}
+    \phi(p)=\gamma(p) \implies \frac{\phi(p)-\gamma(p)}{k} = 0\implies \omega(p) = s
+\end{equation*}
+
+Ya podemos pasar a solucionar el problema de continuidad de la derivada. Esta tiene la forma:
+\begin{align*}
+    \smin'(p,k) &=  \left(\Min(\phi(p),\gamma(p))\right)' - \omega(p,k)'\\[10pt] &= \begin{cases}
+        \gamma'(p) + sn\left(1-\frac{\phi(p)-\gamma(p)}{k}\right)^{n-1}\left(\frac{\phi'(p)-\gamma'(p)}{k}\right),\ \phi(p)>\gamma(p), \\[10pt] 
+        \phi'(p) - sn\left(1+\frac{\phi(p)-\gamma(p)}{k}\right)^{n-1}\left(\frac{\phi'(p)-\gamma'(p)}{k}\right),\ \phi(p)\le \gamma(p).
+    \end{cases}
+\end{align*}
+
+Veamos cuándo está bien definida:
+\begin{align*}
+    \phi' - sn\left(1+\frac{\phi-\gamma}{k}\right)^{n-1}\left(\frac{\phi'-\gamma'}{k}\right) &= \gamma' + sn\left(1-\frac{\phi-\gamma}{k}\right)^{n-1}\left(\frac{\phi'-\gamma'}{k}\right)
+\end{align*}
+
+Evaluando en $c\in I$:
+\begin{align*}
+    \cancel{\phi'(c) -  \gamma'(c)} &= 2sn\left(1+\frac{\phi(c)-\gamma(c)}{k}\right)^{n-1}\left(\frac{\cancel{\phi'(c)-\gamma'(c)}}{k}\right);\\
+    s &= \frac{k}{2n}\left(1-\frac{\cancelto{0}{\phi(c)-\gamma(c)}}{k}\right);\\
+    s &= \frac{k}{2n}.
+\end{align*}
+    
+Hemos llegado a la expresión final
+\begin{align*}
+    \omega(p,k) &= \begin{cases}
+        \frac{k}{2n}\left( 1-\frac{|\phi(p)-\gamma(p)|}{k} \right)^n,\ &|\phi(p)-\gamma(p)|\le k,\\[10pt]
+        0,\ &\text{ otro caso }.
+    \end{cases}\\[10pt] &= \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}  ,\ s\in\R,\ n\in\N.
+\end{align*}
+
+Podemos observar los resultados en la \autoref{fig:smooth2}.
+\begin{figure}[!h]
+     \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_3.png}
+        \caption{$k=0.1,\ n=2$}
+     \end{minipage}
+     \begin{minipage}[c]{0.49\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_4.png}
+        \caption{$k=0.1,\ n=3$}
+     \end{minipage}
+     \caption{Resultado final de $smin(p,k)$ }
+     \label{fig:smooth2}
+\end{figure}
+
+Finalmente, para obtener una versión suavizada del máximo, es fácil comprobar que 
+\begin{align*}
+      \smax_{\phi,\gamma}\colon \R^3\times \R^+_0 &\to \R,\\
+      (p,k) &\mapsto -\smin_{-\phi,-\gamma}(p,k).
+\end{align*}
+
+Recogemos los resultados obtenidos a continuación.
+
+
+
+% Por tanto, dadas $\phi$ y $\gamma$, queremos obtener una versión suavizada de $\Min(\phi,\gamma)$ usando interpolación lineal, que llamaremos $\smin$ y tendrá la forma
+% \begin{align*}
+%           \smin\colon \R^3 &\to \R^3.\\
+%           p &\mapsto h(p)\cdot \phi(p) + (1-h(p))\gamma(p) \text{, donde } h \colon \R^3 \to [0,1].
+%     \end{align*}
+
+
+% Pasamos a buscar $h$. Solo queremos modificar la función en los entornos de los puntos en los que intersecan $\phi$ y $\gamma$, de forma que para el resto de puntos debería ser $h=\{0,1\}$. Los puntos de intersección vienen dados como las soluciones de $m(p)=\gamma(p) - \phi(p)$. Podemos además acotar $m(p)$ en el intervalo $[0,1]$ usando $\Min$ y $\Max$, obteniendo un candidato a valor de $h(p)$:
+% \begin{equation}
+%     \Min\left(\Max\left(\phi(p)-\gamma(p),0\right),1\right) = \Min\left(\Max\left(m(p),0\right),1\right) \in [0,1]
+% \end{equation}
+
+% Sin embargo, podemos ver que la interpolación comienza justo en la intersección, mientras que nos gustaría que esto ocurriese antes. Modificamos la expresión anterior para hacer que la intersección sea el punto medio de la interpolación ($h=0.5$):
+% \begin{equation}
+%    \Min\left(\Max\left(m(p) + \frac{1}{2},0\right),1\right)
+% \end{equation}
+
+% Podemos ver los resultados de esta primera aproximación en la \autoref{fig:smooth1}.
+
+% \begin{figure}[!h]
+%      \begin{minipage}[c]{0.49\linewidth}
+%         \centering
+%         \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smoothV1_a.png}
+%         \caption{$h(p)=0$ en la intersección}
+%      \end{minipage}
+%      \begin{minipage}[c]{0.49\linewidth}
+%         \centering
+%         \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smoothV1_b.png}
+%         \caption{$h(p)=0.5$ en la intersección}
+%      \end{minipage}
+%      \caption{Primera aproximación de la obtención de $h(p)$}
+%      \label{fig:smooth1}
+% \end{figure}
+
+% Observamos que ahora tenemos un nuevo problema
+
+\begin{definicion}[Operaciones Booleanas Suavizadas]
+    Sean $A$ y $B$ isosuperficies generadas por $\phi$ y $\gamma$ respectivamente. Definimos los SDF para las operaciones booleanas suavizadas como sigue.
     \begin{itemize}
-        \item \textbf{Unión suavizada: } $\sdf_{unionS} = li(\gamma, \phi, h_1) - k\cdot h_1 \cdot (1-h_1)$,
-        \item \textbf{Intersección suavizada: } $\sdf_{interS} = li(\gamma, \phi, h_2) + k\cdot h_2 \cdot (1-h_2)$,
-        \item \textbf{Diferencia suavizada: } $\sdf_{difS} = li(\phi, -\gamma, h_3) + k\cdot h_3 \cdot (1-h_3)$.
+        \item \textbf{Unión suavizada: } $\sdf_{unionS}(p) = \Min(\phi(p),\gamma(p)) - \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}$,
+        \item \textbf{Intersección suavizada: } $\sdf_{interS}(p) = -\Min(-\phi(p),-\gamma(p)) + \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}$,
+        \item \textbf{Diferencia suavizada: } $\sdf_{difS}(p) = -\Min(-\phi(p),\gamma(p)) + \frac{\Max\left( k - |\phi(p) + \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}$,
     \end{itemize}
 
-    donde:
-    \begin{itemize}
-        \item $k\in \R$ un coeficiente de suavizado,
-        \item $li(x,y,a)\colon \R\times\R\times\R\to \R = (1-a)\cdot x + a\cdot y$ interpola linealmente $x$ e $y$ según $a$,
-        \item $h_1 = c\left(\frac{1}{2} + \frac{\gamma - \phi}{2k}\right)$,\quad $h_2 = c\left( \frac{1}{2} - \frac{\gamma - \phi}{2k} \right)$,\quad $h_3 = c\left( \frac{1}{2} - \frac{\gamma + \phi}{2k}\right)$,
-        \item $c\colon \R\to \R = \min(\max(x, 0), 1)$ acota $x$ en $[0,1]$.
-    \end{itemize}
-\end{proposicion}
+    donde $k\in \R^+_0$ controla la influencia del suavizado.        
+\end{definicion}
 
-Pasamos ahora a estudiar otro tipo de operaciones, que nos resultarán útiles para generar nuevas formas a partir de un único SDF. 
+Observamos que los operadores definidos en la \autoref{p:boolean} no son más que un caso particular de estos últimos cuando $k\to 0$.\newline
 
-\begin{proposicion}[Operaciones afines]\label{p:afines}
-    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+% \begin{equation*}
+%     \lim_{k\to 0} \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}} = \begin{cases}
+%         \lim_{k\to 0 } \frac{0}{2n\cdot k^{n-1}} = 0,\ p\notin B_{p,k}\\[10pt]
+%          \lim_{k\to 0 } \frac{\left( k - |\phi(p) - \gamma(p)|\right)^n}{2n\cdot k^{n-1}}
+%     \end{cases} 
+% \end{equation*}
+
+
+Pasamos ahora a estudiar otro tipo de operaciones, que nos resultarán útiles para generar nuevas formas a partir de un único SDF. Todas ellas se basarán en, dada $\phi$, aplicar una transformación $t:\R^3\to \R^3$ a cada punto de la isosuperficie $S_{\phi}$ para obtener una nueva $S_{\gamma}$. Si queremos saber si un punto $q\in\R^3$ está en $S_{\gamma}$, tenemos que comprobar si su preimagen por la transformación pertenece a $S_{\phi}$. Por tanto, bastará evaluar el SDF original en $t^{-1}(p)$:
+\begin{equation*}
+    \gamma(p) = \phi(t^{-1}(p)).
+\end{equation*}
+
+Esto funciona bien para transformaciones como las traslaciones o rotaciones, ya que mantienen las distancias. Sin embargo, este no es el caso del escalado, ya que si tomamos $l(p) = sp$ con $s\in \R^+_0$:
+\begin{equation*}
+    \Vert p-p'\Vert = d \implies  \Vert l(p)-l(p')\Vert = \Vert sp-sp'\Vert = s\Vert p-p'\Vert = s\cdot d,\  \text{ donde } p,p' \in S_{\phi}.
+\end{equation*}
+
+Como las distancias se escalan, deberemos hacer lo propio con el nuevo SDF, aplicándole el mismo factor de escalado $s$ como muestra la \autoref{d:afines}.
+
+\begin{definicion}[Operaciones afines]\label{d:afines}
+    Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
-        \item \textbf{Traslación de vector $v$: } $\sdf_{traslacion}(p) = \sdf_{A}(p - v)$,
-        \item \textbf{Escalado uniforme de dimensiones $s$: } $\sdf_{escalado}(p) = \sdf_{A}(p/s)\cdot s$,
-        \item \textbf{Rotaciones de ángulo $\alpha$ sobre los ejes $x,y,z$: }
-        \begin{equation*}
-            \sdf_{rotX}(p) = \sdf_{A}(R_x^{-1}(\alpha)\cdot p^t),\quad \sdf_{rotY}(p) = \sdf_{A}(R_y^{-1}(\alpha)\cdot p^t),\quad \sdf_{rotZ}(p) = \sdf_{A}(R_z^{-1}(\alpha)\cdot p^t)
-        \end{equation*}
-    \end{itemize}
-    donde:
-    \begin{equation*}
-        R_x(\alpha) = \begin{pmatrix}
-            1&0&0\\
-            0&\cos(\alpha) & -\sin(\alpha) \\
-            0&\sin(\alpha) & \cos(\alpha) 
-            \end{pmatrix}\begin{pmatrix}
-            x \\
-            y \\
-            z
-            \end{pmatrix}
-        \quad,
-        R_y(\alpha) = \begin{pmatrix}
+        \item \textbf{Traslación de vector $\boldsymbol{v}$: } $\sdf_{traslacion}(p) = \sdf_{A}(p - v)$,
+        \item \textbf{Escalado uniforme de dimensiones $\boldsymbol{s}$: } $\sdf_{escalado}(p) = \sdf_{A}(p/s)\cdot s$,
+        \item \textbf{Rotaciones de ángulo $\boldsymbol{\alpha}$ sobre los ejes $\boldsymbol{x,y,z}$: }
+        \begin{align*}
+            \sdf_{rotX}(p) &= \sdf_{A}(R_x^{-1}(\alpha)\cdot p^t),\ R_x(\alpha) = 
+            \begin{pmatrix}
+                1&0&0\\
+                0&\cos(\alpha) & -\sin(\alpha) \\
+                0&\sin(\alpha) & \cos(\alpha) 
+                \end{pmatrix},\\[10pt] 
+            \sdf_{rotY}(p) &= \sdf_{A}(R_y^{-1}(\alpha)\cdot p^t),\ R_y(\alpha) = \begin{pmatrix}
             \cos(\alpha) &0& \sin(\alpha)\\
             0&1&0\\
             -\sin(\alpha) &0& \cos(\alpha) 
-            \end{pmatrix},
-        \quad
-        R_z(\alpha) = \begin{pmatrix}
+            \end{pmatrix},\\[10pt]
+            \sdf_{rotZ}(p) &= \sdf_{A}(R_z^{-1}(\alpha)\cdot p^t),\ R_z(\alpha) = \begin{pmatrix}
             \cos(\alpha) & -\sin(\alpha) & 0\\
             \sin(\alpha) & \cos(\alpha) & 0\\
             0&0&1
-            \end{pmatrix}
-    \end{equation*}
-\end{proposicion}
-\begin{proof}
-    Las operaciones enumeradas son ya bien conocidas en $\R^3$. Si queremos saber si un punto $q$ pertenece a la superficie afín, tenemos que comprobar si su preimagen por la transformación pertenece a $A$. Por tanto, si $\phi$ es la transformación afín, bastará con evaluar el SDF original en $\phi^{-1}(p)$. Sin embargo, esto es cierto solo si $\phi$ mantiene las distancias, lo cual no ocurre para el escalado: 
-    \begin{equation*}
-        \Vert p-p'\Vert = d \implies = \Vert \phi(p)-\phi(p')\Vert = \Vert sp-sp'\Vert = s\Vert p-p'\Vert = s\cdot d,\ \forall p,p' \in A
-    \end{equation*}
+            \end{pmatrix}.
+        \end{align*}
+        
+    \end{itemize}
+\end{definicion}
 
-    Como las distancias se escalan, hacemos lo propio con nuestra función distancia aplicándole el mismo factor de escalado $s$.
-\end{proof}
-
-\begin{proposicion}[Operaciones Deformantes]
-    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+Siguiendo el mismo razonamiento, podemos definir operaciones que modifiquen la geometría de la superficie.
+\begin{definicion}[Operaciones Deformantes]
+    Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
         
         \item \textbf{Torsión: } $\sdf_{torsion}(p) = \sdf_{A}(p')$, con $p' = R_z(ky)\cdot (x,z,y)^t$,
@@ -148,87 +311,347 @@ Pasamos ahora a estudiar otro tipo de operaciones, que nos resultarán útiles p
         \item \textbf{Desplazamiento: } $\sdf_{desplazamiento}(p) = \sdf_{A}(\delta(p))$.
     \end{itemize}
 
-    donde:
+    donde
     \begin{itemize}
-        \item $k\in \R$ es un coeficiente de deformación,
+        \item $k\in \R^+_0$ controla la intensidad de la deformación,
         \item $\delta\colon \R^3\to \R^3$ es un patrón de desplazamiento,
-        \item $R_z(\alpha)\in \mathcal{M}_3(\R)$ es la matriz de rotación de ángulo $\alpha$ sobre el eje $z$ definida en \autoref{p:afines}.
+        \item $R_z(\alpha)\in \mathcal{M}_3(\R)$ es la matriz de rotación de ángulo $\alpha$ sobre el eje $z$ dada en la \autoref{d:afines}.
     \end{itemize}
-\end{proposicion}
+\end{definicion}
 
-\begin{proposicion}[Operadores de Posicionamiento]\label{p:posicionamiento}
-    Sea $A$ una isosuperficie. Definimos los SDF para las operaciones:
+Introducimos por último operaciones que permiten generar copias de otras superficies.
+\begin{definicion}[Operadores de Posicionamiento]\label{d:posicionamiento}
+    Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
-        \item \textbf{Simetrías sobre los ejes $x,y,z$:}
+        \item \textbf{Simetrías sobre los ejes $\boldsymbol{x,y,z}$:}
+        \begin{gather*}
+            \sdf_{simX}(p) = \sdf_{A}(\vert x\vert, y, z),\quad \sdf_{simY}(p) = \sdf_{A}(x, \vert y\vert,  z),\\[5pt] \sdf_{simZ}(p) = \sdf_{A}(x,y,\vert z\vert),
+        \end{gather*}
+        \item \textbf{Simetrías sobre los planos $\boldsymbol{xy,xz,yz}$:}
+        \begin{gather*}
+            \sdf_{simXY}(p) = \sdf_{A}(\vert x\vert, \vert y\vert, z),\quad \sdf_{simXZ}(p) = \sdf_{A}(\vert x\vert, y,  \vert z\vert),\\[5pt]\sdf_{simYZ}(p) = \sdf_{A}(x,\vert y\vert ,\vert z\vert),
+        \end{gather*}
+        \item \textbf{Repetición $\boldsymbol{l\in \N^3}$ veces en los ejes $\boldsymbol{x,y,z}$ con separación $\boldsymbol{s\in\R}$:} 
         \begin{equation*}
-            \sdf_{simX}(p) = \sdf_{A}(\vert x\vert, y, z),\quad \sdf_{simY}(p) = \sdf_{A}(x, \vert y\vert,  z),\quad \sdf_{simZ}(p) = \sdf_{A}(x,y,\vert z\vert)
-        \end{equation*}
-        \item \textbf{Simetrías sobre los planos $xy,xz,yz$:}
-        \begin{equation*}
-            \sdf_{simXY}(p) = \sdf_{A}(\vert x\vert, \vert y\vert, z),\quad \sdf_{simXZ}(p) = \sdf_{A}(\vert x\vert, y,  \vert z\vert),\quad \sdf_{simYZ}(p) = \sdf_{A}(x,\vert y\vert ,\vert z\vert)
-        \end{equation*}
-        \item \textbf{Repetición $l\in \N^3$ veces en los ejes $x,y,z$ con separación $s\in\R$:} 
-        \begin{equation*}
-            \sdf_{repeticion}(p) = \sdf_{A}(p - s\cdot c\left(r(p/s)), -l, l\right)
+            \sdf_{rep}(p) = \sdf_{A}(p - s\cdot c\left(r\left(\frac{p}{s}\right), -l, l\right),
         \end{equation*}
         \item \textbf{Repetición infinita:}
         \begin{equation*}
-            \sdf_{repeticion\infty}(p) = \sdf_{A}\left((p+\frac{l}{2}\mod l )- \frac{l}{2}\right)
+            \sdf_{repInf}(p) = \sdf_{A}\left((p+\frac{l}{2}\mod l )- \frac{l}{2}\right),
         \end{equation*}
     \end{itemize}
-    donde:
+    donde
     \begin{itemize}
-        \item $c\colon \R\times\R\times\R\to \R,\ c(x,a,b) = \min(\max(x, a), b)$ acota $x$ en $[a,b]$,
+        \item $c\colon \R\times\R\times\R\to \R,\ c(x,a,b) = \Min(\Max(x, a), b)$ acota $x$ en $[a,b]$,
         \item $r\colon \R^3 \to \R^3$ redondea las componentes de un vector a sus enteros más cercanos.
     \end{itemize}
-\end{proposicion}
+\end{definicion}
+
 \begin{observacion}
-    Hay casos en los que los SDF definidos en \autoref{p:posicionamiento} podrían no ser exactos, al igual que ocurría con la intersección y la diferencia en \autoref{p:boolean}:
-    \begin{enumerate}
+    Hay casos en los que los SDF definidos en la \autoref{d:posicionamiento} podrían no ser exactos, al igual que ocurría con la intersección y la diferencia en la \autoref{p:boolean}:
+    \begin{itemize}
         \item Para las simetrías, cuando el objeto interseca el plano de simetría,
         \item Para las repeticiones, cuando las dimensiones del objeto sean mayores o iguales a $l/2$.
-    \end{enumerate}
+    \end{itemize}
 \end{observacion}
 
-A la vista de todas esta operaciones a nuestra disposición, es evidente el potencial que tienen los SDF, tanto en la generación y modificación de figuras como en su eficiencia, ya que podemos visualizar miles de objetos al precio de uno utilizando las simetrías o repeticiones.
+A la vista de todas esta operaciones a nuestra disposición, es evidente el potencial que tienen los SDF, tanto en la generación y modificación de figuras como en su eficiencia, ya que podemos visualizar miles de objetos al precio de uno utilizando las simetrías o repeticiones.\newline
 
-\section{Raymarching y Spheretracing}
-Una vez definida la escena necesitamos un método para visualizarla. Utilizaremos la técnica de \textit{raymarcing}. Para ello deberemos elegir un punto donde estará el observador. A partir de él se trazarán rayos hacia cada uno de los puntos de un plano imaginario que llamaremos plano de visión, de forma que cada punto de este plano corresponde a un pixel de la imagen resultante. Si el rayo interseca con $S_\phi$ significa que ese pixel corresponde a un punto de $S_\phi$ y será coloreado como tal.\newline
+En el \autoref{ap:operacionesSDF} se muestra el resultado de aplicar las operaciones vistas a diferentes primitivas.
 
-Para comprobar esta intersección utilizamos un método iterativo: a partir de la posición del observador, en cada iteración avanzamos en la dirección del rayo una distancia fija $\delta$. Evaluamos entonces nuestro SDF en la posición actual. Si este valor es muy cercano a 0 significará que estamos en la isosuperficie. De lo contrario, repetiremos el proceso hasta encontrar la intersección o superar el número máximo de iteraciones, en cuyo caso concluiremos que no hay intersección.\newline
+\section{Renderizado}
+Una vez definida la escena a partir de un SDF, necesitamos una forma para visualizarla, para lo que utilizaremos la API de OpenGL \cite{opengl} y aplicaremos la técnica de \textit{raymarcing}. 
 
-TODO: diagrama
+\subsection{Creación del lienzo}
+Si bien se puede hacer \textit{raymarching} directamente sobre una escena 3D, nuestra escena constará únicamente de un plano formado por cuatro vértices y dos triángulos, que usaremos como lienzo  (o \textit{canvas}) para dibujar sobre él. Para ello, necesitaremos trabajar sobre diferentes espacios de coordenadas que nos proporciona OpenGL, los cuales pasamos a enumerar.
+\begin{itemize}
+    \item \textbf{Coordenadas locales o de objeto:} distancias relativas al origen del objeto,
+    \item \textbf{Coordenadas globales o de mundo:} distancias relativas a un origen común para todos los objetos,
+    \item \textbf{Coordenadas de cámara:} distancias relativas a un sistema de referencia posicionado y alineado con la cámara,
+    \item \textbf{Coordenadas de recortado:} distancias normalizadas en el rango $[-1,1]^2$ relativas a un sistema asociado al rectángulo que forma la imagen en pantalla.
+\end{itemize}
 
-Sin embargo podemos mejorar esta técnica, ya que cuanto más alejados estén los puntos de $S_\phi$ del observador, mayor es el número de iteraciones necesarias para encontrar la intersección. Esto es debido a que si no queremos perder ninguna intersección, el valor de incremento $\delta$ deberá de ser pequeño. La solución a este problema es el uso de \textit{spheretracing}. Su funcionamiento es similar al \textit{raymarching}, con la diferencia de que el incremento en la posición del rayo no es fija, sino que es la máxima que podemos tomar asegurándonos de no perder información en cada iteración. Esta distancia será entonces la distancia mínima del punto actual del rayo a $S_\phi$, que no es más que evaluar $\phi$ en dicho punto.\newline
+Para crear el lienzo, debemos declarar sus vértices y cómo estos se unen formando triángulos. Si hacemos uso de \texttt{GL\_TRIANGLES} bastará con definir los vértices en sentido antihorario, pero hay que tener en cuenta que tendremos que repetir dos vértices, ya que se irán formando los triángulos en grupos de tres vértices. Una alternativa para no repetir vértices sería utilizar tablas de vértices e índices, pero en nuestro caso no merece la pena al tener únicamente seis vértices. Un ejemplo de definición de vértices formando un lienzo rectangular podría ser el que se muestra en la \autoref{fig:canvas}.
 
-TODO: diagrama de pérdida de intersección
-
-El algoritmo sería por tanto el descrito en \autoref{a:spheretracing}. 
-\SetKwComment{Comment}{/* }{ */}
-\begin{algorithm}[hbt!]\label{a:spheretracing}
-    \caption{Spheretracing}\label{alg:spheretracing}
-    \KwData{origen $p$, dirección $v$}
-    $\text{incremento} \gets 0$\;
-    $\text{distanciaTotal} \gets 0$\;
+\begin{figure}[ht]
+    \centering
+    \begin{minipage}{0.50\textwidth}
+        \begin{lstlisting}
+glBegin(GL_TRIANGLES);
+    glColor3f(1.0f, 1.0f, 1.0f); 
     
-    \For{i \in MAX\_ITERACIONES} {
-        rayo \gets p + \text{distanciaTotal}\cdot v\;
-        
-        distanciaActual \gets \phi(\text{rayo})\;
-        
-        \If{distanciaActual < \varepsilon}{
-           \Return{DibujarSuperficie(rayo)};
-        }
+    // Triangulo inferior
+    glVertex3f(-2.0f, -1.0f, 0.0f);
+    glVertex3f(-2.0f, 1.0f, 0.0f);
+    glVertex3f(2.0f, 1.0f, 0.0f);
+    
+    // Triangulo superior
+    glVertex3f(-2.0f, -1.0f, 0.0f);
+    glVertex3f(2.0f, 1.0f, 0.0f);
+    glVertex3f(2.0f, -1.0f, 0.0f);
+glEnd();
+\end{lstlisting}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.40\textwidth}
+        \includegraphics[width=\textwidth]{canvas.png}
+    \end{minipage}
+    
+    
+    \caption{Construcción del lienzo}
+    \label{fig:canvas}
+\end{figure}
 
-        distanciaTotal \mathrel{{+}{=}} distanciaActual\;
 
-        \If{distanciaTotal > MAX\_DISTANCIA}{
-            \Return{DibujarFondo()};
-        }
-    }
-\end{algorithm}
+Este lienzo, como toda geometría, tendrá asignado dos \textit{shaders} o procesadores, programas escritos en GLSL (lenguaje parecido a C) y que se ejecutan en la GPU. Estos programas son independientes entre sí, y la única forma en la que pueden comunicarse entre ellos es mediante el paso de atributos de entrada y salida con las palabras clave \texttt{in} y \texttt{out} respectivamente. Hay dos tipos de \textit{shaders}: de vértices (\textit{vertex shader}) y de fragmento o píxel (\textit{fragment shader}), cada uno con atributos específicos de entrada y salida.\newline
 
-\section{Iluminación}
+En el \textit{vertex shader} utlizaremos
+\begin{itemize}    
+    \item \textbf{\texttt{in vec4 gl\_Vertex}}: contiene las coordenadas locales del vértice actual y es pasado autómaticamente por la aplicación,
+    \item \textbf{\texttt{out vec4 gl\_Position}}: posición transformada del vértice actual. La cuarta componente es la componente homogénea, que es necesaria para realizar el cambio a coordenadas recortadas.
+\end{itemize}
+En el \textit{fragment shader} utilizaremos
+\begin{itemize}
+    \item \textbf{\texttt{in vec4 gl\_FragCoord}}: coordenadas de dispositivo para el píxel actual en el \textit{fragment shader}. Al ser un atributo de entrada del \textit{fragment shader}, está interpolada en cada vértice. La cuarta componente es la inversa de la componente homogénea de \texttt{gl\_Position}, y se utiliza en el cálculo de la profundidad de los píxeles y en las operaciones de corrección de perspectiva,
+    \item \textbf{\texttt{out vec4 gl\_FragColor}}: terna RGBA para asignar el color del píxel actual en el \textit{fragment shader}.
+\end{itemize}
+Por último, en caso de que queramos pasar nuestros propios atributos desde otro programa, deberemos hacerlo a través de un \texttt{uniform}.\newline
+
+En primer lugar se ejecuta el \textbf{procesador de vértices o \textit{vertex shader}} para cada vértice de la geometría. Su objetivo principal es el de realizar transformaciones de coordenadas, y adicionalmente pasar atributos al \textit{fragment shader}. Dada la posición del vértice actual, que se nos proporciona a través del atributo \texttt{gl\_Vertex}, para cambiar de un sistema de coordenadas a otro se utilizan matrices de transformación \cite{article:matrices} \cite{article:matrices2}. En particular, usaremos las que siguen.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/matrices2.png}
+    \caption{Coordenadas locales a recortadas}
+    \label{fig:matrices}
+\end{figure}
+\begin{itemize}
+    \item \textbf{Matriz de modelo $\boldsymbol{M}$:} define la posición, orientación y escala del objeto en la escena. Se utiliza para pasar del coordenadas locales a coordenadas de mundo. En nuestro caso, si creamos el plano centrado en el origen, podemos simplemente tomar
+    \begin{equation*}
+        M = Id_{4},
+    \end{equation*}
+    \item \textbf{Matriz de vista  $\boldsymbol{V}$:} define la posición y orientación de cada punto respecto a la cámara de la escena. Se utiliza para pasar de coordenadas de mundo a coordenadas de vista. Lo que ocurre en realidad es que la cámara está fija en el origen, y es el resto de la escena es la que se mueve respecto a ella. Por tanto, esta matriz contiene la posición y orientación inversa de la cámara. En nuestro caso, si queremos desplazar la cámara una unidad en el eje Z, la matriz de vista tendrá la forma
+    \begin{equation*}
+        V = \begin{pmatrix}
+        1 & 0 & 0 & 0\\
+        0 & 1 & 0 & 0\\
+        0 & 0 & 1 & -1\\
+        0 & 0 & 0 & 1
+        \end{pmatrix},
+    \end{equation*}
+    
+    \item \textbf{Matriz de proyección:} define cómo la escena se proyecta en la pantalla, incluyendo el campo de visión, aspecto y planos cercano y lejano. Se utiliza para pasar de coordenadas de vista a coordenadas recortadas. OpenGL nos proporciona una función para calcularla:
+    \begin{lstlisting}
+    glm::mat4 projectionMatrix = glm::perspective(
+        glm::radians(FoV),  // campo vertical de vision
+        4.0f / 3.0f,         // aspecto
+        0.1f,                // plano de corte cercano
+        100.0f               // plano de corte lejano
+    );
+    \end{lstlisting}
+    % \item \textbf{Matriz de ventana o \textit{viewport}:} se transforman las coordenadas de recortado a las coordenadas de dispositivo. Estas coordenadas están centradas en la esquina inferior izquierda de la pantalla y están en el rango $[0,r_x]\times [0,r_y]$, donde $r=(r_x,r_y)$ es la resolución de la pantalla.
+\end{itemize}
+
+Con esto, ya podemos escribir nuestro \textit{vertex shader}:
+\begin{lstlisting}[title=Procesador de vértices]
+#version 330    
+uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 model;
+
+void main()
+{
+    gl_Position = projection * view * model * gl_Vertex;
+}
+\end{lstlisting}
+
+Tras realizar estas transformaciones, las coordenadas de recortado se transforman a coordenadas de dispositivo, que están centradas en la esquina inferior izquierda de la pantalla y toman valor en el rango $[0,r_x]\times [0,r_y]$, donde $r=(r_x,r_y)$ es la resolución de la pantalla.\newline
+
+Ahora le toca el turno al \textbf{procesador de fragmentos o \textit{fragment shader}}. Este se ejecuta para cada píxel de la pantalla, y su objetivo es asignar a la variable \texttt{gl\_FragColor} el color que el píxel tendrá como una terna RGBA. Será aquí donde hagamos todos los cálculos necesarios pare renderizar la superficie con \textit{raymarching}. Para ello, necesitaremos un sistema de coordenadas dentro del propio lienzo, que generaremos haciendo uso de \texttt{gl\_FragCoord} y la resolución del lienzo, atributo que pasaremos nosotros al \textit{shader} a través de un \texttt{uniform}, que llamaremos \texttt{u\_resolution}.
+
+Para obtener estas coordenadas, primero desplazamos el origen que nos proporciona \texttt{gl\_FragCoord} al centro de la pantalla, y posteriormente normalizamos respecto a alguno de los ejes. Hacemos esto porque si intentamos normalizar sobre ambos ejes, obtendremos coordenadas en el rango $[-0.5,0.5]^2$, lo que hará que en un lienzo que no sea cuadrado, la imagen se vea estirada en la dirección del eje más largo. Nosotros normalizaremos respecto al eje vertical, ya que en nuestro caso será siempre el menor. Esto nos dará como resultado unas coordenadas con valores en $\left[ -0.5\cdot aspect, 0.5\cdot aspect \right] \times [-0.5, 0.5]$, donde $aspect$ es el ratio de aspecto del lienzo:
+
+\begin{equation*}
+    uv = \frac{gl\_FragCoord.xy - 0.5\cdot u\_resolution.xy}{u\_resolution.y} ,
+\end{equation*}
+
+Hemos denotado a las coordenadas obtenidas como \texttt{uv}, haciendo referencia a la similitud que tienen con el uso que se le da a las coordenadas de textura habituales. Podemos ver la diferencia entre ambos sistemas de coordenadas si usamos \texttt{uv} como los canales rojo y verde de \texttt{gl\_FragColor}, tal y como se muestra en la \autoref{fig:uv}.\newline
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/normXColor.png}
+        \caption{Eje X}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/normYColor.png}
+        \caption{Eje Y}
+    \end{minipage}
+    
+    \medskip
+    
+    \begin{minipage}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/normXYColor.png}
+        \caption{Ejes X e Y}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/noNormColor.png}
+        \caption{Ninguno}
+    \end{minipage}
+    \caption{Normalización de coordenadas sobre distintos ejes}
+    \label{fig:uv}
+\end{figure}
+
+Ya tenemos nuestro \textit{fragment shader} preparado para aplicar el algoritmo de \textit{raymarching}: 
+\begin{lstlisting}[title=Procesador de fragmentos]
+#version 330
+
+void main()
+{
+    vec2 uv=(gl_FragCoord.xy-.5*u_resolution.xy)/u_resolution.y;
+    vec3 color = raymarching(uv);
+    gl_FragColor = vec4(color,1.0);
+}
+\end{lstlisting}
+
+\subsection{Raymarching y Spheretracing}
+A partir de ahora, pensamos en que nuestra escena no es la de OpenGL, sino aquella que queremos dibujar usando \textit{raymarching} dado un SDF $\phi$. Podemos pensar en esta escena como $\R^3$ con su base usual $B_u = \{e_1,e_2,e_3\} = \{(1,0,0),(0,1,0),(0,0,1)\}$, donde colocamos los siguientes elementos.
+\begin{itemize}
+    \item \textbf{Plano de visión:} rejilla en el plano XY y centrada en el origen, donde cada uno de sus cuadrados corresponde a un píxel del lienzo,
+    \item \textbf{Punto de la cámara $\boldsymbol{c_o}$:} punto del espacio desde donde se observa la escena,
+    \item \textbf{Punto de atención o \textit{lookat point} $\boldsymbol{l}$:} hacia que punto del espacio debe mirar la cámara. Tomaremos siempre $l=(0,0,0)$.
+\end{itemize}
+
+El método del \textit{raymarching} consiste en trazar rayos a partir de $c_o$ hacia el centro de cada uno de los cuadrados del plano de visión, de forma que si el rayo interseca con $S_\phi$ significa que ese píxel corresponde a un punto de la superficie, y será coloreado como tal.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/raymarch.png}
+    \caption{Trazado de rayos a través del plano de visión}
+    \label{fig:raymarch1}
+\end{figure}
+\newline
+
+Cada uno de estos rayos estará definido por un origen $r_o$ y una dirección $r_d$. El origen será siempre la posición de la cámara $c_o$, pero la dirección requiere más trabajo. En el escenario descrito en la \autoref{fig:raymarch1}, dado que en todo momento conocemos las coordenadas de cada punto de la rejilla a través de $uv = (u,v)$, es claro que podemos tomar $r_d = (u,v,-c_o)$. Aquí $c_o$ actúa como un control del campo de visión, de forma que cuanto menor sea su valor, menor se verán los objetos dibujados. Lo fijaremos a un valor de $1$. Sin embargo este escenario es el más sencillo posible, y si queremos poder mover la cámara tendremos que poder trabajar con una orientación arbitraria suya. Para ello deberemos construir un marco cartesiano relativo a ella, esto es, una base $B=\{f_1,f_2,f_3\}$ de $\R^3$ alineada con la cámara. Esta base deberá ser ortonormal y tener la misma orientación que la base usual. 
+
+Obtenemos primero vectores que nos resultarán útiles para generar esta base.
+
+\begin{itemize}
+    \item \textbf{Vector director $\boldsymbol{c_d}$:} indica la dirección hacia la que mirará la cámara. luego vendrá dado por $c_d = l-c_o$,
+    \item \textbf{\textit{Right vector} $\boldsymbol{c_r}$ }: es el análogo a $e_x$ en la base usual, luego lo podemos obtener como $c_r = (0,1,0)\times c_d$,
+    \item \textbf{\textit{Up vector} $\boldsymbol{c_u}$}: dirección en la que el observador ve proyectada en vertical la escena. Podemos obtenerlo como $c_u = c_d\times c_r$.
+\end{itemize}
+
+A partir de estos vectores podemos obtener $\{f_1,f_2,f_3\}$ normalizándolos y teniendo en cuenta que el plano de visión y la cámara estarán orientados de forma opuesta:
+\begin{equation*}
+    f_1 = -\frac{c_r}{\Vert c_r\Vert} = -\frac{(0,1,0)\times c_d}{\Vert l-c_o\Vert},\quad 
+    f_2 = -\frac{c_d}{\Vert c_d\Vert} = -\frac{l-c_o}{\Vert l-c_o\Vert},\quad 
+    f_3 = \frac{c_u}{\Vert c_u\Vert } = f_2\times f_1.   
+\end{equation*}
+
+Ahora solo queda transformar el vector director $(u,v,-1)$ a la base que acabamos de obtener. La matriz de cambio de base serán las coordenadas por columnas de $\{f_1,f_2,f_3\}$ escritas en función de $\{e_1,e_2,e_3\}$. Al ser esta la base usual, obtenemos que la matriz de cambio de base consiste en escribir por columnas $\{f_1,f_2,f_3\}$, de forma que
+\begin{equation*}
+    rayo = (u,v,-1)_{B} = (-c_r \vert c_u \vert -c_d) \cdot \begin{pmatrix}
+        u\\
+        v\\
+        -1
+    \end{pmatrix}
+\end{equation*}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/raydir.png}
+    \caption{Obtención de la dirección del rayo}
+    \label{fig:raydir}
+\end{figure}
+
+Ahora que ya tenemos toda la información del rayo, falta comprobar si este interseca con $S_{\phi}$. Para esto se utiliza un método iterativo: a partir de $c_o$, en cada iteración avanzamos en la dirección del rayo una distancia fija $\delta$. Evaluamos entonces nuestro SDF en la posición actual, de forma que si obtenemos un valor muy cercano a $0$ significará que hemos llegado a la isosuperficie. De lo contrario, repetimos el proceso hasta encontrar una intersección o superar un número máximo de iteraciones, en cuyo caso concluiremos que no hay intersección. La \autoref{a:raymarching} ilustra este procedimiento, donde \texttt{DibujarSuperficie()} y \texttt{DibujarFondo()} devuelven ternas RGBA que serán asignadas al píxel actual dependiendo de si hay intersección o no.\newline
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Plantilla-TFG-master/img/miss.png}
+    \caption{Pérdida de intersección en \textit{raymarching} para valores elevados de $\delta$}
+    \label{fig:miss}
+\end{figure}
+
+\SetKwComment{Comment}{// }{}
+\begin{figure}[ht!]
+    \centering
+    \begin{minipage}{0.50\textwidth}
+        \begin{algorithm}[H]
+            \caption{Raymarching}
+                \KwData{origen $p$, dirección $v$}
+                
+                $d \gets 0$ \Comment{distancia total}
+                
+                \For{i $\in$ MAX\_ITERACIONES} {
+                    rayo $\gets p +d\cdot v$
+                    
+                    sdf $\gets \phi(\text{rayo})$
+                    
+                    \If{sdf $< \varepsilon$}{
+                       \Return{DibujarSuperficie(rayo)}
+                    }
+            
+                    $d\gets d + \delta$\;
+            
+                    \If{$d >$ MAX\_DISTANCIA}{
+                        \Return{DibujarFondo()}
+                    }
+                }
+        \end{algorithm}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \includegraphics[width=\textwidth]{raymarching.png}
+    \end{minipage}
+    \caption{Algoritmo de \textit{raymarching}}
+    \label{a:raymarching}
+\end{figure}
+
+Una desventaja de esta técnica es que puede ser bastante lenta, ya que cuanto más alejados estén los puntos de $S_\phi$ del observador, mayor es el número de iteraciones necesarias para encontrar la intersección en caso de que la haya. En el peor de los casos en el que tal intersección no exista, se habrá realizado el número máximo de iteraciones, que deberá ser bastante alto, pues si no queremos perder ninguna intersección como ocurre en la \autoref{fig:miss}, el valor de incremento $\delta$ tenddrá que ser pequeño.\newline
+
+La solución a este problema es el uso de \textit{spheretracing}, que reduce drásticamente el número de iteraciones y por tanto evaluaciones de $\phi$, necesarias para detectar la intersección. Su funcionamiento es similar al \textit{raymarching}, con la diferencia de que el incremento en la posición del rayo no es fija, sino que es la máxima que podemos tomar en cada momento asegurándonos de no perder información. Esta distancia será la mínima del punto actual del rayo a $S_\phi$, que no es más que evaluar $\phi$ en dicho punto.\newline
+
+El algoritmo que usaremos será por tanto el descrito en la \autoref{a:spheretracing}. 
+\begin{figure}[ht!]
+    \centering
+    \begin{minipage}{0.50\textwidth}
+       \begin{algorithm}[H]
+            \caption{Spheretracing}
+                \KwData{origen $p$, dirección $v$}
+                $d \gets 0$ \Comment{distancia actual}
+                
+                \For{i $\in$ MAX\_ITERACIONES} {
+                    rayo $\gets p + d \cdot v$
+                    
+                    sdf $\gets \phi(\text{rayo})$
+                    
+                    \If{sdf $< \varepsilon$}{
+                       \Return{DibujarSuperficie(rayo)};
+                    }
+            
+                    $d \gets$ d + sdf
+            
+                    \If{$d >$ MAX\_DISTANCIA}{
+                        \Return{DibujarFondo()};
+                    }
+                }
+        \end{algorithm}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \includegraphics[width=\textwidth]{spheremarching.png}
+    \end{minipage}
+    \caption{Algoritmo de \textit{spheretracing}}
+    \label{a:spheretracing}
+\end{figure}
+
+\subsection{Iluminación}
 Ya sabemos qué píxeles pertenecen a la superficie, pero no de qué color deben dibujarse. Para ello utilizaremos el modelo de reflexión de Phong. En él trabajaremos con los siguientes parámetros:
 \begin{itemize}
   \item Luz ambiente $i_a$: vector RGB suma de las contribuciones de todas las fuentes de luz de la escena. Contiene un valor por defecto que será el color del fondo.
@@ -264,7 +687,7 @@ De los vectores anteriores, $L_m$ y $V$ se calculan trivialmente, y $R_m$ se pue
 
 Veamos como obtener $N$.
 
-\subsection{Cálculo del vector normal}
+\subsubsection{Cálculo del vector normal}
 \begin{definicion}
   El \textbf{gradiente} de una función implícita $\phi\colon \R^3\to\R$ es $\nabla\phi = \left(\frac{\partial \phi}{\partial x}, \frac{\partial \phi}{\partial y}, \frac{\partial \phi}{\partial z}\right)$.
 \end{definicion}

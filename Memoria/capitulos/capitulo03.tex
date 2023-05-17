@@ -1,0 +1,22 @@
+% !TeX root = ../libro.tex
+% !TeX encoding = utf8
+
+\chapter{Desarrollo de la aplicación}
+Nos centramos ahora en los aspectos de la implementación de una aplicación que haga uso de todas las técnicas y conceptos tratados en los capítulos anteriores. Para ello, se ha usado \href{https://es.reactjs.org/}{React}, una biblioteca de JavaScript (y TypeScript) para interfaces de usuario. Las principales ventajas de este enfoque son:
+\begin{itemize}
+    \item La aplicación puede ser ejecutada en cualquier navegador, haciendo que sea mucho más accesible.
+    \item React está basada en componentes modulares, lo que la hace escalable. Además. debido a su popularidad, hay una infinidad de librerías de terceros a nuestra disposición, ya sea específicas de React o de JavaScript.
+\end{itemize}
+
+Un aspecto fundamental a lo largo de todo el desarrollo será el del rendimiento. Esto es debido a que, por defecto, las aplicaciones web solo tienen a su disposición una hebra de ejecución (la de interfaz de usuario), haciendo de cuello de botella para el resto de cálculos.
+
+\section{Librería de polinomios multivariable}
+Si bien tenemos a nuestra disposición un gran número de librerías externas, en el momento de realización de la aplicación no encontré ninguna alternativa viable para trabajar con polinomios multivariable en JavaScript de forma nativa. Como alternativas se barajó el uso de la API de \href{https://wiki.geogebra.org/en/Reference:GeoGebra_Apps_API}{Geogebra} o realizar llamadas a código Python que usara \href{https://www.sagemath.org/}{SageMath}. Sin embargo, por motivos de rendimiento y completitud, se decidió desarrollar una librería nativa en TypeScript para el manejo de polinomios en varias variables y cálculo de bases de Groebner. Se encuentra disponible en \href{https://github.com/Daniel2000815/multivariate-polynomial}{GitHub} junto a su documentación, ejemplos de uso y tests usados.\newline
+
+La librería consta de tres clases que pasamos a estudiar a continuación.
+
+\subsection{Clase \texttt{Monomial}}
+
+\subsection{Clase \texttt{Polynomial}}
+
+\subsection{Clase \texttt{Ideal}}

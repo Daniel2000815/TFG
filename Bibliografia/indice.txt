@@ -1,0 +1,20 @@
+MOTIVACION
+- https://perso.liris.cnrs.fr/eric.galin/Articles/1999-blobtree-model.pdf
+
+ILUMINACION
+- https://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/graphics_10_1_eng_web.html#32
+- https://dl.acm.org/doi/pdf/10.1145/563858.563893
+- https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=8ca7e3a1f3c69ac56e0c3e1ebfec4c4256a99d3f
+
+// Gradiente
+- https://people.math.harvard.edu/~knill/teaching/summer2011/handouts/34-gradient.pdf
+AO:
+- https://iquilezles.org/articles/nvscene2008/rwwtt.pdf
+
+SOMBRAS:
+- https://iquilezles.org/articles/rmshadows/
+- https://www.shadertoy.com/view/Xds3zN
+
+ANTIALASING
+- https://mortoray.com/antialiasing-with-a-signed-distance-field/
+- https://openreview.net/pdf?id=FYhiH9IyBq

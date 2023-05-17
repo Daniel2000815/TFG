@@ -1,4 +1,4 @@
-export default function transformToValidName(inputString: string): string {
+export function TransformToValidName(inputString: string): string {
     // Elimina todas las tildes
   const step1 = inputString.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   
