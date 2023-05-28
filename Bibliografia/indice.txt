@@ -4,13 +4,18 @@ MOTIVACION
 ILUMINACION
 - https://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/graphics_10_1_eng_web.html#32
 - https://dl.acm.org/doi/pdf/10.1145/563858.563893
+- https://dl.acm.org/doi/abs/10.1145/360825.360839 // articulo de phong
 - https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=8ca7e3a1f3c69ac56e0c3e1ebfec4c4256a99d3f
 
-// Gradiente
+Gradiente
 - https://people.math.harvard.edu/~knill/teaching/summer2011/handouts/34-gradient.pdf
+- http://ksuweb.kennesaw.edu/~plaval//math2203/gradient.pdf
+- https://es.wikipedia.org/w/index.php?title=Funci%C3%B3n_distancia_con_signo&oldid=149321457
+- https://www.researchgate.net/publication/247506763_Shapes_and_Geometries_Analysis_Differential_Calculus_and_Optimization/citations [10]
+- https://link.springer.com/article/10.1007/s10092-011-0051-z#citeas [11]
 AO:
 - https://iquilezles.org/articles/nvscene2008/rwwtt.pdf
-
+- https://www.alanzucconi.com/2016/07/01/ambient-occlusion/
 SOMBRAS:
 - https://iquilezles.org/articles/rmshadows/
 - https://www.shadertoy.com/view/Xds3zN
@@ -18,3 +23,21 @@ SOMBRAS:
 ANTIALASING
 - https://mortoray.com/antialiasing-with-a-signed-distance-field/
 - https://openreview.net/pdf?id=FYhiH9IyBq
+
+SDF:
+- https://link.springer.com/book/10.1007/b98879
+- https://cyber.bibl.u-szeged.hu/index.php/actcybern/article/view/4004/3973  // lips
+
+RAYMARCHING:
+- https://bitnenfer.com/raymarching.html
+
+APP DE IMPLICITAS:
+- https://harry7557558.github.io/spirula/implicit3/index.html
+
+PAPER DE SDF:
+//habla un poco de todo. consultar para intro y trabajo futuro
+- https://cg.ivd.kit.edu/publications/p2011/IntModelingSDF/IntModelingSDF.pdf 
+// habla de blobtree, util para intro y conclusion
+- https://perso.liris.cnrs.fr/eric.galin/Articles/1999-blobtree-model.pdf
+// vienen menos cosas pero esta bien
+- https://openaccess.thecvf.com/content_CVPR_2020/papers/Liu_DIST_Rendering_Deep_Implicit_Signed_Distance_Function_With_Differentiable_Sphere_CVPR_2020_paper.pdf
