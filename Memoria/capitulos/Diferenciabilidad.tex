@@ -1,0 +1,95 @@
+Antes de seguir avanzando vamos a realizar un estudio de la diferenciabilidad de los SDF, pues nos será de utilidad en las siguientes secciones. Empezamos recordando varios conceptos de análisis diferencial \cite{diff} fijadas las variables $\{x_1,x_2,x_3\}$ y la base usual $$B=\{e_1,e_2,e_3\} = \{(1,0,0),(0,1,0),(0,0,1)\}.$$
+
+Cuando sea conveniente identificaremos
+\begin{equation*}
+    x_1=x,\quad x_2=y,\quad x_3 = z.
+\end{equation*}
+
+\begin{definicion}
+    Sea $U$ un abierto de $\R^3$ y $\phi: U \to \R$. Definimos la \textbf{$\boldsymbol{i}$-ésima derivada parcial} de $\phi$ en $p_0\in\R^3$ como
+    \begin{equation*}
+        \frac{\partial \phi}{\partial x_i}(p_0) = \lim_{h\to 0}\frac{\phi(p_0+he_i) - \phi(p_0)}{h},\ i=1,2,3.
+    \end{equation*}
+\end{definicion}
+
+\begin{definicion}
+  Llamamos \textbf{gradiente} de $\phi\colon \R^3\to\R$ a la función
+  \begin{align*}
+      \nabla\phi\colon \R^3 &\to \R^3\\
+      p &\mapsto \left(\frac{\partial \phi}{\partial x_1}(p), \frac{\partial \phi}{\partial x_2}(p), \frac{\partial \phi}{\partial x_3}(p)\right).
+  \end{align*}
+\end{definicion}
+
+\begin{definicion}
+  Dada $\phi:\R^3\to \R$ diferenciable, definimos la \textbf{derivada direccional} en $p_0\in \R^3$ en la dirección $v\in\R^3$ a:
+  \begin{equation*}
+    \nabla_v \phi(p_0) = \nabla \phi(p_0) \cdot v = \frac{\partial{\phi}(p_0)}{\partial{x}}v_x + \frac{\partial{\phi}(p_0)}{\partial{y}}v_y + \frac{\partial{\phi}(p_0)}{\partial{z}}v_z
+  \end{equation*}
+\end{definicion}
+
+\begin{definicion}
+    Sea $U$ un abierto de $\R^3$ y $\phi: U \to \R$. Diremos que $\phi$ es \textbf{diferenciable} en $p_0 \in U$ si existen todas sus derivadas parciales en $p_0$ y son continuas.
+    % \begin{equation*}
+    %     \text{lím}_{p\to p_0} \frac{\phi(p)-\phi(p_0) - \nabla\phi(p_0)\cdot(p-p_0)}{\Vert p-p_0\Vert} = 0.
+    % \end{equation*}
+\end{definicion}
+
+
+Ahora mismo, dado un SDF arbitrario no tenemos información alguna sobre su diferenciabilidad, ya que su expresión puede ser de lo más variada y compleja. Veamos una propiedad que cumplen todos los SDF y que nos permitirá obtener algo de información al respecto \cite{lips} \cite{derivWiki}.
+
+\begin{lema}
+    Sea $\phi:\R^3\to \R$ un SDF. Entonces $\phi$ es lipschitziana de constante $L=1$.
+\end{lema}
+\begin{proof}
+    Sean $p$ y $q\in \R^3$. Usando la \autoref{def:sdf}, para todo $s\in S_{\phi}$ se tiene
+    \begin{align*}
+        \phi(p) &\le \Vert p-s\Vert = \Vert p-q+q+s\Vert \le \Vert p-q\Vert + \Vert q-s\Vert\\[10pt] 
+        &\implies \phi(p) - \Vert p-q\Vert \le \Vert q-s \Vert \implies  \phi(p) - \Vert p-q\Vert \le \Inf_{s\in S_{\phi}}(\Vert q-s \Vert) = \phi(q)\\[10pt]
+        &\implies \phi(p) - \phi(q) \le \Vert p-q \Vert
+    \end{align*}
+
+    De forma análoga podemos ver que $\phi(q) - \phi(p) \le \Vert q-p \Vert$, luego
+    \begin{equation*}
+        \vert \phi(p) - \phi(q)\vert \le 1\cdot \Vert p-q\Vert.
+    \end{equation*}
+\end{proof}
+
+\begin{lema}[Teorema de Rademacher]
+    Sea $U$ un abierto de $\R^3$ y $\phi:U\to \R$ lipschitziana. Entonces $\phi$ es diferenciable en casi todo punto de $U$.
+\end{lema}
+
+Tenemos por tanto asegurado que $\phi$ será diferenciable en casi todo punto de $\R^3$. No obstante, podemos concretar aún más dónde están los puntos de conflicto cuando $\Omega$ sea lo suficientemente regular \cite{dif1} \cite{dif2}. Para ello necesitaremos introducir el concepto de esqueleto de una superficie \cite{derivWiki}.
+\begin{definicion}
+    Sea $\phi_{\Omega} \colon \R^3\to \R$ un SDF. Llamamos \textbf{esqueleto} de $\Omega$ al conjunto de puntos de $\R^3$ cuya distancia a la superficie puede obtenerse como la distancia a dos o más puntos distintos de $\delta \Omega$:
+    \begin{equation}
+        \epsilon(\Omega) = \{p\in \R^3 : \phi(p) = \Vert p-q\Vert = \Vert p-r\Vert,\ q,r\in \delta\Omega ,\ q\neq r \}.
+    \end{equation}
+\end{definicion}
+
+\begin{teorema}\label{teo:diff}
+    Sea $\Omega \subseteq \R^3$ un conjunto abierto acotado con frontera diferenciable y $\phi_{\Omega} \colon \R^3\to \R$ un SDF. Entonces $\phi_{\Omega}$ es diferenciable en un entorno tubular $U$ de $\delta \Omega$. Es más, para cada $p\in \R^3$ se cumple una se las siguientes propiedades.
+    \begin{enumerate}
+        \item $p\in \delta \Omega$ y $\phi_{\Omega}$ es diferenciable en $p$ con $\nabla S_{\phi(p)} = N_p$,
+        \item $p\notin \delta \Omega$ y $\phi_{\Omega}$ es diferenciable en $p \iff p\in \R^3\setminus \epsilon(\Omega)$, en cuyo caso
+        \begin{equation*}
+            \nabla \phi_{\Omega}(p) = \frac{q-p}{\phi_{\Omega}(p)},
+        \end{equation*}
+        donde $q$ es el único punto de $\delta\Omega$ tal que $\phi_{\Omega}(p) = \Vert q-p\Vert$.
+    \end{enumerate}
+\end{teorema}
+
+\begin{corolario}
+    Todo SDF $\phi\colon \R^3\to \R$ satisface la ecuación de la eikonal 
+    \begin{equation*}
+        \Vert \nabla \phi(p)\Vert = 1
+    \end{equation*}
+    en todo punto $p$ donde sea diferenciable.
+\end{corolario}
+% A la vista de este resultado podemos diferenciar $\phi$ con tranquilidad, pues solo estamos interesados en estudiar el gradiente en puntos de $\delta\Omega$, luego
+% \begin{equation*}
+    
+% \end{equation*}
+
+% TODO: ver si decir que podria calcularse fuera del shader pasanndo el string al shader y recompilando. Si no, ver si comentar algo de que hay que calcularlo cada frame, y por eso no podemos hacerlo analiticamente
+% De ser derivable, podría ser una buena opción calcular el gradiente una única vez al momento de definir $\phi$, tras lo cual para obtener $N$ solo habría que realizar evaluaciones de dicho gradiente. Sin embargo, esto requeriría de varias comprobaciones previas, y aún necesitaríamos otro método para tratar las no diferenciables. Por ello nos decantaremos por un método numérico más sencillo que únicamente hará uso de evaluaciones de $\phi$.
+

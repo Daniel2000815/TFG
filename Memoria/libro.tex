@@ -95,7 +95,6 @@
 % Si el paquete cabin da error usar el siguiente comando en su lugar
 % \renewcommand{\sfdefault}{iwona} 
 \usepackage{inconsolata}
-\usepackage{subfigure}
 
 % Selecciona el tipo de fuente para los títulos (capítulo, sección, subsección) del documento.
 \setkomafont{disposition}{\sffamily\bfseries}
@@ -114,6 +113,7 @@
 \usepackage{lipsum}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{nicefrac}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -199,7 +199,8 @@
 % INFORMACIÓN DEL TFG Y EL AUTOR
 % --------------------------------------------------------------------
 \usepackage{xspace} % Para problemas de espaciado al definir comandos
-
+\usepackage{caption}
+\usepackage{subcaption}
 \newcommand{\miTitulo}{Visualización de Superficies 3D\xspace}
 \newcommand{\miNombre}{Daniel Zufrí Quesada\xspace}
 \newcommand{\miGrado}{Doble Grado en Ing. Informática y Matemáticas}
@@ -262,6 +263,7 @@
 %\pdfbookmark[-1]{Apéndices}{appendix} % Alternativamente podemos agrupar los apéndices con un nuevo \part{Apéndices}
 
 \input{apendices/operacionesSDF}
+\input{apendices/comparacionEscenas}
 % Añadir tantos apéndices como sea necesario 
 
 % --------------------------------------------------------------------

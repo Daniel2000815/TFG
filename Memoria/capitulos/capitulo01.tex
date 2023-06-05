@@ -36,7 +36,7 @@ Tenemos como objetivo representar superficies en $\R^3$. En general, estas puede
 
 Nuestra intención será entonces construir una escena definida como la isosuperficie generada por un SDF. A partir de ahora, tomaremos $p=(x,y,z)\in\R^3$.
 
-\begin{ejemplo}
+\begin{ejemplo}\label{ej:sdf}
     Ejemplos simples de SDF $\phi$ en $p$ para diferentes conjuntos $\Omega$ son:
     \begin{itemize}
         \item \textbf{Esfera de radio $\boldsymbol{r}$ centrada en el origen.}
@@ -54,16 +54,27 @@ Nuestra intención será entonces construir una escena definida como la isosuper
     \end{itemize}
 \end{ejemplo}
 
+\section{Diferenciabilidad}
+\input{Plantilla-TFG-master/capitulos/Diferenciabilidad}
+
 \section{Operaciones sobre SDF}\label{sec:operaciones}
-\input{Plantilla-TFG-master/capitulos/1_1_Operaciones}
+\input{Plantilla-TFG-master/capitulos/Operaciones}
 
 \section{Renderizado}
-\input{Plantilla-TFG-master/capitulos/1_2_Renderizado}
+\input{Plantilla-TFG-master/capitulos/Renderizado}
 
 \section{Iluminación}
 Ya sabemos qué píxeles pertenecen a la superficie, pero no de qué color deben dibujarse. En esta sección estudiaremos diversas técnicas que en conjunto nos permitirán simular de forma plausible qué ocurre cuando se añaden a la escena una o varias fuentes de luz.
 
-\input{Plantilla-TFG-master/capitulos/1_3_BlinnPhong}
-\input{Plantilla-TFG-master/capitulos/1_4_Sombras}
-\input{Plantilla-TFG-master/capitulos/1_5_AO}
-\input{Plantilla-TFG-master/capitulos/1_6_AA}
+\input{Plantilla-TFG-master/capitulos/BlinnPhong}
+\input{Plantilla-TFG-master/capitulos/Sombras}
+\input{Plantilla-TFG-master/capitulos/AO}
+
+\section{\textit{Antialiasing}}
+\input{Plantilla-TFG-master/capitulos/AA}
+
+\section{Obtención a partir de ecuación implícita}
+\input{Plantilla-TFG-master/capitulos/AproxImp}
+
+\section{Obtención a partir de ecuaciones paramétricas}
+\input{Plantilla-TFG-master/capitulos/Param}

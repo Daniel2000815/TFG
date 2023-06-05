@@ -1,0 +1,9 @@
+- En la sección de renderizado, cuando introduzco gl_FragCoord aclaro que devuelve el centro del píxel.
+- Después de explicar el spheretracing muestro como sería el main del fragment shader.
+- En la figura 1.16, he añadido que el primer vector es traspuesto. También he cambiado la expresion de "rayo", pues no estaba usando las f_i.
+Justo después también he añadido qué hacer para poder mover la cámara. También he modificado la definicion y los diagramas del 
+plano de visión, ya que no estaban bien
+- Debajo de la figura 1.15 error al definir r_d
+- debajo de la figura 1.14 cambiado un poco la explicación.
+- Justo al final de la seccion 1.3 indico como sera el main del fragment shader
+- Cuando pongo como calculo los uv lo he cambiado para que estén en el rango [-1,1]. Tambien he actualizado las imagenes para eso y quitado el caso en el que no normalizaba, ya que estaba mal
