@@ -1,200 +1,360 @@
 
-Ahora que sabemos representar las superficies generadas por una función implícita cualquiera, nos proponemos ser capaces de representar también superficies definidas paramétricamente. Para ello haremos uso de la teoría de bases de Groebner, pero antes debemos introducir una serie de definiciones y resultados previos que nos pongan en contexto.
+Ahora que sabemos representar las superficies generadas por una función implícita cualquiera, nos proponemos ser capaces de representar también superficies definidas paramétricamente. Para ello fijaremos un anillo conmutativo $A$ y un conjunto de variables distintas $X=\{x_1,\dots, x_n\}$. Nuestro objetivo será, dado un conjunto $V\subseteq A^n$ por las ecuaciones paramétricas
+\begin{align*}
+    x_1 &= g_1(t_1,\dots, t_r),\\
+    &\vdots \\
+    x_n &= g_n(t_1,\dots, t_r),
+\end{align*}
+donde $g_i$ son polinomios de varias variables en $A$, obtener una ecuación implícita para $V$.\newline
+
+Empezaremos explicando a qué nos referimos con polinomios de varias variables y recordando el concepto de ideal y sus propiedades. Después veremos que este problema equivale a uno de pertenencia a un ideal y cómo resolverlo usando la teoría de bases de Groebner \cite{ideals_varieties}.
 
 \subsection{Polinomios en varias variables}
-Fijamos $A$ cuerpo y $X=\{x_1, \dots, x_n\}$ un conjunto de variables distintas.
+Estamos acostumbrados a trabajar con polinomios de una única variable como una suma o colección de monomios. Podemos mantener esta filosofía en el caso de varias variables adaptando el concepto que tenemos de estos.
 
 \begin{definicion}
-    Llamamos \textbf{monomio} en $X$ al producto de la forma:
-    $$x_1^{\alpha_1} \cdots x_n^{\alpha_n}\quad,\ \alpha_i \in \N,\ \forall  0\le i \le n$$
+    Llamamos \textbf{monomio} en $X$ al producto de la forma
+    $$x_1^{\alpha_1} \cdots x_n^{\alpha_n}\quad,\ \alpha_i \in \N,\ i\in\{1,\dots, n\}.$$
     Lo denotaremos como $X^{\alpha}$, y diremos que $\alpha\in \N^n$ es el \textbf{exponente} del monomio.
 \end{definicion}
 
+
 \begin{definicion}
-    Definimos un \textbf{polinomio} en $X$ con coeficientes en $A$ a toda combinación lineal finita de monomios: 
-    \begin{equation*}
-        \sum_{\alpha\in\Nn} a_{\alpha} X^{\alpha},\ a_\alpha \in A
-    \end{equation*}
+    Llamamos \textbf{grado} de $\alpha\in\Nn$ a $\vert \alpha\vert = \alpha_1+\cdots + \alpha_n$.
+\end{definicion}
+
+\begin{definicion}
+    Definimos el \textbf{polinomio} $f:A^n\to A$ en $X$ con coeficientes en $A$ a toda combinación lineal finita de monomios
+    \begin{align*}
+        f = \sum_{\alpha\in \N^n} a_{\alpha} X^{\alpha}.
+    \end{align*}
+
 \end{definicion}
 
 \begin{proposicion}
-    El conjunto de polinomios, que denotaremos $A[X] = A[x_1,\dots, x_n]$, es un cuerpo con las operaciones:
+    El conjunto de polinomios es un anillo conmutativo con las operaciones
     \begin{itemize}
-        \item Suma heredada de $A$: $(f+g)(\alpha) = f(\alpha) + f(\alpha),\ \forall f,g\in A[X]$.
-        \item Producto de convolución: $(fg)(\alpha) = \sum_{\alpha} \sum_{\beta+\gamma=\alpha} f(\beta)g(\gamma),\ \forall f,g\in A[X]$.
+        \item Suma heredada de $A$: $(f+g)(a) = f(a) + g(a)$,
+        \item Producto de convolución: $(fg)(a) = \sum_{\alpha} \sum_{\beta+\gamma=\alpha} f(a)g(a)$,
     \end{itemize}
 
+    donde 
+    $$ f = \sum_{\alpha\in \N^n} a_{\alpha} X^{\alpha}\quad \text{ y }\quad g = \sum_{\beta\in \N^n} a_{\beta} X^{\beta}.$$ 
+    Denotaremos como  $A[X] = A[x_1,\dots, x_n]$ a este anillo.
 \end{proposicion}
 
-Nos surge la pregunta de si hay alguna forma \qq{natural} de ordenar los monomios que forman un polinomio, al igual que ocurre para polinomios de una sola variable. Primero tenemos que especificar qué es lo que consideramos \qq{natural}.
+En las siguientes secciones veremos que el problema de pertenencia de polinomios a un ideal se puede resolver mediante el procedimiento de la división. Este es bien conocido en polinomios de una variable, y ahora queremos extenderlo a un número arbitrario de ellas y varios divisores. Para ello en primer lugar necesitaremos una forma de ordenar los monomios que forman un polinomio. En una variable la forma \qq{natural} de comparar dos monomios es a través de su exponente. En el caso de varias variables la elección no es tan clara, y hay varias opciones que parecen igual de válidas. Vamos a formalizar el concepto de orden para introducir algunas de las posibilidades de las que disponemos. 
 
+\begin{definicion}
+    Un \textbf{orden total} sobre un conjunto $\Delta$ es una relación binaria $\le$ que cumple las propiedades
+    \begin{enumerate}
+        \item Reflexiva: $a\le a,\ \forall a\in \Delta$,
+        \item Transitiva: $a\le b$ y $b\le c \implies a\le c,\ \forall a,b,c\in \Delta$,
+        \item Antisimétrica:  $a\le b$ y $b\le a \implies a\le b,\ \forall a,b\in \Delta$,
+        \item Completitud: $a\le b$ o $b\le a,\ \forall a,b\in \Delta$.
+    \end{enumerate}
+\end{definicion}
 \begin{definicion}
     Un \textbf{orden admisible} es un orden total $\le$ sobre $\N^n$ cumpliendo:
     \begin{enumerate}
-        \item $(0,\dots ,0) \le \alpha,\ \forall \alpha \in \N^n$.
+        \item $(0,\dots ,0) \le \alpha,\ \forall \alpha \in \N^n$,
         \item $\alpha < \beta \implies \alpha + \gamma < \beta + \gamma,\ \forall \alpha,\beta,\gamma \in \N^n$.
     \end{enumerate}
 \end{definicion}
+\begin{proposicion}
+    Todo orden admisible es un buen orden, esto es, todo subconjunto no vacío tiene un elemento mínimo.
+\end{proposicion}
 
-Siempre supondremos que usamos un orden admisible, luego podemos ordenar los monomios que conforman un polinomio ordenando sus exponentes según cualquier dicho orden. Hay multitud de órdenes entre los que elegir. Algunos de los más importantes son:
+A partir de ahora siempre supondremos que todo orden que usemos es admisible en $\N^n$, luego podremos ordenar los monomios que conforman un polinomio ordenando sus exponentes según dicho orden. Veamos algunos de los órdenes más usados. 
 
-\begin{ejemplo}
-    Definimos el \textbf{orden lexicográfico} $\le_{\text{lex}}$ como:
+\begin{definicion}
+    Definimos el \textbf{orden lexicográfico} $\le_{\text{lex}}$ como
     \begin{equation*}
         \alpha \lex \beta \iff \begin{cases}
             \alpha  = \beta \\
             \quad\text{ó}   \\
             \alpha_i < \beta_i \text{, donde $i$ es el primer índice tal que } \alpha_i \neq \beta_i
-        \end{cases}
+        \end{cases}.
     \end{equation*}
-\end{ejemplo}
+\end{definicion}
+
+% \begin{proof}
+%     Es inmediato que es total, ya que $\le$ en $\N$ lo es. Veamos las otras condiciones.
+%     \begin{enumerate}
+%         \item Tomamos $\alpha \in \N^n$ tal que $\alpha\neq (0,\dots,0)$ y sea $i$ el primer índice tal que $\alpha_i \neq 0$. Entonces $0< \alpha_i$, de donde $(0,\dots, 0) \lex \alpha$.
+%         \item Sean $\alpha$ y $\beta$ tales que $\alpha\lex \beta$, e $i$ el primer índice tal que $\alpha_i < \beta_i$
+%     \end{enumerate}
+% \end{proof}
 
 \begin{definicion}
-    Llamamos \textbf{grado} de $\alpha\in\Nn$ a $\vert \alpha\vert = \sum_{i=1}^n \alpha_1+\cdots + \alpha_n$.
+    Dado $\omega\in \R^n$, un orden admisible $\le$ se dice \textbf{$\boldsymbol{\omega}$-graduado} cuando
+    \begin{equation*}
+        \alpha\le \beta \implies \langle \alpha, \omega\rangle  < \langle \beta, \omega\rangle,
+    \end{equation*}
+    
+    donde $\langle \alpha, \omega\rangle$ se llama el $w$-grado de $\alpha$ y se define como
+    \begin{equation}
+        \langle \alpha, \omega\rangle = \alpha_1 \omega_1 + \cdots + \alpha_n \omega_n.
+    \end{equation}
 \end{definicion}
-\begin{ejemplo}
+
+\begin{definicion}
+    Dado un orden admisible $\le$, definimos el \textbf{orden $\boldsymbol{\omega}$-graduado asociado} como
+    \begin{equation*}
+        \alpha \le_{\omega} \beta \iff \begin{cases}
+            \langle \alpha, \omega\rangle  < \langle \beta, \omega\rangle \\
+            \quad\text{ó}   \\
+           \langle \alpha, \omega\rangle = \langle \beta, \omega\rangle \text{ y } \alpha \le \beta
+        \end{cases}.
+    \end{equation*}
+
+    Cuando $\omega = (1,\dots, 1)$ simplemente diremos que el orden es graduado, y usaremos las notaciones
+    \begin{equation*}
+        \le_{(1,\dots,1)} = \le_{\text{deg}},\quad (\lex)_{\text{deg}} = \le_{\text{deglex}},\quad (\lex)_{\omega} = \le_{\omega\text{-lex}}.
+    \end{equation*}
+\end{definicion}
+
+\begin{definicion}
     Definimos el \textbf{orden lexicográfico graduado inverso} $\le_{\text{degrevlex}}$ como:
     \begin{equation*}
         \alpha \le_{\text{degrevlex}} \beta \iff \begin{cases}
             |\alpha| < |\beta| \\
             \quad\text{ó}   \\
             |\alpha| = |\beta| \text{ y } \alpha_i > \beta_i \text{, donde $i$ es el último índice tal que } \alpha_i \neq \beta_i
-        \end{cases}
+        \end{cases}.
     \end{equation*}
-\end{ejemplo}
+\end{definicion}
 
-Una vez obtenida la noción de orden admisible, estamos en disposición de definir varios conceptos que nos resultarán imprescindibles.
+\begin{proposicion}
+    Sea $\le$ un orden admisible. Entonces $\le_{\omega}$ es admisible.
+\end{proposicion}
+\begin{proposicion}
+    Los órdenes $\lex$ y $\le_{\text{degrevlex}}$ son admisibles.
+\end{proposicion}
+
+Una vez obtenida la noción de orden admisible, estamos en disposición de definir varios conceptos que nos resultarán imprescindibles para la manipulación de estos polinomios.
 
 \begin{definicion}
-    Sea $f= \sum_{\alpha\in \Nn} a_{\alpha} X^{\alpha}$ y $\le$ admisible. Definimos:
+    Sea $f= \sum_{\alpha} a_{\alpha} X^{\alpha}$ un polinomio y $\le$ un orden admisible. Definimos los siguientes conceptos asociados a $f$.
     \begin{itemize}
-        \item \textbf{Exponente:} $exp(f) = \Max_{\le}\alpha$.
-        \item \textbf{Monomio líder:} $\lmf = X^{\expf}$
-        \item \textbf{Coeficiente líder:} $\lcf = a_{\expf}$.
+        \item \textbf{Exponente:} $exp(f) = \Max_{\le}(\alpha)$,
+        \item \textbf{Monomio líder:}  $\lmf = X^{\expf}$,
+        \item \textbf{Coeficiente líder:} $\lcf = a_{\expf}$,
         \item \textbf{Término líder:} $\ltf = \lcf \cdot \lmf$.
     \end{itemize}
 \end{definicion}
 
-\begin{teorema}
-    Sea $F=\{f_1,\dots, f_s\} \subset A[X]$. Entonces todo polinomio $f\in A[X]$ se puede expresar como:
+Antes de presentar el algoritmo de la división, nos cercioramos de que esta siempre tiene sentido con el siguiente teorema.
+\begin{teorema}[Algoritmo de división]
+    Sea $F=\{f_1,\dots, f_s\} \subset A[X]$. Todo polinomio $f\in A[X]$ se puede expresar como
     \begin{equation*}
-        f = q_1f_1 + \cdots + q_sf_s + r
+        f = q_1f_1 + \cdots + q_sf_s + r,
     \end{equation*}
 
-    donde $q_i, r\in A[X]$ y $r$ no se puede expresar como combinación lineal de ningún elemento de $F$ o es $0$. Notaremos $\rem(f, [F]) = r$.
+    donde $q_i, r\in A[X]$ y $r=0$ ó $exp(r)\le exp(f)$. Llamaremos a $r$ el resto de dividir $f$ por $F$, y lo notaremos $\rem(f, [F]) = r$. Además, cuando $r=0$ diremos que $f$ reduce a $0$, y escribiremos $f \reduces 0$.
 \end{teorema}
 
-En otras palabras, podemos dividir $f$ entre los polinomios $f_1, \dots, f_s$ para expresar $f$ como combinación lineal de elementos de $F$. Sin embargo, esta descomposición no será única, y dependerá del orden que ocupen los polinomios en $F$. Podemos calcular esta descomposición usando \autoref{a:division}.
+En otras palabras, podemos dividir $f$ entre cualquier conjunto de polinomios $F=\{f_1, \dots, f_s\}$ para expresarlo como combinación de sus elementos multiplicados por ciertos coeficientes polinómicos. El método es similar al usado en una variable, consistente en intentar reducir el monomio líder de $f$ restándole un múltiplo de cierto $f_i$. Para encontrar este $f_i$ simplemente se recorre el conjunto $F$ hasta encontrar uno válido, y de no haberlo se pasa el término líder al resto y se continua con el siguiente. Esto es justo lo que hace el \autoref{a:division}. Cabe destacar que esta forma de buscar el $f_i$ hace que la descomposición de $f$ obtenida no sea única, pues la elección dependerá de la posición que ocupen los divisores en el conjunto $F$, y por tanto del orden elegido. Más adelante veremos que la elección del orden influye en el resultado de más algoritmos.
 
 \SetKwComment{Comment}{/* }{ */}
 \begin{algorithm}[hbt!]
-    \caption{División polinomios varias variables}\label{a:division}
-    \KwData{$f$, $F = \left[ f_1, \dots, f_S\right]$}
-    $p\gets f$\;
-    $\left[q_1,\dots, q_s\right] \gets \left[0,\dots, 0\right]$\;
-    $r\gets 0$\;
+    \caption{División de polinomios en varias variables}\label{a:division}
+    \KwData{dividendo $f$, divisores $F = \left[ f_1, \dots, f_s\right]$}
+    \KwResult{Tupla con el resto $r$ y los coeficientes $q_i$ para cada $f_i\in F$}
+    $p\gets f$
+    
+    $\left[q_1,\dots, q_s\right] \gets \left[0,\dots, 0\right]$
+    
+    $r\gets 0$
 
     \While{$p \neq 0$}{
-        $\text{divisorEncontrado} \gets false$\;
+        $\text{divisorEncontrado} \gets false$
         \For{$f_i \in F$} {
             \If{$\text{exp}(p) = \text{exp}(f_i) + \alpha$}{
-                $q_i\gets q_i + \frac{\text{lc}(p)}{\text{lc}(f_i)} X^{\alpha}$\;
-                $p \gets p - f_i \cdot \frac{\text{lc}(p)}{\text{lc}(f_i)} X^{\alpha}$\;
-                $\text{divisorEncontrado} \gets true$\;
+                $q_i\gets q_i + \frac{\text{lc}(p)}{\text{lc}(f_i)} X^{\alpha}$
+                
+                $p \gets p - f_i \cdot \frac{\text{lc}(p)}{\text{lc}(f_i)} X^{\alpha}$
+                
+                $\text{divisorEncontrado} \gets true$
             }
         }
         \If{$!\text{divisorEncontrado}$}{
-            $r \gets r + \text{lt}(p)$\;
-            $p \gets p - \text{lt}(p)$\;
+            $r \gets r + \text{lt}(p)$
+            
+            $p \gets p - \text{lt}(p)$
         }
     }
     \Return{$\left[r,q_1,\dots, q_s\right]$}
 \end{algorithm}
 
-\begin{proof}
-    TODO
-\end{proof}
 \subsection{Bases de Groebner}
-
+Ya tenemos claras las ideas sobre qué es un polinomio en varias variables, así que ahora pasamos a repasar el concepto de ideal y como podemos usar las bases de Groebner para trabajar con ellos en el caso de ideales de polinomios.
 \begin{definicion}
-    Dado un anillo conmutativo $R$, decimos que $\emptyset \neq I \subseteq R$ es un \textbf{ideal} si:
+    Decimos que $\emptyset \neq I \subseteq A[X]$ es un \textbf{ideal} de $A[X]$ si:
     \begin{enumerate}
-        \item $a+b\in I,\ \forall a,b\in I$.
-        \item $ab\in I,\ \forall a\in I,\ \forall b\in R$.
+        \item $0\in I$,
+        \item $a+b\in I,\ \forall a,b\in I$,
+        \item $af\in I,\ \forall a\in I,\ \forall f\in A[x]$.
     \end{enumerate}
 
-    Lo denotaremos como $I\le R$.
+    Lo denotaremos como $I\le A$.
 \end{definicion}
 
+\begin{proposicion}
+    Dados los ideales $I,J\le A[X]$, son también ideales de $A[X]$:
+    \begin{enumerate}
+        \item $I+J = \{f+g : f\in I, g\in J\}$,
+        \item $IJ = \{f_1g_1 + \cdots + f_tg_t : f_i\in I, g_i\in J, 1\le i \le t\}$,
+        \item $I\cap J = \{h: h\in I \text{ y } h\in J\}$.
+    \end{enumerate}
+\end{proposicion}
+
+Podemos calcular estos ideales usando sus conjuntos de generadores.
 \begin{definicion}
-    Dado $F\subseteq A$, el \textbf{ideal generado} por $F$ es:
+    Dado $F=\{f_1,\dots, f_s\}\subseteq A[X]$, el \textbf{ideal generado} por $F$ es
     \begin{equation*}
-        \langle F \rangle = \{a_1f_1 + \cdots + a_sf_s : a_1,\dots, a_s\in A,\ f_1,\dots, f_s\in F\}
+        \langle F \rangle = \{a_1f_1 + \cdots + a_sf_s : a_1,\dots, a_s\in A,\ f_1,\dots, f_s\in F\}\le A[X].
+    \end{equation*}
+
+    Diremos que $F$ es un \textbf{conjunto de generadores} de $I$.
+\end{definicion}
+
+\begin{proposicion}
+    Sean $I=\langle F\rangle$ y $J=\langle G\rangle$ ideales de $A[X]$. Entonces:
+    \begin{enumerate}
+        \item $I+J = \langle F\cup G\rangle$,
+        \item $IJ = \langle fg : f\in F, g\in G \rangle$,
+        \item $I\cap J = \langle tF, (1-t)G \rangle \cap A[x_1,\dots, x_n]$.
+    \end{enumerate}
+\end{proposicion}
+
+Pasamos a presentar el concepto de base de Groebner asociada a un ideal. Podemos pensar que una base de Groebner es a un ideal lo que un sistema de generadores a un espacio vectorial: un subconjunto a partir del cual podemos obtener el total.
+\begin{definicion}
+    Sea $I\le A[X]$. Denotamos el conjunto de los términos líder de $I$ como
+    \begin{equation*}
+        \lt(I) = \{\lt(f) : f\in I\}.
     \end{equation*}
 \end{definicion}
 
 \begin{definicion}
-    Dado $I\le A[X]$, diremos que $G = \{g_1,\dots, g_s\}\subseteq I$ es una \textbf{base de Groebner} para $I$ si $\langle \lt(I)\rangle = \langle \lt(g_1),\dots, \lt(g_t) \rangle$.
+    Dado $I\le A[X]$, diremos que $G = \{g_1,\dots, g_s\}\subseteq I$ es una \textbf{base de Groebner} para $I$ si 
+    $$\langle \lt(I)\rangle = \langle \lt(g_1),\dots, \lt(g_t) \rangle.$$
+\end{definicion}
+
+La analogía con el sistema de generadores de un espacio vectorial nos conduce de forma natural a la pregunta de si habrá también un análogo al concepto de base, y si dado un ideal $I$ siempre existirá una base de Groebner asociada a este. La respuesta es afirmativa en ambos casos.
+\begin{definicion}
+    Dada $f\in A[X]$, definimos su \textbf{soporte} como $$\supp(f) = \{ \alpha\in\Nn : f(\alpha) \neq 0\}.$$
 \end{definicion}
 
 \begin{definicion}
-    Dada $f\in A[X]$, definimos su \textbf{soporte} como $$\supp(f) = \{ \alpha\in\Nn : f(\alpha) \neq 0\}$$
-\end{definicion}
-
-\begin{definicion}
-    $G$ se dirá una \textbf{base de Groebner reducida} para $I$ si para todo $g\in G$ se cumple:
-    \begin{itemize}
-        \item $\lcg=1$.
+    Sea $I\le A[X]$. Diremos que $G$ es una \textbf{base de Groebner reducida} para $I$ si para todo $g\in G$ se cumple
+    \begin{enumerate}
+        \item $\lcg=1$,
         \item $\supp(g) \cap \left(\exp(G\setminus\{g\}) + \Nn \right) = \emptyset$.
-    \end{itemize}
-\end{definicion}
-
-La base de Groebner es a un ideal lo que un sistema de generadores a un espacio vectorial: un subconjunto a partir del cual podemos obtener el total. Si además la base es reducida, esta será el equivalente a la base del espacio vectorial. Por tanto, resulta de gran interés saber si dado un ideal $I$ siempre existirá una base de Groebner asociada, y de ser así, si podemos calcularla.
-
-\begin{definicion}
-    Dados $\alpha,\beta \in \Nn$, definimos:
-    \begin{itemize}
-        \item \textbf{mínimo común múltiplo}: $\lcm(\alpha,\beta) = \{\Max(\alpha_1, \beta_1),\dots, \Max(\alpha_n, \beta_n)\}$.
-        \item \textbf{máximo común divisor}: $\gcd(\alpha,\beta) = \{\Min(\alpha_1, \beta_1),\dots, \Max(\alpha_n, \beta_n)\}$.
-    \end{itemize}
-\end{definicion}
-
-\begin{definicion}
-    Sean $f,g \in A[X]$ donde $\alpha=\exp(f),\ \beta=\exp(g),\ \gamma = \lcm(\alpha,\beta)$. Definimos el \textbf{S-polinomio} de $f$ y $g$ como
+    \end{enumerate}
+    Es decir, una base será reducida si ningún elemento se puede expresar como combinación del resto. Esto equivale a 
     \begin{equation*}
-        S(f,g) = \lc(g)X^{\gamma-\alpha}f - \lc(f)X^{\gamma-\beta}g
+        \rem\left(g, G\setminus \{g\}\right) \neq 0,\ \forall g\in G.
+    \end{equation*}
+\end{definicion}
+
+\begin{definicion}
+    Sea $M\le \Nn$. Decimos que $A$ es un \textbf{conjunto generador minimal} de $M$ si
+    \begin{equation*}
+        M = A + \Nn \quad \text{ y } \quad M\neq (A\setminus \{a\}) + \Nn,\ \forall a \in A.
+    \end{equation*}
+\end{definicion}
+
+\begin{lema}\label{l:minimal}
+    Todo ideal tiene un único conjunto generador minimal.
+\end{lema}
+\begin{lema}
+    Sea $I\le A$. Se cumple $a-b\in I,\ \forall a,b\in I$. 
+\end{lema}
+\begin{proof}\label{l:resta}
+    Basta observar que tomando $-1 \in A$ obtenemos que $b\cdot (-1) \in I$, de donde
+    \begin{equation*}
+        a-b = a+ b(-1) \in I.
+    \end{equation*}
+\end{proof}
+\begin{teorema}\label{t:reduce}
+    Todo ideal $I$ admite una única base de Groebner reducida para un orden admisible dado.
+\end{teorema}
+\begin{proof}
+    \mybox{Existencia} Sea $G$ un conjunto generador minimal de $\exp(I)$, que sabemos que existe por el \autoref{l:minimal}. Sea $g\in G$ y $r = \rem\left(g, [G\setminus \{g\}]\right)$. Tenemos que
+    \begin{equation*}
+        \exp(g) \notin \exp(G\setminus\{g\}) + \Nn \implies \exp(g)=\exp(r) \implies \exp(G) = \exp\Big( (G\setminus \{g\})\cup \{r\}\Big).
+    \end{equation*}
+    Además $g-r\in \langle G\setminus \{g\} \rangle \subseteq I$, de forma que $r\in I$ y $G' = (G\setminus \{g\} \cup \{r\}$ es una base de Groebner de $I$ cumpliendo $\supp(r) \cap \Big(\exp(G'\setminus\{r\}) + \Nn \Big) = \emptyset$.
+    Aplicando este procedimiento a cada elemento de $G$ obtenemos una base reducida de $I$.\newline
+
+    \mybox{Unicidad} Sean $G_1,G_2$ dos bases minimales de $I$. Por el \autoref{l:minimal},
+    \begin{equation*}
+        \exp(G_1) = \exp(G_2) \implies \forall g_1\in G_1,\ \exists!\ g_2\in G_2 : \exp(g_1) = \exp(g_2).
+    \end{equation*}
+
+    Por otro lado,
+    \begin{align*}        
+    &\begin{rcases}
+        \supp(g_1-g_2) \subseteq \Big( \supp(g_1)\cup \supp(g_2) \Big) \setminus \{\exp(g_1)\}\\
+        \supp(g_i)\setminus \{\exp(g_i)\}\cap \Big(\{\exp(G_i) + \Nn\}\Big) = \varnothing,\ i\in\{1,2\}
+    \end{rcases} \implies\\[10pt] &\implies \supp(g_1-g_2) \cap \left(\exp(G_1)+\Nn\right) = \varnothing
+    \implies \rem(g_1-g_2, G_1) = g_1-g_2 .
+    \end{align*}
+
+    Finalmente, como $g_2 - g_1 \in I$ por el \autoref{l:resta}, obtenemos que 
+    $$\rem(g_1-g_2, G_1) = 0 \implies g_1=g_2 \implies G_1=G_2.$$
+\end{proof}
+
+Terminamos la sección obteniendo un algoritmo para calcular la base de Groebner reducida para un ideal dado su conjunto de generadores $G$. Este se basará en eliminar de $G$ aquellos polinomios cuyos exponentes podamos poner como combinación lineal del resto. Claro está que no podemos realizar esta comprobación directamente, y deberemos buscar alguna condición equivalente que sí podamos calcular.
+
+\begin{definicion}
+    Dados $\alpha,\beta \in \Nn$, definimos los términos
+    \begin{itemize}
+        \item \textbf{Mínimo común múltiplo}: $\lcm(\alpha,\beta) = \{\Max(\alpha_1, \beta_1),\dots, \Max(\alpha_n, \beta_n)\}$,
+        \item \textbf{Máximo común divisor}: $\gcd(\alpha,\beta) = \{\Min(\alpha_1, \beta_1),\dots, \Min(\alpha_n, \beta_n)\}$.
+    \end{itemize}
+\end{definicion}
+
+\begin{definicion}
+    Sean $f,g \in A[X]$. Tomando $\alpha=\exp(f),\ \beta=\exp(g)$ y $\gamma = \lcm(\alpha,\beta)$, se define el \textbf{S-polinomio} de $f$ y $g$ como
+    \begin{equation*}
+        S(f,g) = \lc(g)X^{\gamma-\alpha}f - \lc(f)X^{\gamma-\beta}g.
     \end{equation*}
 \end{definicion}
 
 \begin{teorema}[Primer Criterio de Buchberger]\label{t:criterio}
-    Sean $I\le A[X]$ y $G=\{g_1,\dots, g_t\}$ conjunto de generadores de $I$. Entonces:
+    Sean $I\le A[X]$ y $G=\{g_1,\dots, g_t\}$ un conjunto de generadores de $I$. Entonces:
     \begin{equation*}
-        G \text{ es base de Groebner para } I \iff \rem(S(g_i,g_j), G)=0,\ \forall 1\le i<j\le t
+        G \text{ es base de Groebner para } I \iff \rem(S(g_i,g_j), G)=0,\ \forall 1\le i<j\le t.
     \end{equation*}
 \end{teorema}
 
-El algoritmo que usaremos para el cálculo de la base de Groebner se basará en este criterio. Sin embargo, antes de presentarlo, estudiamos dos criterios adicionales que lo harán más eficiente evitando el cálculo de S-polinomios innecesarios, que es la operación más costosa del algoritmo al suponer la realización de numerosas divisiones.
+El algoritmo que usaremos para el cálculo de la base de Groebner se basará en este criterio. Sin embargo, antes de presentarlo estudiamos dos criterios adicionales \cite{criterio1} \cite{criterio2} que lo harán más eficiente descartando S-polinomios antes de comprobar su resto, ahorrando el cómputo de numerosas divisiones.
 
 \begin{teorema}[Criterios de Buchberger]\label{t:criterios}
-    Sean $I\le A[X]$ y $g_1,g_2 \in G\subseteq A[X]$. Si se cumple cualquiera de las siguientes condiciones:
+    Sean $I\le A[X]$, $G\subseteq A[X]$ un conjunto de generadores de $I$, y $g_1,g_2 \in G$. Si se cumple cualquiera de las siguientes condiciones entonces  $S(g_1,g_2)\reduces 0$.
     \begin{enumerate}
-        \item $\lcm(g_1,g_2) = \lm(g_1)\lm(g_2)$.
-        \item $\exists f\in G \colon \lm(f) \vert \lcm(g_1,g_2)$ y se verifica alguna de las condiciones:
+        \item $\lcm(g_1,g_2) = \lm(g_1)\lm(g_2)$,
+        \item $\exists f\in G \colon \lm(f)\ \vert\ \lcm(g_1,g_2)$ y además
         \begin{enumerate}
-            \item algún $S(g_i,f)\reduces 0$.
-            \item $\lm(f)\vert \frac{\lm(g_i}{\gcd(g_1,g_2}$ y $\sm(g_j)\lm(f) \neq \sm(f)\lm(g_j)$.
+            \item algún $S(g_i,f)\reduces 0\quad$ ó
+            \item $\lm(f)\vert \frac{\lm(g_i)}{\gcd(g_1,g_2}$ y $\sm(g_j)\lm(f) \neq \sm(f)\lm(g_j)$,
         \end{enumerate}
         donde $i,j\in\{1,2\}$ e $i\neq j$.
     \end{enumerate}
-    Entonces $S(g_1,g_2)\reduces 0$
+    
 \end{teorema}
 
- Aplicando estos criterios, obtenemos \autoref{a:buchberger}.
+Usando los criterios obtenidos obtenemos el \autoref{a:buchberger} para calcular la base de Groebner de cualquier ideal. La salida de este no es una base minimal, pero la demostración del \autoref{t:reduce} nos proporciona un método para reducir una base cualquiera a la minimal asociada, y mostramos en el \autoref{a:minim}.\newline
+
+
  
 \SetKwComment{Comment}{/* }{ */}
 \begin{algorithm}[hbt!]
     \caption{Algoritmo de Buchberger optimizado}\label{a:buchberger}
-    \KwData{$f$, $F = \left[ f_1, \dots, f_S\right]$}
+    \KwData{polinomio $f$, conjunto de generadores $F = \left[ f_1, \dots, f_S\right]$}
+    \KwResult{base de Groebner $G$}
 
     $G\gets F$\;
 
@@ -213,50 +373,6 @@ El algoritmo que usaremos para el cálculo de la base de Groebner se basará en 
     \Return{$G$}
 \end{algorithm}
 
-\begin{observacion}
-    Una decisión necesaria y que aún no hemos mencionado es la de cómo se eligen las parejas $\{f,g\}$. Uno de los métodos más usados es la conocida como \textbf{estrategia normal}, debido a su simpleza y haber probado ser de las que completan más rápido el algoritmo. Esta consiste en tomar el par $f,g$ cuyo $\lcm(f,g)$ sea del menor grado posible según el orden admisible usado.
-\end{observacion}
-
-Ahora ya somos capaces de calcular una base de Groebner de todo ideal $I\le A[X]$. No obstante, nos gustaría que siempre que fuera posible, esta fuera reducida. Veamos que siempre existe esta base reducida y cómo obtenerla.
-
-\begin{definicion}
-    Sea $M\le \Nn$. Decimos que $A$ es un \textbf{conjunto generador minimal} de $M$ si:
-    \begin{equation*}
-        M = a + \Nn \quad \wedge \quad M\neq (A\setminus \{\alpha\}) + \Nn,\ \forall \alpha \in A 
-    \end{equation*}
-\end{definicion}
-
-\begin{lema}\label{l:minimal}
-    Todo ideal tiene un único conjunto generador minimal.
-\end{lema}
-
-\begin{teorema}
-    Todo ideal $I$ admite una única base de Groebner reducida para un orden admisible dado.
-\end{teorema}
-\begin{proof}
-    \mybox{Existencia} Sea $G$ un conjunto generador minimal de $\exp(I)$, que sabemos que existe por \autoref{l:minimal}. Sea $g\in G$ y $r = \rem\left(g, [G\setminus \{g\}]\right)$. Tenemos que:
-    \begin{equation*}
-        \exp(g) \notin \exp(G\setminus\{g\} + \Nn \implies \exp(g)=\exp(r) \implies \exp(G) = \exp\left( (G\setminus \{g\})\cup \{r\}\right)
-    \end{equation*}
-    Como $g-r\in \langle G\setminus \{g\} \rangle \subseteq I$, tenemos que $r\in I$. Por tanto $G' = (G\setminus \{g\} \cup \{r\}$ es base de Groebner de $I$ y cumple $\supp(r) \cap \left(\exp(G'\setminus\{r\}) + \Nn \right) = \emptyset$.
-    Aplicando este procedimiento a cada $g\in G$ obtenemos una base reducida de $I$.\newline
-
-    \mybox{Unicidad} Sean $G_1,G_2$ dos bases minimales de $I$. Por \autoref{l:minimal}:
-    \begin{equation*}
-        \exp(G_1) = \exp(G_2) \implies \forall g_1\in G_1,\ \exists! g_2\in G_2 : \exp(g_1) = \exp(g_2)
-    \end{equation*}
-
-    Como $g_2 - g_1 \in I \implies \rem(g1-g_2, G_1) = 0$. Por otro lado:
-    \begin{align*}        
-    &\begin{rcases}
-        \supp(g1-g_2) \subseteq \left( \supp(g_1)\cup \supp(g_2) \right) \setminus \{\exp(g_1)\}\\
-        \supp(g_i)\setminus \{\exp(g_i)\}\cap \left(\{\exp(G_i) + \Nn\}\right) = \varnothing,\ i\in\{1,2\}
-    \end{rcases} \implies \supp(g_1-g_2) \cap \left(\exp(G_1)+\Nn\right) = \varnothing\\[10pt]
-    &\implies \rem(g_1-g_2, G_1) = g_1-g_2 \implies g_1=g_2 \implies G_1 = G_2
-    \end{align*}
-\end{proof}
-
-De esta demostración podemos obtener \autoref{a:minim} para reducir una base de Groebner cualquiera a su respectiva minimal:
 \begin{algorithm}[hbt!]
     \caption{Minimización de base de Groebner}\label{a:minim}
     \KwData{$G$ base a minimizar}
@@ -273,47 +389,143 @@ De esta demostración podemos obtener \autoref{a:minim} para reducir una base de
     }
 \end{algorithm}
 
+Ya somos capaces de obtener una base de Groebner minimal de cualquier ideal dado un conjunto de generadores suyo, pero en este proceso se toma una decisión que aún no hemos discutido: cómo se eligen las parejas $\{f,g\}$. Uno de los métodos más usados es la conocida como \textbf{estrategia normal}, debido a su simpleza y haber probado ser de las que completan más rápido el algoritmo, y consiste en tomar el par $f,g$ cuyo $\lcm(f,g)$ sea del menor grado posible según el orden admisible usado. Vemos por tanto que de nuevo la elección de un orden u otro nos proporcionará resultados diferentes, y en este caso esto se traduce en que la base reducida tenga muchos menos elementos en un orden que en otro.
 
 \subsection{Implicitación Polinomial}
+Empezábamos la sección diciendo que el problema de implicitación equivalía al de pertenencia a un ideal. Antes de ver de qué ideal se trata tenemos que introducir unos últimos conceptos que nos ayuden a entender por qué.
 
-\begin{definicion}Dado $F \subseteq A[X]$, llamamos \textbf{variedad afín} definida por $F$ al conjunto:
+\begin{definicion}Dado $F=\{f_1,\dots, f_s\} \subseteq A[X]$, llamamos \textbf{variedad afín} definida por $F$ al conjunto:
     \begin{equation*}
-        \mathbb{V}(F) = \{(a_1,\dots, a_n)\in A^n : f_i(a_1,\dots, a_n)=0,\ \forall 1\le i \le s\}
+        \mathbb{V}(F) = \{(a_1,\dots, a_n)\in A^n : f_i(a_1,\dots, a_n)=0,\ \forall 1\le i \le s\}.
     \end{equation*}
 \end{definicion}
 
+\begin{proposicion}
+    Sean $\mathbb{V}(F)$ y $\mathbb{V}(G)$ variedades afines. Entonces
+    \begin{itemize}
+        \item  $\mathbb{V}(F) =  \mathbb{V}(\langle F\rangle)$,
+        \item $\mathbb{V}(F\cup G) = \mathbb{V}(F) \cap \mathbb{V}(G)$,
+        \item $\mathbb{V}(FG) = \mathbb{V}(F) \cup \mathbb{V}(G)$.
+    \end{itemize}
+\end{proposicion}
+
+\begin{proposicion}
+    Sean los ideales $I,J\le A[X]$. Entonces  $\mathbb{V}(I \cap J) = \mathbb{V}(I) \cup \mathbb{V}(J)$.
+\end{proposicion}
+\begin{definicion}
+    Sea $B\subseteq A^n$. Definimos el \textbf{ideal asociado} a $B$ como
+    \begin{equation*}
+        \mathbb{I}(B) = \{f\in A[X] : f(b_1,\dots, b_n) = 0,\ \forall (b_1,\dots, b_n)\in B\}.
+    \end{equation*}
+\end{definicion}
+
+Para resolver el problema de implicitación deberemos aprender antes a eliminar variables de un ideal.
 \begin{definicion}
     Dado $I\le A[x_1,\dots,x_n]$, diremos que su \textbf{ideal de $l$-eliminación} es:
     \begin{equation*}
-        I_l = I \cap A[x_{l+1}, \dots, x_n] \le A[x_{l+1}, \dots, x_n]
+        I_l = I \cap A[x_{l+1}, \dots, x_n] \le A[x_{l+1}, \dots, x_n].
     \end{equation*}
 \end{definicion}
 
 \begin{definicion}
     Decimos que un orden admisible $\le$ es un \textbf{orden de $l$-eliminación} si 
-    $$\beta\le \alpha \implies \beta \in \N_l^n,\ \forall \alpha \in \N_l^n,\ \forall \beta \in \Nn$$
+    $$\beta\le \alpha \implies \beta \in \N_l^n,\ \forall \alpha \in \N_l^n,\ \forall \beta \in \Nn,$$
     donde $\N_l^n = \{\alpha\in \Nn \colon \alpha_i =0,\ 1\le i \le l\}$.
 \end{definicion}
 
 \begin{teorema}[Eliminación]
-    Sea $I\le A[x_1,\dots,x_n]$ y $G$ una base de Groebner suya respecto a un orden $\le$ de $l$-eliminación. Entonces, una base de Groebner para $I_l$ viene dada por:
+    Sea $I\le A[x_1,\dots,x_n]$ y $G$ una base de Groebner suya respecto a un orden $\le$ de $l$-eliminación. Entonces, una base de Groebner para $I_l$ viene dada por
     \begin{equation*}
-        G_l = G\cap A[x_{l+1},\dots, x_n]
+        G_l = G\cap A[x_{l+1},\dots, x_n].
     \end{equation*}
 \end{teorema}
 
+% Ahora sí, veamos de qué ideal se trata.
+
+Con estos resultados podemos decir que el problema de implicitación consiste en encontrar la variedad asociada a las ecuaciones paramétricas
+\begin{align*}
+    x_1 &= g_1(t_1,\dots, t_r),\\
+    &\vdots \\
+    x_n &= g_n(t_1,\dots, t_r).
+\end{align*}
+
+Si escribimos $g_i = f_i/q_i$ con $f_i,q_i \in A[t_1,\dots, t_r],\ i=1,\dots, r$, podemos definir la aplicación
+\begin{align*}
+        \phi \colon A^r\setminus W  & \to A^n,\\
+        (a_1,\dots, a_r) & \mapsto \left( \frac{f_1(a_1,\dots, a_r)}{q_1(a_1,\dots, a_r)}, \dots, \frac{f_n(a_1,\dots, a_r)}{q_n(a_1,\dots, a_r)}\right),
+    \end{align*}
+donde $W=\mathbb{V}(q_1\cdots q_r)$. Veamos cómo encontrar la menor variedad que contiene la imagen de $\phi$ cuando $q_i = 1$ para cada $i=1,\dots, r$. 
 \begin{teorema}[Implicitación Polinomial]
     Dados $f_1,\dots, f_n \in A[t_1, \dots, t_r]$ con $A$ cuerpo infinito, sea
     \begin{align*}
-        \phi \colon A^r  & \to A^n\\
-        (a_1,\dots, a_r) & \mapsto \left( f_1(a_1,\dots, a_r), \dots, f_n(a_1,\dots, a_r) \right)
+        \phi \colon A^r  & \to A^n,\\
+        (a_1,\dots, a_r) & \mapsto \left( f_1(a_1,\dots, a_r), \dots, f_n(a_1,\dots, a_r) \right).
     \end{align*}
 
     Definimos los ideales:
     \begin{itemize}
-        \item $I = \langle x_1-f_1,\dots,  x_n-f_n\rangle \le A[t_1,\dots, t_r,x_1\dots, x_n]$
-        \item $J = I\cap A[x_1,\dots, x_n]$ el ideal de $r$-eliminación de $I$
+        \item $I = \langle x_1-f_1,\dots,  x_n-f_n\rangle \le A[t_1,\dots, t_r,x_1\dots, x_n]$,
+        \item $J = I\cap A[x_1,\dots, x_n]$ el ideal de $r$-eliminación de $I$.
     \end{itemize}
 
     Entonces, $\mathbb{V}(J)$ es la menor variedad que contiene a $\phi(A^r)$.
 \end{teorema}
+
+
+La extensión al caso racional es la siguiente.
+\begin{teorema}[Implicitación Racional]
+    Sea $f_1,\dots, f_n, q_1,\dots, q_n \in A[t_1, \dots, t_r]$ con $A$ cuerpo infinito, $W=\mathbb{V}(q_1,\dots, q_n)$ y
+    \begin{align*}
+        \phi \colon A^r\setminus W  & \to A^n,\\
+        (a_1,\dots, a_r) & \mapsto \left( \frac{f_1(a_1,\dots, a_r)}{q_1(a_1,\dots, a_r)}, \dots, \frac{f_n(a_1,\dots, a_r)}{q_n(a_1,\dots, a_r)}\right).
+    \end{align*}
+
+     Definimos los ideales:
+    \begin{itemize}
+        \item $I = \langle q_1x_1-f_1,\dots,  q_nx_n-f_n, 1-q_1\cdots q_ny\rangle \le A[y,t_1,\dots, t_r,x_1\dots, x_n]$,
+        \item $J = I\cap A[x_1,\dots, x_n]$ el ideal de $1+r$-eliminación de $I$.
+    \end{itemize}
+
+    Entonces, $\mathbb{V}(J)$ es la menor variedad que contiene a $\phi(A^r\setminus W)$.
+\end{teorema}
+
+\begin{observacion}
+    En el caso $r=1$ y cuando $f_i$ y $q_i$ sean primos relativos para cada $1\le i \le n$, basta tomar
+    $$I = \langle q_1x_1-f_1,\dots,  q_nx_n-f_n\rangle.$$
+\end{observacion}
+
+Con este resultado, una vez obtenida la variedad, si resulta que esta tiene un único generador esta será la ecuación implícita, luego el ideal al que llevamos haciendo referencia desde el principio de la sección y del que queríamos comprobar la pertenencia es el ideal $J$ de los teoremas anteriores. Sin embargo, no tenemos asegurado que vaya a haber un único generador del ideal, de forma que la superficie satisfaría varias ecuaciones implícitas y no podría ser representada por una sola. A continuación presentamos un resultado que aporta información al respecto.
+
+\begin{definicion}
+    Dado un ideal $I\le A[X]$, definimos su radical como
+    \begin{equation*}
+        \sqrt{I} = \{f\in A[X] : f^m\in I \text{ para algún } m\in \N\}.
+    \end{equation*}
+\end{definicion}
+\begin{proposicion}
+    Sea $I\le A[X]$. Entonces $\sqrt{I}$ es un ideal y contiene a $I$.
+\end{proposicion}
+\begin{definicion}
+    Decimos que un ideal $I\le A[X]$ es \textbf{radical} si $\sqrt{I} = I$.
+\end{definicion}
+
+\begin{proposicion}
+    Sea $B\subseteq A^n$. Entonces $\mathbb{I}(B)$ es un ideal radical.
+\end{proposicion}
+\begin{teorema}[Nullstellensatz fuerte]
+    Si $A$ es algebraicamente cerrado, dado un ideal $I\le A[X]$ se cumple
+    \begin{equation*}
+        \sqrt{I} = \mathbb{I}(\mathbb{V}(I)).
+    \end{equation*}
+\end{teorema}
+\begin{proposicion}
+    Sea $I\le A[X]$ y $f\in A[X]$. Entonces
+    \begin{equation*}
+        f\in \sqrt{I} \iff \langle I \rangle + \langle 1-fy \rangle = A[X].
+    \end{equation*}
+\end{proposicion}
+
+Así, si pudiéramos calcular el radical del ideal $J$ de los teoremas de implicitación y este tuviera un solo elemento, tendríamos asegurado que la variedad está generada por esa única ecuación implícita. Sin embargo, el cálculo del radical o su número de elementos es en general muy complicado, y no es una opción viable. Por tanto, lo que haremos será simplemente aplicar el algoritmo y comprobar si efectivamente se obtiene un único generador, en cuyo caso contrario concluiremos que no podemos realizar la implicitación.\newline
+
+Otra vía que permite la eliminación de variables y por tanto resolver el problema de implicitación es el uso de resultantes.
+TODO: añadir sección resultantes

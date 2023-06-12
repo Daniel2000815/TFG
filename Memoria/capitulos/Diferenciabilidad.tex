@@ -5,7 +5,7 @@ Cuando sea conveniente identificaremos
     x_1=x,\quad x_2=y,\quad x_3 = z.
 \end{equation*}
 
-\begin{definicion}
+\begin{definicion}\label{def:parcial}
     Sea $U$ un abierto de $\R^3$ y $\phi: U \to \R$. Definimos la \textbf{$\boldsymbol{i}$-ésima derivada parcial} de $\phi$ en $p_0\in\R^3$ como
     \begin{equation*}
         \frac{\partial \phi}{\partial x_i}(p_0) = \lim_{h\to 0}\frac{\phi(p_0+he_i) - \phi(p_0)}{h},\ i=1,2,3.
@@ -37,6 +37,23 @@ Cuando sea conveniente identificaremos
 
 Ahora mismo, dado un SDF arbitrario no tenemos información alguna sobre su diferenciabilidad, ya que su expresión puede ser de lo más variada y compleja. Veamos una propiedad que cumplen todos los SDF y que nos permitirá obtener algo de información al respecto \cite{lips} \cite{derivWiki}.
 
+\begin{definicion}
+    Una campo escalar $\phi\colon \R^3 \to \R$ se dice \textbf{lipschitziano} si existe una constante $L>0$ tal que
+    \begin{equation*}
+        \vert \phi(p)-\phi(q)\vert \le L\Vert x-y\Vert,\ \forall p,q\in \R^3.
+    \end{equation*}
+
+    El menor valor posible para la constante $L$ recibe el nombre de \textbf{constante de Lipschitz}.
+\end{definicion}
+
+\begin{proposicion}
+    Sea $\phi\colon \R^3 \to \R$ una función lipschitziana cualquiera con constante de Lipschitz $L$. Entonces
+    \begin{equation*}
+        \vert \phi'(p)\vert \le L
+    \end{equation*}
+
+    en todo punto donde sea derivable.
+\end{proposicion}
 \begin{lema}
     Sea $\phi:\R^3\to \R$ un SDF. Entonces $\phi$ es lipschitziana de constante $L=1$.
 \end{lema}
@@ -64,6 +81,10 @@ Tenemos por tanto asegurado que $\phi$ será diferenciable en casi todo punto de
     \begin{equation}
         \epsilon(\Omega) = \{p\in \R^3 : \phi(p) = \Vert p-q\Vert = \Vert p-r\Vert,\ q,r\in \delta\Omega ,\ q\neq r \}.
     \end{equation}
+\end{definicion}
+
+\begin{definicion}
+    Sea $\Omega \subset \R^3$ y $p\in \Omega$. Llamamos \textbf{vector normal} en $p$ al vector perpendicular al borde de $\Omega$ en $p$. Lo denotamos $N_p$, y siempre supondremos que está normalizado.
 \end{definicion}
 
 \begin{teorema}\label{teo:diff}

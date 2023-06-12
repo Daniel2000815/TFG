@@ -1,5 +1,11 @@
 
-Si bien estas primitivas son fáciles de generar, también son muy simples y nos serán insuficientes si queremos construir escenas más complejas. Una de las ventajas de los SDF es que se pueden generar nuevas formas a partir de primitivas de forma muy sencilla. Para ello, una de las técnicas más útiles es la geometría de sólidos constructiva, que utiliza operaciones booleanas para combinar múltiples primitivas. Por la naturaleza de los SDF, estas operaciones se implementan fácilmente usando las funciones $\Max$ y $\Min$.
+Si bien estas primitivas son fáciles de generar, también son muy simples y nos serán insuficientes si queremos construir escenas más complejas. Como comentamos en la introducción, una de las principales ventajas del uso de ecuaciones implícitas para representar modelos geométricos es la facilidad de combinación de estas primitivas, por ejemplo mediante operaciones booleanas o deformaciones. Sin embargo los sistemas que hacían uso de esta técnica no estaban lo suficientemente estructurados como para permitir aplicar estas operaciones de manera general e intuitiva, haciendo que no se pudieran aplicar de forma local y por tanto no se pudieran generar escenas complejas.\newline
+
+
+Esto cambió en 1999 con el artículo de B.Wyvill y otros \cite{blobtree}, en el que sugieren usar una estructura de árbol para definir modelos como combinación de otros a través de operaciones básicas. La gran ventaja de este método es que es muy extensible, y además permite ver de forma muy clara la estructura del modelo. En esta sección estudiaremos los principales tipos de estas operaciones. En el \autoref{ap:operacionesSDF} podemos verlas en acción sobre diferentes primitivas.
+
+\subsection{Operaciones booleanas}
+Una de las técnicas más útiles para generar nuevas formas a partir de primitivas es la geometría de sólidos constructiva. Por la naturaleza de los SDF, estas operaciones se implementan fácilmente usando las funciones $\Max$ y $\Min$.
 
 \begin{definicion}[Operaciones Booleanas]\label{p:boolean}
     Sean $A$ y $B$ isosuperficies generadas por $\phi$ y $\gamma$ respectivamente. Definimos los SDF para las siguientes operaciones.
@@ -11,7 +17,7 @@ Si bien estas primitivas son fáciles de generar, también son muy simples y nos
 \end{definicion}
 
 \begin{observacion}
-    Solo en el caso de la unión se obtiene un SDF según lo establecido en la \autoref{d:sdf}, ya que al aplicar $\Max$ en el interior de la superficie (donde $\phi(p) < 0$), el resultado puede ser solo una cota inferior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies así que podemos obviar este problema, con la salvedad de que el algoritmo de \textit{raymarching} requiera de más iteraciones.
+    Solo en el caso de la unión se obtiene un SDF exacto, ya que al aplicar $\Max$ en el interior de la superficie (donde $\phi(p) < 0$) el resultado puede ser solo una cota inferior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies así que podemos obviar este problema, con la salvedad de que el algoritmo de \textit{raymarching} requiera de más iteraciones.
 \end{observacion}
 
 Un problema de usar estas transformaciones es que produce discontinuidades en la derivada del SDF resultante. Trataremos de evitar esta situación, además de por motivos analíticos, por motivos visuales, ya que esto produce bordes muy acusados en la intersección de ambas superficies. Existen muchas formas de combinar SDF de forma más natural. Usaremos una de las más extendidas, usada por programas de modelado 3D como Blender \cite{repo:blender} o videojuegos como Dreams \cite{game:dreams}, y que ha sido estudiada por Íñigo Quílez en su web \cite{article:smooth}.
@@ -20,31 +26,31 @@ Un problema de usar estas transformaciones es que produce discontinuidades en la
     Para mayor claridad del razonamiento, en las figuras se representarán funciones de variable real, a pesar de que nosotros trabajamos en $\R^3$.
 \end{observacion}
 
-Empezamos trabajando con la unión. La idea es, dadas $\phi$ y $\gamma$, añadir una corrección para cada punto a la función $\Min$ original para que cumpla ciertos requisitos. Por comodidad, definiremos 
+Explicaremos la técnica poniendo como ejemplo la unión, y al final veremos como la intersección y la diferencia se deducen fácilmente de esta. La idea es, dadas $\phi$ y $\gamma$, añadir una corrección para cada punto a la función $\Min$ original para que cumpla ciertos requisitos. Por comodidad, definiremos 
 \begin{align*}
       \Min_{\phi,\gamma}\colon \R^3 &\to \R,\\
       p &\mapsto \Min(\phi(p),\gamma(p)),
 \end{align*}
 y siguiendo un abuso de notación, escribiremos $\Min(p)$ cuando no haya lugar a dudas.\newline
 
-Llamaremos a la mencionada corrección $\omega\colon \R^3\to\R$, de forma que la versión suavizada de la función $\Min$ original será
+Llamaremos a la mencionada corrección $\omega_k\colon \R^3\to\R$, donde $k\in \R_0^+$ es un coeficiente que controlará la intensidad del suavizado. Por tanto, la versión suavizada de la función $\Min$ original será
 \begin{align*}
       \smin_{\phi,\gamma}\colon \R^3 &\to \R,\\
-      p &\mapsto \Min(p) - \omega(p),
+      p &\mapsto \Min_{\phi,\gamma}(p) - \omega_k(p).
 \end{align*}
-donde $k\in\R^+_0$ está fija y controlará la intensidad del suavizado. Siempre que no haya confusión, denotaremos $\smin_{\phi,\gamma} = \smin$.\newline
+Siempre que no haya confusión, denotaremos $\smin_{\phi,\gamma} = \smin$.\newline
 
 Como no queremos que este cambio afecte al algoritmo de \textit{raymarching}, debemos asegurar que se cumpla $\Min(p)\ge \smin(p)$, esto es,
 \begin{equation*}
-\omega(p)\ge 0,\ \forall p\in \R^3,\ \forall k\in \R^+_0.
+\omega_k(p)\ge 0,\ \forall p\in \R^3,\ \forall k\in \R^+_0.
 \end{equation*}
 
-Si estudiamos como se comporta la versión real de $\Min$ en la \autoref{fig:min_real}, vemos que los puntos de conflicto se encuentran cerca de las intersecciones de $\phi$ y $\gamma$, es decir, cuando $\phi$ y $\gamma$ están arbitrariamente cerca. En el resto de puntos no queremos modificar la función original, luego estudiamos el comportamiento de $\smin$ en el conjunto de entornos de las intersecciones
+Si estudiamos como se comporta la versión real de $\Min$ en la \autoref{fig:min_real}, vemos que los puntos de conflicto se encuentran cerca de las intersecciones de $\phi$ y $\gamma$, es decir, cuando $\phi$ y $\gamma$ están arbitrariamente cerca. En el resto de puntos no queremos modificar la función original, luego estudiaremos el comportamiento de $\smin$ en el conjunto de entornos de las intersecciones. Usaremos el valor de $k$ para decidir el tamaño de estos entornos, aplicando la corrección únicamente en los puntos del conjunto
 \begin{equation*}
     B_{k} = \{p\in\R^3 : |\phi(p)-\gamma(p)| \le k\},
 \end{equation*}
 
-siendo $\omega(p) = 0$ cuando $p\notin B_{k}$.\newline
+de forma que $\omega(p) = 0$ cuando $p\notin B_{k}$.\newline
 
 \begin{figure}[t]
     \centering
@@ -56,15 +62,15 @@ siendo $\omega(p) = 0$ cuando $p\notin B_{k}$.\newline
 Para asegurar que $\smin$ sea continua en la frontera de $B_{k}$, imponemos la condición 
 
 \begin{equation*}
-    \omega(p) = 0,\ \forall p \in \delta B_{k}.
+    \omega_k(p) = 0,\ \forall p \in \delta B_{k}.
 \end{equation*}
 
 Por otro lado, es lógico que $\omega$ tenga su mayor influencia justo en las intersecciones, luego imponemos también 
 \begin{equation*}
-    \omega(c) = s, \text{ donde } c \in I \equiv \{p\in\R^3 : \phi(p) = \gamma(p)\},\ s\in \R.
+    \omega_k(c) = s, \text{ donde } c \in I \equiv \{p\in\R^3 : \phi(p) = \gamma(p)\},\ s\in \R.
 \end{equation*}
 
-El valor $s$ es el que deberemos ajustar para que $\smin$ cumpla nuestros requisitos. Fijado un $p\in B_{k}$, ya tenemos una primera aproximación para $\omega$ :
+El valor $s$ es el que deberemos ajustar para que $\smin$ cumpla nuestros requisitos. Fijado un $p\in B_{k}$, ya tenemos una primera aproximación para $\omega_k$ :
 \begin{equation*}
     \omega(p) = s\left( 1-\frac{|\phi(p)-\gamma(p)|}{k} \right)^n = \begin{cases}
         s\left( 1-\frac{\phi(p)-\gamma(p)}{k}\right)^n,\ \phi(p)>\gamma(p), \\[10pt]
@@ -83,16 +89,16 @@ donde hemos añadido el parámetro $n$ para añadir más control sobre el result
         \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_2.png}
         \caption{$k=0.1$}
      \end{minipage}
-     \caption{Primera aproximación de $smin(p,k)$ con $s=0.05$ y $n=2$}
+     \caption{Primera aproximación de $smin(p)$ con $s=0.05$ y $n=2$}
      \label{fig:smooth1}
 \end{figure}
 
-Nuestro objetivo es que $\smin$ tenga un aspecto natural y varíe de forma suave, luego veamos qué condiciones se tienen que cumplir para que sea $\mathcal{C}^1$. Que es continua es evidente:
+Nuestro objetivo es que $\smin$ tenga un aspecto natural y varíe de forma suave. Comprobemos propiedades que debería cumplir $\smin$ para ser $\mathcal{C}^1$ en cada entorno de $B_k$. Que es continua es evidente:
 \begin{equation*}
-    \phi(p)=\gamma(p) \implies \frac{\phi(p)-\gamma(p)}{k} = 0\implies \omega(p) = s
+    \phi(p)=\gamma(p) \implies \frac{\phi(p)-\gamma(p)}{k} = 0\implies \omega_k(p) = s
 \end{equation*}
 
-Otra condición necesaria es sus derivadas parciales sean continuas. Estas tienen la forma
+Otra condición necesaria es que sus derivadas parciales sean continuas. Estas son de la forma
 \begin{align*}
     \frac{\partial \smin}{\partial x_i}(p) &= \begin{cases}
         \frac{\partial \gamma}{\partial x_i}(p)+ sn\left(1-\frac{\phi(p)-\gamma(p)}{k}\right)^{n-1}\left(\frac{ \frac{\partial \phi}{\partial p}(p)-\frac{\partial \gamma}{\partial p}(p)}{k}\right),\ \phi(p)>\gamma(p), \\[10pt] 
@@ -100,7 +106,7 @@ Otra condición necesaria es sus derivadas parciales sean continuas. Estas tiene
     \end{cases},\ i=1,2,3.
 \end{align*}
 
-Por tanto, para que se cumpla la condición imponemos
+Por tanto, para que se cumpla la condición imponemos 
 \begin{align*}
      \frac{\partial \phi}{\partial x_i} - sn\left(1+\frac{\phi-\gamma}{k}\right)^{n-1}\left(\frac{\frac{\partial \phi}{\partial x_i}-\frac{\partial \gamma}{\partial x_i}}{k}\right) &= \frac{\partial \gamma}{\partial x_i} + sn\left(1-\frac{\phi-\gamma}{k}\right)^{n-1}\left(\frac{\frac{\partial \phi}{\partial x_i}-\frac{\partial \gamma}{\partial x_i}}{k}\right)\\[10pt]
      \cancel{\frac{\partial \phi}{\partial x_i} - \frac{\partial \gamma}{\partial x_i}} &= 2sn\left(1-\frac{\phi-\gamma}{k}\right)^{n-1}\left(\frac{ \cancel{\frac{\partial \phi}{\partial x_i}-\frac{\partial \gamma}{\partial x_i}}}{k}\right)\\[10pt]
@@ -113,14 +119,21 @@ Evaluando en $c\in I$:
 \end{align*}
     
 Hemos llegado a la expresión final
-\begin{align*}
-    \omega(p) &= \begin{cases}
+\begin{align}
+    \label{eq:correccion}
+    \omega_k(p) &= \begin{cases}
         \frac{k}{2n}\left( 1-\frac{|\phi(p)-\gamma(p)|}{k} \right)^n,\ &|\phi(p)-\gamma(p)|\le k,\\[10pt]
         0,\ &\text{ otro caso }.
-    \end{cases}\\[10pt] &= \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}  ,\ s\in\R,\ n\in\N.
+    \end{cases}\\[10pt] &= \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}}  ,\ s\in\R,\ n\in\N. 
+\end{align}
+
+Podemos observar los resultados en la \autoref{fig:smooth2}. Finalmente, para obtener una versión suavizada del máximo, es fácil comprobar que 
+\begin{align*}
+      \smax_{\phi,\gamma}\colon \R^3&\to \R,\\
+      p &\mapsto -\smin_{-\phi,-\gamma}(p).
 \end{align*}
 
-Podemos observar los resultados en la \autoref{fig:smooth2}.
+Recogemos los resultados obtenidos a continuación.
 \begin{figure}[!h]
      \begin{minipage}[c]{0.49\linewidth}
         \centering
@@ -132,17 +145,11 @@ Podemos observar los resultados en la \autoref{fig:smooth2}.
         \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/smin_4.png}
         \caption{$k=0.1,\ n=3$}
      \end{minipage}
-     \caption{Resultado final de $smin(p,k)$ }
+     \caption{Resultado final de $smin(p)$ }
      \label{fig:smooth2}
 \end{figure}
 
-Finalmente, para obtener una versión suavizada del máximo, es fácil comprobar que 
-\begin{align*}
-      \smax_{\phi,\gamma}\colon \R^3&\to \R,\\
-      p &\mapsto -\smin_{-\phi,-\gamma}(p).
-\end{align*}
 
-Recogemos los resultados obtenidos a continuación.
 
 
 
@@ -193,7 +200,7 @@ Recogemos los resultados obtenidos a continuación.
     donde $k\in \R^+_0$ controla la influencia del suavizado.        
 \end{definicion}
 
-Observamos que los operadores definidos en la \autoref{p:boolean} no son más que un caso particular de estos últimos cuando $k\to 0$.\newline
+Observamos que los operadores definidos en la \autoref{p:boolean} no son más que un caso particular de estos últimos cuando $k\to 0$. Este método se puede generalizar para obtneer\newline
 
 % \begin{equation*}
 %     \lim_{k\to 0} \frac{\Max\left( k - |\phi(p) - \gamma(p)|, 0\right)^n}{2n\cdot k^{n-1}} = \begin{cases}
@@ -202,13 +209,51 @@ Observamos que los operadores definidos en la \autoref{p:boolean} no son más qu
 %     \end{cases} 
 % \end{equation*}
 
+Este método para obtener una versión suavizada de las funciones $\Min$ y $\Max$ no es la única. Hemos elegido esta debido a que su deducción es bastante natural, el efecto que tiene el valor $k$ sobre el resultado final es intuitivo y, sobretodo, porque es eficiente. En el artículo que hemos mencionado al inicio de la sección, Íñigo Quílez \cite{article:smooth} presenta otras tres alternativas a esta versión, a la cual él se refiere como \qq{mínimo suavizado polinomial}, y que también son compatibles con \textit{raymarching}. Si denotamos ahora $\smin(\phi(p), \gamma(p)) = \smin_{\phi,\gamma}$, estas versiones son:
 
-Pasamos ahora a estudiar otro tipo de operaciones, que nos resultarán útiles para generar nuevas formas a partir de un único SDF. Todas ellas se basarán en, dada $\phi$, aplicar una transformación $t:\R^3\to \R^3$ a cada punto de la isosuperficie $S_{\phi}$ para obtener una nueva $S_{\gamma}$. Si queremos saber si un punto $q\in\R^3$ está en $S_{\gamma}$, tenemos que comprobar si su preimagen por la transformación pertenece a $S_{\phi}$. Por tanto, bastará evaluar el SDF original en $t^{-1}(p)$:
+\begin{itemize}
+    \item \textbf{Mínimo suavizado exponencial:} $\smin(a,b) = \frac{-\log_2\left( 2^{-ka} + 2^{-kb} ) \right)}{k}$,
+    \item \textbf{Mínimo suavizado potencial:} $\smin(a,b) = \left(\frac{a^k \cdot b^k}{a^k + b^k}\right)^{1/k}$,
+    \item \textbf{Mínimo suavizado por raíz:} $\smin(a,b)= \frac{a +b - \sqrt{(a-b)^2+k}}{2}$.
+\end{itemize}
+
+La principal ventaja de la versión polinomial respecto a estas es que es la más rápida al ser sus cálculos computacionalmente más baratos. Por otro lado tanto la exponencial como la potencial permiten ser adaptadas fácilmente para calcular el mínimo de un conjunto arbitrario de puntos, útil cuando se trabaja con patrones de voronoi o nubes de puntos. Además, la versión exponencial produce siempre el mismo resultado independientemente del orden en el que se aplique. Es decir,
+\begin{equation*}
+    \smin(a,\smin(b,c)) = \smin(b,\smin(a,c)).
+\end{equation*}
+
+En la \autoref{fig:smoothVS} podemos ver un ejemplo de uso de estas versiones, en las que además se ha usado el valor de $w_k$ de la ecuación \autoref{eq:correccion} para interpolar la componente difusa de ambas primitivas usando el método \texttt{mix} de GLSL. Como vemos, no hay diferencias notables entre las distintas versiones, así que nos quedaremos con el método más eficiente: el polinómico.
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[b]{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/unionMethodOG.png}
+        \caption{Polinomial, $k=1.5,\ n=2$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/unionMethodExp.png}
+        \caption{Exponencial, $k=2.5$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/unionMethodRoot.png}
+        \caption{Raíz, $k=1$}
+    \end{subfigure}
+    
+    \caption{Diferentes versiones de la unión suavizada}
+    \label{fig:smoothVS}
+\end{figure}
+
+\subsection{Operaciones afines}
+Pasamos ahora a estudiar otro tipo de operaciones que nos permitirán aplicar movimientos rígidos y cambios de escala a las primitivas en la escena. A diferencia de los operadores booleanos que eran binarios, estas operaciones se aplican a una única primitiva, y se basarán en aplicar una transformación $t:\R^3\to \R^3$ a cada punto de la isosuperficie $S_{\phi}$ para obtener la transformada $S_{\gamma}$. Si queremos saber si un punto $q\in\R^3$ está en $S_{\gamma}$, tenemos que comprobar si su preimagen por la transformación pertenece a $S_{\phi}$. Por tanto, bastará evaluar el SDF original en $t^{-1}(p)$:
 \begin{equation*}
     \gamma(p) = \phi(t^{-1}(p)).
 \end{equation*}
 
-Esto funciona bien para transformaciones como las traslaciones o rotaciones, ya que mantienen las distancias. Sin embargo, este no es el caso del escalado, ya que si tomamos $l(p) = sp$ con $s\in \R^+_0$:
+Esto funciona bien para transformaciones como las traslaciones o rotaciones, ya que son movimientos rígidos y mantienen las distancias. Sin embargo, este no es el caso del escalado, ya que si tomamos $l(p) = sp$ con $s\in \R^+_0$:
 \begin{equation*}
     \Vert p-p'\Vert = d \implies  \Vert l(p)-l(p')\Vert = \Vert sp-sp'\Vert = s\Vert p-p'\Vert = s\cdot d,\  \text{ donde } p,p' \in S_{\phi}.
 \end{equation*}
@@ -220,7 +265,7 @@ Como las distancias se escalan, deberemos hacer lo propio con el nuevo SDF, apli
     \begin{itemize}
         \item \textbf{Traslación de vector $\boldsymbol{v}$: } $\sdf_{traslacion}(p) = \sdf_{A}(p - v)$,
         \item \textbf{Escalado uniforme de dimensiones $\boldsymbol{s}$: } $\sdf_{escalado}(p) = \sdf_{A}(p/s)\cdot s$,
-        \item \textbf{Rotaciones de ángulo $\boldsymbol{\alpha}$ sobre los ejes $\boldsymbol{x,y,z}$: }
+        \item \textbf{Rotaciones de ángulo $\boldsymbol{\alpha\in \R}$ sobre los ejes $\boldsymbol{x,y,z}$: }
         \begin{align*}
             \sdf_{rotX}(p) &= \sdf_{A}(R_x^{-1}(\alpha)\cdot p^t),\ R_x(\alpha) = 
             \begin{pmatrix}
@@ -243,7 +288,9 @@ Como las distancias se escalan, deberemos hacer lo propio con el nuevo SDF, apli
     \end{itemize}
 \end{definicion}
 
-Siguiendo el mismo razonamiento, podemos definir operaciones que modifiquen la geometría de la superficie.
+\subsection{Operaciones deformantes}
+Siguiendo el mismo razonamiento, podemos definir operaciones que modifiquen la geometría de la superficie aplicando rotaciones o traslaciones al punto en el que se evalúa la SDF original. De esta forma podemos obtener operadores que de otra forma sería mucho más complicado implementar, como la torsión o el redondeo de bordes.
+
 \begin{definicion}[Operaciones Deformantes]
     Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
@@ -251,18 +298,22 @@ Siguiendo el mismo razonamiento, podemos definir operaciones que modifiquen la g
         \item \textbf{Torsión: } $\sdf_{torsion}(p) = \sdf_{A}(p')$, con $p' = R_z(ky)\cdot (x,z,y)^t$,
         \item \textbf{Plegado: } $\sdf_{plegado} =\sdf_{A}(p')$, con $p' = R_z(kx)\cdot p^t$,
         \item \textbf{Redondeo: } $\sdf_{redondeo}(p) = \sdf_{A}(p) - k$,
-        \item \textbf{Desplazamiento: } $\sdf_{desplazamiento}(p) = \sdf_{A}(\delta(p))$.
+        \item \textbf{Desplazamiento: } $\sdf_{desplazamiento}(p) = \sdf_{A}(\delta(p))$,
+        \item \textbf{Elongación de tamaño $\boldsymbol{h\in \R^3}$: } $\sdf_{elongacion}(p) = \sdf_{A}(p')$, con $p' = p - c(p, -h, h)$,
     \end{itemize}
 
     donde
     \begin{itemize}
         \item $k\in \R^+_0$ controla la intensidad de la deformación,
         \item $\delta\colon \R^3\to \R^3$ es un patrón de desplazamiento,
-        \item $R_z(\alpha)\in \mathcal{M}_3(\R)$ es la matriz de rotación de ángulo $\alpha$ sobre el eje $z$ dada en la \autoref{d:afines}.
+        \item $R_z(\alpha)\in \mathcal{M}_3(\R)$ es la matriz de rotación de ángulo $\alpha$ sobre el eje $z$ dada en la \autoref{d:afines},
+        \item $c\colon \R^3\times \R^3 \times \R^3 \to \R^3,\ c(x,a,b)$ acota cada componente de $x$ entre las de $a$ y $b$.
     \end{itemize}
 \end{definicion}
 
-Introducimos por último operaciones que permiten generar copias de otras superficies.
+\subsection{Operaciones de repetición}
+También podemos usar la técnica de cambiar el punto en el que evaluamos el SDF para, en lugar de modificar la geometría original, añadir copias de la primitiva identificando varios puntos con uno que pertenezca a la superficie. La manera más inmediata de conseguir esto es a través de la función valor absoluto, que nos permitirá identificar la componente de cada punto con su opuesta para generar simetrías, y el operador módulo, que identificará puntos a una distancia fija en cada eje.
+
 \begin{definicion}[Operadores de Posicionamiento]\label{d:posicionamiento}
     Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
     \begin{itemize}
@@ -298,6 +349,5 @@ Introducimos por último operaciones que permiten generar copias de otras superf
     \end{itemize}
 \end{observacion}
 
-A la vista de todas esta operaciones a nuestra disposición, es evidente el potencial que tienen los SDF, tanto en la generación y modificación de figuras como en su eficiencia, ya que podemos visualizar miles de objetos al precio de uno utilizando las simetrías o repeticiones.\newline
+Este tipo de operaciones evidencia el potencial que tienen las SDFs en cuanto a eficiencia, ya que podemos visualizar miles de objetos al precio de uno. Por ejemplo, podríamos generar un campo de césped a partir de una única brizna de hierba.\newline
 
-En el \autoref{ap:operacionesSDF} se muestra el resultado de aplicar las operaciones vistas a diferentes primitivas.
