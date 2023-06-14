@@ -1,11 +1,9 @@
 % !TeX root = ../libro.tex
 % !TeX encoding = utf8
 \chapter{Fundamentos matemáticos: las SDFs}
-Estamos acostumbrados a representar superficies en $\R^3$ a través de ecuaciones paramétricas e implícitas. En el caso de las paramétricas se asigna a cada tupla de parámetros un punto, mientras que para las implícitas, dado un punto la ecuación indica si este se encuentra dentro o fuera de la superficie. El tipo de superficies implícitas más comúnmente estudiado es el de las superficies algebraicas, variedades algebraicas de dimensión 2. Existen varios métodos para la visualización de este tipo de superficies. Uno de ellos es tratar de generar una malla de polígonos previamente a partir de la ecuación para después ser visualizada en tiempo real usando los métodos clásicos. El problema de este método es que no siempre se puede aplicar y conlleva pérdida de precisión en la representación de la superficie. Otro método es el \textit{raytracing}, pero este también puede llegar a perder precisión, además de que es muy lento, haciendo que la representación de una superficie tan simple como una esfera sea computacionalmente muy costoso.\newline
+Estamos acostumbrados a representar superficies en $\R^3$ a través de ecuaciones paramétricas e implícitas. En el caso de las paramétricas se asigna a cada tupla de parámetros un punto, mientras que para las implícitas, dado un punto la ecuación indica si este se encuentra dentro o fuera de la superficie. El tipo de superficies implícitas más comúnmente estudiado es el de las superficies algebraicas, variedades algebraicas de dimensión dos. Existen varios métodos para la visualización de este tipo de superficies. Uno de ellos es tratar de generar una malla de polígonos previamente a partir de la ecuación para después ser visualizada en tiempo real usando los métodos clásicos. El problema de este método es que no siempre se puede aplicar y conlleva pérdida de precisión en la representación de la superficie. Otro método es el \textit{raytracing}, pero este también puede llegar a perder precisión, además de que es muy lento, haciendo que la representación de una superficie tan simple como una esfera sea computacionalmente muy costoso.\newline
 
-Como solución a esto, T. Sederberg y A.Zundel \cite{Sederberg1989ScanLD} presentaron en 1989 un método capaz de representar superficies algebraicas sin pérdida de información y de manera eficiente, capaz además de trabajar con siluetas, intersección de curvas y operaciones booleanas. En 1889 John C. Hart \cite{hart2} presenta una técnica de \textit{raymarching} para la representación de fractales usando funciones distancia con signo. Posteriormente, en 1995 \cite{hart} generaliza esta técnica con el uso de \textit{spheretracing} para la representación de cualquier superficie implícita (algebraica o no), punto de partida de este trabajo.\newline
-
-Este método nos permitirá representar cualquier superficie en tiempo real con un coste computacionalmente muy bajo y a cualquier nivel de detalle. No obstante, para usarlo debemos comprender qué son las funciones distancia con signo, sus propiedades, y como trabajar con ellas.
+Como solución a esto, T. Sederberg y A.Zundel \cite{Sederberg1989ScanLD} presentaron en 1989 un método para la representación superficies algebraicas sin pérdida de información y de manera eficiente, capaz además de trabajar con siluetas, intersección de curvas y operaciones booleanas. En 1889 John C. Hart \cite{hart2} presenta una técnica de \textit{raymarching} para la representación de fractales usando funciones distancia con signo. Posteriormente, en 1995 \cite{hart} generaliza esta técnica con el uso de \textit{spheretracing} para la representación de cualquier superficie implícita (algebraica o no), punto de partida de este trabajo. Este método nos permitirá representar cualquier superficie en tiempo real con un coste computacionalmente muy bajo y a cualquier nivel de detalle. No obstante, para usarlo debemos comprender qué son las funciones distancia con signo, sus propiedades, y cómo trabajar con ellas.
 
 \begin{definicion}\label{def:sdf}
   Sea $\Omega \subset \R^3$. La \textbf{función distancia} asociada a $\Omega$, que llamamos $d_{\Omega}$ es el campo escalar que a cada punto de $\R^3$ le asigna su menor distancia a la frontera de $\Omega$:
@@ -13,7 +11,6 @@ Este método nos permitirá representar cualquier superficie en tiempo real con 
           d_{\Omega} \colon \R^3 &\to \R_0^+,\\
           x &\mapsto \inf\{\Vert x-y\Vert) \colon y \in \delta\Omega\}.
     \end{align*}
-
     Cuando $\Omega$ sea cerrado, podremos usar el mínimo en lugar del ínfimo.
 \end{definicion}
 
@@ -26,8 +23,7 @@ Este método nos permitirá representar cualquier superficie en tiempo real con 
       -d_{\Omega}(x), &x\in \mathring{\Omega}.
     \end{cases}
     \end{align*}
-
-  En general, nos referiremos a esta función por sus siglas en inglés SDF (\textit{Signed Distance Function}), y la denotaremos simplemente $\phi$ siempre que no haya confusión.
+  En la literatura es común referirse a ellas por sus inglés SDF (\textit{Signed Distance Function}), y la denotaremos simplemente $\phi$ siempre que no haya confusión.
 \end{definicion}
 
  \begin{observacion}
@@ -42,23 +38,24 @@ Este método nos permitirá representar cualquier superficie en tiempo real con 
   Sin pérdida de generalidad podemos suponer $k=0$, pues de no ser el caso, tomamos la función $\phi'(x,y,z)=\phi(x,y,z)-k$ y tenemos que $S_{\phi',0} = S_{\phi,k}$. Por tanto, la denotaremos como $S_\phi$.
 \end{definicion}
 
-Nuestra intención será entonces construir una escena definida como la isosuperficie generada por un SDF. A partir de ahora, tomaremos $p=(x,y,z)\in\R^3$.
+Nuestra intención es construir una escena definida como la isosuperficie generada por un SDF. A partir de ahora, tomaremos $p=(x,y,z)\in\R^3$.
 
 \begin{ejemplo}\label{ej:sdf}
     Ejemplos simples de SDF $\phi$ en $p$ para diferentes conjuntos $\Omega$ son:
     \begin{itemize}
         \item \textbf{Esfera de radio $\boldsymbol{r}$ centrada en el origen.}
         \begin{equation*}
-            \Omega=\{x\in \R^3 : \Vert x\Vert = r\},\quad \phi(p) = \Vert p\Vert - r.
+            \Omega=\{(x,y,z)\in \R^3 : \Vert (x,y,z)\Vert = r\},\quad \phi(p) = \Vert p\Vert - r.
         \end{equation*}
         \item \textbf{Plano con vector normal unitario $\boldsymbol{n=(a,b,c)}$ y pasando por el origen}.
         \begin{equation*}
-            \Omega=\{p\in\R^3 : ax+by+cz = 0\},\quad \phi(p) = p\cdot n.
+            \Omega=\{(x,y,z)\in\R^3 : ax+by+cz = 0\},\quad \phi(p) = p\cdot n.
         \end{equation*}
         \item \textbf{Toro sobre el eje Y de radios $\boldsymbol{R}$ y $\boldsymbol{r}$, con $\boldsymbol{R>r}$}:
-        \begin{equation*}
-            \Omega=\left\{p\in \R^3 : \left(R-\sqrt{x^2+z^2}\right)^2 + y^2 = r^2\right\},\quad \phi(p)= \bigg\Vert (\Vert(x,0,z)\Vert - R, y) \bigg\Vert - r.
-        \end{equation*}
+        \begin{align*}
+            &\Omega=\left\{(x,y,z)\in \R^3 : \left(R-\sqrt{x^2+z^2}\right)^2 + y^2 = r^2\right\},\\[10pt]
+            &\phi((x,y,z))= \bigg\Vert (\Vert(x,0,z)\Vert - R, y) \bigg\Vert - r.
+        \end{align*}
     \end{itemize}
 \end{ejemplo}
 
@@ -66,32 +63,31 @@ Nuestra intención será entonces construir una escena definida como la isosuper
 \input{Plantilla-TFG-master/capitulos/Diferenciabilidad}
 
 \section{Funciones cota de distancia}
-Hemos visto que las SDFs nos proporcionan la distancia signada exacta en cada punto al más cercano de un conjunto $\Omega\subset \R^3$, pero lo cierto es que para representar la isosuperficie generada por un SDF no se necesita tanta precisión, ya que mientras dos funciones tengan los mismos ceros generarán la misma isosuperficie. Sin embargo, para representar la superficie en las siguientes secciones usaremos el método del \textit{spheretracing} (\autoref{sec:tracing}), que sí utiliza la información de la distancia en puntos diferentes a la frontera de $\Omega$. Introducimos un concepto que nos permitirá seguir usando este método pero no es tan restrictivo como el de SDF \cite{hart}.
+Hemos visto que las funciones distancia con signo nos proporcionan la distancia signada exacta en cada punto al más cercano de un conjunto $\Omega\subset \R^3$, pero lo cierto es que para representar las isosuperficies que generan no se necesita tanta precisión, ya que mientras dos funciones tengan los mismos ceros generarán la misma isosuperficie. Sin embargo, para representar la superficie en las siguientes secciones usaremos el método del \textit{spheretracing} (\autoref{sec:tracing}), que sí utiliza la información de la distancia en puntos diferentes a la frontera de $\Omega$. Introducimos un concepto que nos permitirá seguir usando este método pero no es tan restrictivo como el de función distancia con signo \cite{hart}.
 
 \begin{definicion}
     Sea $\Omega\subset \R^3$ y $\phi$ su SDF. Una \textbf{cota de la distancia con signo} asociada a $\Omega$ es un campo escalar $\gamma\colon \R^3\to \R$ cumpliendo
     \begin{equation*}
-        \vert \gamma(p)\vert \le \vert \phi(p)\vert,\ \forall p\in\R^3.
+        \vert \gamma(p)\vert \le \vert \phi(p)\vert,\ \text{ para todo } p\in\R^3,
     \end{equation*}
-
-    y que tiene el mismo signo que $\phi$ en cada punto. Nos referiremos a estas funciones como SDB por sus siglas en inglés (Signed Distance Bound).
+    y que tiene el mismo signo que $\phi$ en cada punto. En su artículo \cite{hart2}, C. Hart se refiere a ellas como SDB (\textit{Signed Distance Bound}).
 \end{definicion}
 
-Observamos que una SDF es un caso especial de SDB en el que se cumple la igualdad. De esta definición es evidente que una SDF y una SDB asociadas a un mismo $\Omega$ tienen los mismos ceros, y generan por tanto la misma isosuperficie. Aunque trabajar con una SDB en \textit{spheretracing} hará que la convergencia sea más lenta, en ocasiones una SDB es más rápida de evaluar que una SDF por tener una expresión más simple, haciendo que sea deseable trabajar con ellas. Habrá otras ocasiones en las que incluso será imposible obtener una SDF para un cierto $\Omega$. Por estos motivos en la literatura no se suele distinguir entre SDF y SDB, y como mucho se utilizan los términos SDF exacta y aproximada cuando se quiere realizar una distinción.\newline
+Observamos que una SDF es un caso especial de SDB en el que se cumple la igualdad de la definición anterior, y que si ambos tipos de funciones están asociadas a un mismo $\Omega$ tendrán los mismos ceros, generando por tanto la misma isosuperficie. Aunque trabajar con una función cota de distancia en \textit{spheretracing} hará que la convergencia sea más lenta al proporcionar una cota más conservativa, en muchos casos será también más rápida de evaluar que una función distancia con signo por tener una expresión más simple, haciendo que sea deseable trabajar con ellas. Habrá otras ocasiones en las que incluso será imposible obtener una función distancia signada para un cierto $\Omega$. Por estos motivos en la literatura no se suele distinguir entre función distancia con signo y función cota de distancia, y como mucho se utilizan los términos función distancia exacta y aproximada respectivamente cuando se quiere realizar una distinción.\newline
 
-Veamos algunos ejemplos de SDF aproximadas.
+Veamos algunos ejemplos de funciones distancia aproximadas.
 \begin{ejemplo}\label{ej:sdf}
-    Para los siguientes conjuntos $\Omega$ podemos definir las SDFs aproximadas:
+    Para los siguientes conjuntos $\Omega$ podemos definir las funciones distancia aproximadas:
     \begin{itemize}
         \item \textbf{Cono centrado en el origen a lo largo del eje Y con altura $\boldsymbol{h}$ y ángulo $\theta$.}
         \begin{align*}
-            &\Omega=\{p\in \R^3 : (x^2+z^2)(\cos\theta)^2 - y^2(\sin\theta)^2\},\\[8pt]
-            &\phi(p) = \Max\Big((\sin\theta, \cos\theta)\cdot (\Vert (x,0,z)\Vert, y), -h-y\Big).
+            &\Omega=\{(x,y,z)\in \R^3 : (x^2+z^2)(\cos\theta)^2 - y^2(\sin\theta)^2\},\\[8pt]
+            &\phi((x,y,z)) = \Max\Big((\sin\theta, \cos\theta)\cdot (\Vert (x,0,z)\Vert, y), -h-y\Big).
         \end{align*}
-        \item \textbf{Elipsoide}.
+        \item \textbf{Elipsoide fijados $\boldsymbol{a,b,c\in \R\setminus \{0\}}$}.
         \begin{align*}
-            \Omega=\{p\in\R^3 : \frac{x^2}{a^2}+\frac{y^2}{b^2}+\frac{z^2}{c^2} = 0,\ a,b,c\in \R\setminus \{0\}\},\\[10pt]
-            \phi(p) = \Big\Vert \left( \frac{x}{a},\frac{y}{b},\frac{z}{c} \right) \Big\Vert \cdot \left(  \Big\Vert \left( \frac{x}{a},\frac{y}{b},\frac{z}{c} \right) \Big\Vert -1\right)\ \Big{/}\ \Big\Vert \left( \frac{x}{a^2},\frac{y}{b^2},\frac{z}{c^2} \right) \Big\Vert .
+            &\Omega=\left\{(x,y,z)\in\R^3 : \frac{x^2}{a^2}+\frac{y^2}{b^2}+\frac{z^2}{c^2} = 0\right\},\\[10pt]
+            &\phi((x,y,z)) = \Big\Vert \left( \frac{x}{a},\frac{y}{b},\frac{z}{c} \right) \Big\Vert \cdot \left(  \Big\Vert \left( \frac{x}{a},\frac{y}{b},\frac{z}{c} \right) \Big\Vert -1\right)\ \Big{/}\ \Big\Vert \left( \frac{x}{a^2},\frac{y}{b^2},\frac{z}{c^2} \right) \Big\Vert .
         \end{align*}
     \end{itemize}
 \end{ejemplo}

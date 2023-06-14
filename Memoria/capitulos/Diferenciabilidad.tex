@@ -6,16 +6,31 @@ Cuando sea conveniente identificaremos
 \end{equation*}
 
 \begin{definicion}\label{def:parcial}
-    Sea $U$ un abierto de $\R^3$ y $\phi: U \to \R$. Definimos la \textbf{$\boldsymbol{i}$-ésima derivada parcial} de $\phi$ en $p_0\in\R^3$ como
+    Sea $U$ un abierto de $\R^3$ y $\phi: U \to \R$. Para $i\in \{1,2,3\}$, definimos la \textbf{$\boldsymbol{i}$-ésima derivada parcial} de $\phi$ en $p_0\in\R^3$ como
     \begin{equation*}
-        \frac{\partial \phi}{\partial x_i}(p_0) = \lim_{h\to 0}\frac{\phi(p_0+he_i) - \phi(p_0)}{h},\ i=1,2,3.
+        \frac{\partial \phi}{\partial x_i}(p_0) = \lim_{h\to 0}\frac{\phi(p_0+he_i) - \phi(p_0)}{h}.
+    \end{equation*}
+\end{definicion}
+
+\begin{definicion}
+    Sea $U$ un abierto de $\R^3$ y $\phi: U \to \R$. Diremos que $\phi$ es \textbf{diferenciable} en $p_0 \in U$ si existen todas sus derivadas parciales en $p_0$ y son continuas. Definimos la \textbf{diferencial} de $\phi$ en $p_0$ como la suma de todas sus parciales en dicho punto, y la denotamos como $d\phi(p_0)$.
+
+    % \begin{equation*}
+    %     \text{lím}_{p\to p_0} \frac{\phi(p)-\phi(p_0) - \nabla\phi(p_0)\cdot(p-p_0)}{\Vert p-p_0\Vert} = 0.
+    % \end{equation*}
+\end{definicion}
+
+\begin{definicion}
+    Dado un abierto $U\subseteq \R^3$, diremos que la \textbf{clase de diferenciabilidad} de una función $\phi:U\to \R$ es $\mathbb{C}^n(U)$ si para $i\in \{1,2,3\}$ y $j\in \{0,\dots, n\}$ existen y son continuas todas las parciales
+    \begin{equation*}
+        \frac{\partial^j \phi}{\partial x_i}(p),\ \text{para todo } p\in U.
     \end{equation*}
 \end{definicion}
 
 \begin{definicion}
   Llamamos \textbf{gradiente} de $\phi\colon \R^3\to\R$ a la función
   \begin{align*}
-      \nabla\phi\colon \R^3 &\to \R^3\\
+      \nabla\phi\colon \R^3 &\to \R^3,\\
       p &\mapsto \left(\frac{\partial \phi}{\partial x_1}(p), \frac{\partial \phi}{\partial x_2}(p), \frac{\partial \phi}{\partial x_3}(p)\right).
   \end{align*}
 \end{definicion}
@@ -23,51 +38,46 @@ Cuando sea conveniente identificaremos
 \begin{definicion}
   Dada $\phi:\R^3\to \R$ diferenciable, definimos la \textbf{derivada direccional} en $p_0\in \R^3$ en la dirección $v\in\R^3$ a:
   \begin{equation*}
-    \nabla_v \phi(p_0) = \nabla \phi(p_0) \cdot v = \frac{\partial{\phi}(p_0)}{\partial{x}}v_x + \frac{\partial{\phi}(p_0)}{\partial{y}}v_y + \frac{\partial{\phi}(p_0)}{\partial{z}}v_z
+    \nabla_v \phi(p_0) = \nabla \phi(p_0) \cdot v = \frac{\partial{\phi}(p_0)}{\partial{x}}v_x + \frac{\partial{\phi}(p_0)}{\partial{y}}v_y + \frac{\partial{\phi}(p_0)}{\partial{z}}v_z.
   \end{equation*}
 \end{definicion}
 
-\begin{definicion}
-    Sea $U$ un abierto de $\R^3$ y $\phi: U \to \R$. Diremos que $\phi$ es \textbf{diferenciable} en $p_0 \in U$ si existen todas sus derivadas parciales en $p_0$ y son continuas.
-    % \begin{equation*}
-    %     \text{lím}_{p\to p_0} \frac{\phi(p)-\phi(p_0) - \nabla\phi(p_0)\cdot(p-p_0)}{\Vert p-p_0\Vert} = 0.
-    % \end{equation*}
-\end{definicion}
 
 
-Ahora mismo, dado un SDF arbitrario no tenemos información alguna sobre su diferenciabilidad, ya que su expresión puede ser de lo más variada y compleja. Veamos una propiedad que cumplen todos los SDF y que nos permitirá obtener algo de información al respecto \cite{lips} \cite{derivWiki}.
+
+Ahora mismo, dado un SDF arbitrario no tenemos información alguna sobre su diferenciabilidad, ya que su expresión puede ser de lo más variada y compleja. Veamos una propiedad que cumplen todos los SDF y que nos permitirá obtener algo de información al respecto \cite{lips,derivWiki}.
 
 \begin{definicion}
     Una campo escalar $\phi\colon \R^3 \to \R$ se dice \textbf{lipschitziano} si existe una constante $L>0$ tal que
     \begin{equation*}
-        \vert \phi(p)-\phi(q)\vert \le L\Vert x-y\Vert,\ \forall p,q\in \R^3.
+        \vert \phi(p)-\phi(q)\vert \le L\Vert p-q\Vert,\ \text{para todo } p,q\in \R^3.
     \end{equation*}
-
-    El menor valor posible para la constante $L$ recibe el nombre de \textbf{constante de Lipschitz}.
+    La constante $L$ recibe el nombre de \textbf{constante de Lipschitz}.
 \end{definicion}
 
 \begin{proposicion}
     Sea $\phi\colon \R^3 \to \R$ una función lipschitziana cualquiera con constante de Lipschitz $L$. Entonces
     \begin{equation*}
-        \vert \phi'(p)\vert \le L
+        \vert d\phi(p)\vert \le L
     \end{equation*}
-
-    en todo punto donde sea derivable.
+    en todo punto donde sea diferenciable.
 \end{proposicion}
+
 \begin{lema}
-    Sea $\phi:\R^3\to \R$ un SDF. Entonces $\phi$ es lipschitziana de constante $L=1$.
+    Sea $\phi:\R^3\to \R$ la función distancia con signo asociada a $\Omega$. Entonces $\phi$ es lipschitziana con constante $L=1$.
 \end{lema}
 \begin{proof}
-    Sean $p$ y $q\in \R^3$. Usando la \autoref{def:sdf}, para todo $s\in S_{\phi}$ se tiene
-    \begin{align*}
-        \phi(p) &\le \Vert p-s\Vert = \Vert p-q+q+s\Vert \le \Vert p-q\Vert + \Vert q-s\Vert\\[10pt] 
-        &\implies \phi(p) - \Vert p-q\Vert \le \Vert q-s \Vert \implies  \phi(p) - \Vert p-q\Vert \le \Inf_{s\in S_{\phi}}(\Vert q-s \Vert) = \phi(q)\\[10pt]
-        &\implies \phi(p) - \phi(q) \le \Vert p-q \Vert
-    \end{align*}
-
-    De forma análoga podemos ver que $\phi(q) - \phi(p) \le \Vert q-p \Vert$, luego
+    Sean $p$ y $q\in \R^3$. Usando la \autoref{def:sdf}, para todo $s\in \delta\Omega$ se tiene
     \begin{equation*}
-        \vert \phi(p) - \phi(q)\vert \le 1\cdot \Vert p-q\Vert.
+        \phi(p) \le \Vert p-s\Vert = \Vert p-q+q+s\Vert \le \Vert p-q\Vert + \Vert q-s\Vert.
+    \end{equation*}
+    Por tanto, $\phi_{\Omega}(p) - \Vert p-q\Vert \le \Vert q-s \Vert$, luego $\phi_{\Omega}(p) - \Vert p-q\Vert \le \Inf_{s\in \delta\Omega}(\Vert q-s \Vert) = \phi_{\Omega}(q)$ y obtenemos
+    \begin{equation*}
+         \phi_{\Omega}(p) - \phi_{\Omega}(q) \le \Vert p-q \Vert.
+    \end{equation*}
+    De forma análoga podemos ver que $\phi_{\Omega}(q) - \phi_{\Omega}(p) \le \Vert q-p \Vert$, concluyendo que
+    \begin{equation*}
+        \vert \phi_{\Omega}(p) - \phi_{\Omega}(q)\vert \le 1\cdot \Vert p-q\Vert.\qedhere
     \end{equation*}
 \end{proof}
 
@@ -75,23 +85,32 @@ Ahora mismo, dado un SDF arbitrario no tenemos información alguna sobre su dife
     Sea $U$ un abierto de $\R^3$ y $\phi:U\to \R$ lipschitziana. Entonces $\phi$ es diferenciable en casi todo punto de $U$.
 \end{lema}
 
-Tenemos por tanto asegurado que $\phi$ será diferenciable en casi todo punto de $\R^3$. No obstante, podemos concretar aún más dónde están los puntos de conflicto cuando $\Omega$ sea lo suficientemente regular \cite{dif1} \cite{dif2}. Para ello necesitaremos introducir el concepto de esqueleto de una superficie \cite{derivWiki}.
+Tenemos por tanto asegurado que $\phi_{\Omega}$ será diferenciable en casi todo punto de $\R^3$. No obstante, podemos concretar aún más dónde están los puntos de conflicto cuando $\Omega$ sea lo suficientemente regular \cite{dif1,dif2}. Para ello necesitaremos introducir el concepto de esqueleto de una superficie \cite{derivWiki}.
 \begin{definicion}
     Sea $\phi_{\Omega} \colon \R^3\to \R$ un SDF. Llamamos \textbf{esqueleto} de $\Omega$ al conjunto de puntos de $\R^3$ cuya distancia a la superficie puede obtenerse como la distancia a dos o más puntos distintos de $\delta \Omega$:
     \begin{equation}
-        \epsilon(\Omega) = \{p\in \R^3 : \phi(p) = \Vert p-q\Vert = \Vert p-r\Vert,\ q,r\in \delta\Omega ,\ q\neq r \}.
+        \epsilon(\Omega) = \{p\in \R^3 : \phi_{\Omega}(p) = \Vert p-q\Vert = \Vert p-r\Vert,\ q,r\in \delta\Omega ,\ q\neq r \}.
     \end{equation}
 \end{definicion}
 
 \begin{definicion}
-    Sea $\Omega \subset \R^3$ y $p\in \Omega$. Llamamos \textbf{vector normal} en $p$ al vector perpendicular al borde de $\Omega$ en $p$. Lo denotamos $N_p$, y siempre supondremos que está normalizado.
+    Sea $\Omega \subset \R^3$ y $p\in \Omega$. Llamamos \textbf{vector normal} en $p$ al vector de norma uno y perpendicular al borde de $\Omega$ en $p$. Lo denotamos $N_p$.
 \end{definicion}
 
+\begin{definicion}
+    Decimos que $\Omega \subseteq \R^3$ es \textbf{regular} si para cada $p\in \Omega$ existen abiertos $U\subseteq \R^2$ y $V\subseteq \R^3$ junto a una aplicación $\psi\colon U \to V\cap \Omega$ tal que:
+    \begin{enumerate}
+        \item $\psi$ es un homeomorfismo, es decir, es continua, biyectiva y con inversa continua,
+        \item $\psi$ es diferenciable y su diferencial es inyectiva.
+    \end{enumerate}
+\end{definicion}
+
+El siguiente teorema, cuya demostración podemos consultar en \cite{dif1}, nos proporciona una caracterización geométrica de la diferenciabilidad de cualquier distancia con signo bajo $\phi_{\Omega}$ ciertas hipótesis de regularidad para $\Omega$.
 \begin{teorema}\label{teo:diff}
-    Sea $\Omega \subseteq \R^3$ un conjunto abierto acotado con frontera diferenciable y $\phi_{\Omega} \colon \R^3\to \R$ un SDF. Entonces $\phi_{\Omega}$ es diferenciable en un entorno tubular $U$ de $\delta \Omega$. Es más, para cada $p\in \R^3$ se cumple una se las siguientes propiedades.
+    Sea $\Omega \subseteq \R^3$ cuya frontera es regular y $\phi_{\Omega} \colon \R^3\to \R$ la función distancia con signo asociada a $\Omega$. Entonces $\phi_{\Omega}$ es diferenciable en un entorno tubular $U$ de $\delta \Omega$. Es más, para cada $p\in \R^3$ se cumple una se las siguientes propiedades:
     \begin{enumerate}
         \item $p\in \delta \Omega$ y $\phi_{\Omega}$ es diferenciable en $p$ con $\nabla S_{\phi(p)} = N_p$,
-        \item $p\notin \delta \Omega$ y $\phi_{\Omega}$ es diferenciable en $p \iff p\in \R^3\setminus \epsilon(\Omega)$, en cuyo caso
+        \item $p\notin \delta \Omega$ y $\phi_{\Omega}$ es diferenciable en $p$ si y sólo si $p\in \R^3\setminus \epsilon(\Omega)$, en cuyo caso
         \begin{equation*}
             \nabla \phi_{\Omega}(p) = \frac{q-p}{\phi_{\Omega}(p)},
         \end{equation*}

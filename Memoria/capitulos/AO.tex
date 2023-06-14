@@ -39,25 +39,21 @@ El método se basa en dado un punto $p\in S_{\phi}$ evaluar el SDF en varios pun
 \begin{equation*}
     \phi(p + d_i N_p) = d_i,
 \end{equation*}
-
 ya que eso significaría que el punto más cercano a $p$ de $S_{\phi}$ es el propio $p$. Así, si hacemos $M$ evaluaciones igualmente espaciadas a lo largo de $N_p$, consideraremos que el punto $p$ no está ocluido si
 \begin{equation*}
     \sum_{i=1}^M \phi\Big(p + \frac{i}{M} N_p\Big) - \sum_{i=1}^M \frac{i}{M} = 0.
 \end{equation*}
-
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/diagramaAO.png}
     \caption{Cálculo de oclusión ambiental muestreada por la normal}
     \label{fig:sombras4}
 \end{figure}
-
 Cuanto mayor sea este valor (no puede ser menor que $0$ por definición de SDF) menos luz será capaz de alcanzar $p$. Así, podemos representar la cantidad de luz ocluida como
 \begin{equation*}
     \sum_{i=1}^M \frac{1}{2^i}\cdot \left(\frac{i}{M} - \phi\Big(p + \frac{i}{M} N_p\Big)\right)\in [0,1].
 \end{equation*}
-
-El hecho de que esté valor esté acotado en$[0,1]$ viene de que suponemos que $\Vert N_p\Vert = 1$, de forma que
+El hecho de que esté valor esté acotado en $[0,1]$ viene de que suponemos que $\Vert N_p\Vert = 1$, de forma que
 \begin{equation*}
     \phi\left(p + \frac{i}{M} N_p\right) \le 1,
 \end{equation*}

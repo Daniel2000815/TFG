@@ -5,7 +5,7 @@ Toda pantalla tiene resolución finita, y por tanto la definición con la que pu
 Lo cierto es que no podemos hacer desaparecer este problema, pues es algo intrínseco de la naturaleza discreta de las pantallas y los sistemas de muestreo. En nuestro caso esto último se traduce en que no podemos trazar infinitos rayos. No obstante, lo que sí podemos hacer es tratar de disimularlo. En lugar de tomar una decisión binaria de si un píxel debe ser de un color u otro podemos intentar tener en cuenta la aportación de otras primitivas que estén cercanas dentro del píxel aunque no ocupen su centro. Una primera idea podría ser que una vez asignado un color a un píxel se hiciera la media con sus píxeles vecinos para así generar una transición suave entre ellos. Sin embargo este acercamiento presenta dos grandes inconvenientes:
 \begin{itemize}
     \item Estaríamos perdiendo parte de la información original, y por ende, haciendo la imagen más borrosa.
-    \item El responsable de asignar el color de cada píxel es una instancia del \textit{fragment shader}, y como ya comentamos, los \textit{shaders} son programas independientes y no tienen información sobre el resto de instancias. Por tanto este método sería de postprocesado, es decir, sería ejecutado una vez hubiera sido generada la imagen,
+    \item El responsable de asignar el color de cada píxel es una instancia del \textit{fragment shader}, y como ya comentamos, los \textit{shaders} son programas independientes y no tienen información sobre el resto de instancias. Por tanto este método sería de postprocesado, es decir, sería ejecutado una vez hubiera sido generada la imagen.
     
 \end{itemize}
 
@@ -59,8 +59,7 @@ Modificar por dónde pasan los rayos dentro de cada píxel equivale a cambiar c�
 \begin{equation*}
     offset_{m,n} = (m+\nicefrac{1}{2},n+\nicefrac{1}{2}))\cdot subdivision - \left( \frac{lado}{2}, \frac{lado}{2}\right) = \frac{ (m+\nicefrac{1}{2},n+\nicefrac{1}{2}))}{AA} - \left( \frac{1}{2}, \frac{1}{2}\right),
 \end{equation*}
-
-donde $m,n\in \{0,\dots, AA-1\}$.
+donde $m,n\in \{0,\dots, AA-1\}$.\newline
 \begin{figure}[!h]
     \centering
     \begin{subfigure}[b]{0.4\textwidth}

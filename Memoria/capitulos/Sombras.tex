@@ -55,17 +55,17 @@ Los resultados obtenidos en la \autoref{fig:difBlinn} presentan ciertas carencia
 
 Realizamos las siguientes apreciaciones respecto al método \texttt{CalcularSombras} propuesto:
 \begin{itemize}
-    \item Dado que estamos trabajando con luces direccionales situadas a distancia infinita solo podemos hacer \textit{spheretracing} desde $p$ en dirección a la fuente, a pesar de que lo intuitivo sería hacerlo desde el foco de luz hacia el punto, 
+    \item Dado que estamos trabajando con luces direccionales situadas a distancia infinita solo podemos hacer \textit{spheretracing} desde $p$ en dirección a la fuente, a pesar de que lo intuitivo sería hacerlo desde el foco de luz hacia el punto.
     \item A diferencia del algoritmo propuesto en \autoref{a:spheretracing} no podemos inicializar $d=0$, ya que entonces se detectaría una intersección en el mismo punto $p$.
 \end{itemize}
 
-Estudiando los resultados obtenidos vemos que al añadir sombras obtenemos una imagen mucho más cohesiva y otorgamos a la esfera mayor presencia en la escena. Sin embargo también podremos apreciar que las sombras que genera este método son muy planas y duras. Realmente ahora mismo no tenemos control alguno sobre esto, ya que según nuestra implementación un punto o está totalmente en sombra o totalmente iluminado. Esto no siempre es así en el mundo real, donde podemos encontrar que no toda la región sombreada sea igual de oscura o el borde esté más o menos difuminado en función de las propiedades de la fuente. Podemos simular estos fenómenos de forma muy sencilla usando información de la que ya que disponemos en el algoritmo de \textit{spheretracing}. En particular,
+Estudiando los resultados obtenidos vemos que al añadir sombras obtenemos una imagen mucho más cohesiva y otorgamos a la esfera mayor presencia en la escena. Sin embargo también podremos apreciar que las sombras que genera este método son muy planas y duras. Realmente ahora mismo no tenemos control alguno sobre esto, ya que según nuestra implementación un punto o está totalmente en sombra o totalmente iluminado. Esto no siempre es así en el mundo real, donde podemos encontrar que no toda la región sombreada sea igual de oscura o el borde esté más o menos difuminado en función de las propiedades de la fuente. Podemos simular estos fenómenos de forma muy sencilla usando información de la que ya que disponemos en el algoritmo de \textit{spheretracing}. En particular:
 \begin{itemize}
     \item Haremos que cuanto más cerca se encuentre el punto del obstáculo que le hace sombra menos luz reciba. Por tanto la intensidad de la sombra será proporcional a la evaluación del SDF en el punto actual del rayo:
     \begin{equation*}
-        sombra \propto sdf,
+        sombra \propto sdf.
     \end{equation*}
-    \item Cuando un punto sea alcanzado por la luz pero haya estado muy cerca de ser obstruido dejaremos que refleje solo una fracción de la luz total. Esta cantidad deberá ser mayor cuanto menos haya faltado para perder la intersección, creando un difuminado en el borde. Por tanto
+    \item Cuando un punto sea alcanzado por la luz pero haya estado muy cerca de ser obstruido dejaremos que refleje solo una fracción de la luz total. Esta cantidad deberá ser mayor cuanto menos haya faltado para perder la intersección, creando un difuminado en el borde:
     \begin{equation*}
         sombra \propto \frac{1}{d}.
     \end{equation*}

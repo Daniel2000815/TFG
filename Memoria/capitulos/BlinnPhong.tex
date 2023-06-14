@@ -3,9 +3,9 @@ Empezamos viendo cómo las fuentes de luz presentes en la escena iluminan direct
 
 Vamos a considerar que nuestra escena consta de los siguientes elementos.
 \begin{itemize}
-    \item La \textbf{isosuperficie} $S_{\phi}$ como único objeto a ser dibujado (aunque el modelo es válido para cualquier número de objetos en escena),
-    \item Un \textbf{observador} que se encuentra en la posición $c_o\in\R^3$ mirando a un punto $p\in \R^3$,
-    \item Un número finito $n$ de \textbf{fuentes de luz}. Llamaremos $l_i$ con $i=1,\dots, n$ a los vectores normalizados que apuntan desde $p$ a la posición de cada fuente.
+    \item La \textbf{isosuperficie} $S_{\phi}$ como único objeto a ser dibujado (aunque el modelo es válido para cualquier número de objetos en escena).
+    \item Un \textbf{observador} que se encuentra en la posición $c_o\in\R^3$ mirando a un punto $p\in \R^3$.
+    \item Un número finito $n$ de \textbf{fuentes de luz}. Llamaremos $l_i$ con $i\in \{1,\dots, n\}$ a los vectores normalizados que apuntan desde $p$ a la posición de cada fuente.
 \end{itemize}
 
 Empecemos comprendiendo el fenómeno físico que tratamos de simular. La luz que generan las fuentes no es más que radiación electromagnética. De forma ideal, esta radiación se puede ver como un flujo en el espacio de partículas llamadas \textbf{fotones} que siguen trayectorias rectilíneas a la par que interaccionan con el entorno. Cada una de estas partículas tendrá una energía radiante única en función de su longitud de onda, que irá transfiriendo a aquellos objetos con los que interaccione.
@@ -23,29 +23,25 @@ El objetivo del modelo será por tanto describir la radiancia que percibe el obs
 \begin{itemize}
     \item En un modelo físicamente correcto la luz reflejada en cada punto se dispersaría por el entorno, contribuyendo a la radiancia incidente en otros puntos de la escena. Sin embargo, nosotros no consideraremos la radiancia incidente que no provenga directamente de fuentes de luz. Incluso teniendo un solo objeto en escena como es nuestro caso este modelo es mejorable, pues el objeto puede reflejar radiancia sobre sí mismo. Por tanto, usaremos una radiancia ambiente constante $L_A$ para suplir esta iluminación indirecta.
     \item La radiancia se conserva en el espacio entre objetos.
-    \item Las fuentes de luz son direccionales, de forma que no serán visibles en la escena. Además supondremos que emiten una radiancia constante $S_i$ para $i=1,\dots, n$.
+    \item Las fuentes de luz son direccionales, de forma que no serán visibles en la escena. Además supondremos que emiten una radiancia constante $S_i$ para $i\in \{1,\dots, n\}$.
     \item No se consideran objetos con transparencia.
 \end{itemize}
 Es natural pensar que la radiancia percibida en un punto $p\in \R^3$ será la suma de la radiancia que emita y la que sea capaz de reflejar. Así, teniendo en cuenta las consideraciones anteriores tenemos que
 \begin{equation*}
     L(p,v) = L_A + L_E + \sum_{i=1}^n L_R(p,l_i).
 \end{equation*}
-
 Como $L_A$ y $L_E$ son constantes sólo nos falta estudiar cómo obtener la \textbf{radiancia reflejada} para cada fuente de luz. Para ello fijamos un índice $m\in \{1,\dots,n\}$ y suponemos a partir de ahora que $p\in S_{\phi}$, pues de lo contrario
 
 \begin{equation*}
     L(p,v) = L_A,\ p\in \R^3\setminus S_{\phi},
 \end{equation*}
-
-ya que la única luz que se puede reflejar es la del ambiente, la cual ya está siendo considerada con $L_A$, y al trabajar únicamente con fuentes de luz direccionales $L_E=0$. \newline
+ya que la única luz que se puede reflejar es la del ambiente y ya está siendo considerada con $L_A$, y al trabajar únicamente con fuentes de luz direccionales $L_E=0$. \newline
 
 Sabemos que cada objeto refleja la luz de manera distinta en función de su material y las propiedades de la fuente. Para representar este comportamiento definimos una función que indique la fracción de radiancia proveniente de $l_m$ que se refleja en un punto $p$ en la dirección $v$ para cada fuente de luz
 \begin{equation*}
     f_r \colon \R^3\times \R^3\times \R^3 \to \R^3.
 \end{equation*}
-
-Así, la radiancia reflejada sería
-
+Así, la radiancia reflejada es
 \begin{equation*}
     L_R(p,v,l_m) = S_m\cdot f_r(p,v,l_m).
 \end{equation*}
@@ -156,7 +152,7 @@ Recogemos los resultados obtenidos en la siguiente definición.
     \end{itemize}
 \end{definicion}
 
-En 1975 Phong introdujo una variante a este modelo \cite{phong} que hoy conocemos como \textbf{modelo de Blinn-Phong}. Su única diferencia con el de Blinn consiste en el uso del llamado \textit{halfway vector}
+En 1975 Phong \cite{phong} introdujo una variante a este modelo que hoy conocemos como \textbf{modelo de Blinn-Phong}. Su única diferencia con el de Blinn consiste en el uso del llamado \textit{halfway vector}
 \begin{equation*}
     h_m = \frac{l_m + v}{\Vert l_m + v\Vert}.
 \end{equation*}
@@ -199,11 +195,11 @@ Aunque pueda parecer una simplificación del modelo de Blinn, lo cierto es que p
 \begin{definicion}[Modelo de Blinn-Phong]
     En el contexto de la \autoref{def:blinn}, la radiancia percibida en el punto $p\in\R^3$ desde la dirección $v\in\R^3$ con $\Vert v \Vert = 1$ según el modelo de Blinn-Phong viene dada por
     \begin{equation*}
-        L(p,v) = L_A+L_E+ \sum_{i=0}^n S_i \Bigg[ k_aR_A + \Max(0,l_i\cdot N_p) \left( k_dR_D + k_eR_E\cdot \left(N_p\cdot \frac{l_i + v}{\Vert l_i + v\Vert} \right)^{\alpha} \right) \Bigg],
+        L(p,v) = L_A+L_E+ \sum_{i=0}^n S_i \Bigg[ k_aR_A + \Max(0,l_i\cdot N_p) \left( k_dR_D + k_eR_E\cdot \left(N_p\cdot \frac{l_i + v}{\Vert l_i + v\Vert} \right)^{\alpha} \right) \Bigg].
     \end{equation*}
 \end{definicion}
 
-Ya podemos darle forma a las funciones \texttt{DibujarSuperficie} y \texttt{DibujarFondo} usadas en la \autoref{a:spheretracing}, suponiendo que pasamos como \textit{uniforms} los parámetros del material y los valores $l_i$ y $S_i$ para cada $i=1,\dots, n$.
+Ya podemos darle forma a las funciones \texttt{DibujarSuperficie} y \texttt{DibujarFondo} usadas en la \autoref{a:spheretracing}, suponiendo que pasamos como \textit{uniforms} los parámetros del material y los valores $l_i$ y $S_i$ para cada $i\in \{1,\dots, n\}$.
 \begin{figure}[ht!]
     \centering
     
@@ -241,29 +237,28 @@ Ya podemos darle forma a las funciones \texttt{DibujarSuperficie} y \texttt{Dibu
         \caption{Implementación de las funciones \texttt{DibujarSuperficie} y \texttt{DibujarFondo}}
 \end{figure}
 
-Sólo queda un asunto por tratar. A la vista de la expresión de $f_r$ \eqref{eq:fr} y del código anterior, somos capaces de calcular todos los valores a excepción de uno, el del vector normal. 
+Sólo queda un asunto por tratar. A la vista de la expresión de $f_r$ \eqref{eq:fr} y del código anterior, somos capaces de calcular todos los valores a excepción de uno, el del vector normal. En la siguiente sección veremos presentamos una técnica para calcularlo de forma aproximada. 
 
 \subsubsection{Cálculo del vector normal}
-En cualquier modelo de iluminación el acceso al vector normal es indispensable. Cuando se trabaja con mallas de polígonos el vector normal viene dado para cada vértice, pero este no es nuestro caso. En su lugar nosotros usaremos el gradiente del SDF para obtenerlo.
+En cualquier modelo de iluminación el acceso al vector normal es indispensable. Cuando se trabaja con mallas de polígonos el vector normal viene dado para cada vértice, pero este no es nuestro caso. En su lugar nosotros usaremos el gradiente del SDF para obtenerlo \cite{harvard}.
 \begin{proposicion}\label{p:gradient_perp}
   Sea $\phi\colon \R^3\to \R$ diferenciable. Entonces $\nabla\phi$ es perpendicular a $S_\phi$.
 \end{proposicion}
 \begin{proof}
   Sea $s\in S_\phi$ arbitrario. Tomamos una curva parametrizada:
   \begin{align*}
-    \alpha \colon [0,1] & \to S_\phi                             \\
-    t                   & \mapsto \left(x(t), y(t), z(t) \right)
+    \alpha \colon [0,1] & \to S_\phi,\\
+    t                   & \mapsto \left(x(t), y(t), z(t) \right),
   \end{align*}
-
-  cumpliendo $\alpha(t_0)=s$ para algún $t_0\in [0,1]$. Veamos que $\nabla\phi(s) \perp \alpha$:
-
-  \begin{align*}
-    \alpha(t)\subset S_\phi & \implies \phi(\alpha(t))=0\\
-                            & \implies \nabla\phi(\alpha(t)) = \frac{\partial{F}}{\partial{x}}\frac{dx}{dt} + \frac{\partial{F}}{\partial{y}}\frac{dy}{dt} + \frac{\partial{F}}{\partial{z}}\frac{dz}{dt} = 0 \\
-                            & \implies \langle \nabla\phi(x,y,z), \alpha'(t)\rangle = 0 \implies \langle \nabla\phi(x,y,z), \alpha'(t_0)\rangle = 0
-  \end{align*}
-
-    Por tanto $\nabla\phi(s)$ es perpendicular al vector tangente de $\alpha$ en $s$, que a su vez está contenido en el plano tangente de $S_\phi$ en $s$. Por tanto $\nabla\phi(s) \perp S_\phi$.
+  cumpliendo $\alpha(t_0)=s$ para algún $t_0\in [0,1]$. Veamos que $\nabla\phi(s) \perp \alpha$. Como $ \alpha(t)\subset S_\phi$ la evaluación de $\phi$ en cualquier punto de la curva será cero, y por tanto
+  \begin{equation*}
+      \frac{d}{dt}\phi(\alpha(t)) = 0.
+  \end{equation*}
+  Aplicando la regla de la cadena obtenemos
+  \begin{equation*}
+       \frac{d\phi \circ \alpha}{dt} = \frac{\partial{\phi}}{\partial{x}}\bigg\rvert_s \frac{dx}{dt}\bigg\rvert_{t_0} + \frac{\partial{\phi}}{\partial{y}}\bigg\rvert_s\frac{dy}{dt}\bigg\rvert_{t_0} + \frac{\partial{\phi}}{\partial{z}}\bigg\rvert_s\frac{dz}{dt}\bigg\rvert_{t_0} = \nabla \phi (s) \cdot \frac{d\alpha}{dt}\bigg\rvert_{t_0} = 0.
+  \end{equation*}
+    Por tanto $\nabla\phi(s)$ es perpendicular al vector tangente de $\alpha$ en $s$, que a su vez está contenido en el plano tangente de $S_\phi$ en $s$, luego $\nabla\phi(s) \perp S_\phi$.
 \end{proof}
 
 Hemos visto que calcular el vector normal en cualquier punto equivale a calcular $\nabla\phi$ y que este existe en casi todo punto de $S_{\phi}$ por el \autoref{teo:diff}, pero esto no significa que podamos o debamos obtenerlo de forma analítica. Si bien en muchos casos sería posible hacerlo de forma analítica, esto podría tener asociado un coste computacional que no podemos asumir. Existen varios métodos numéricos para aproximar el gradiente de una función. Uno de los más triviales es el de las diferencias centrales, basado en aproximar el límite de la \autoref{def:parcial} tomando un valor pequeño para $h$. Necesitaríamos entonces realizar seis evaluaciones de $\phi$ para obtener el gradiente, dos por cada parcial. Nosotros usaremos el \textbf{método del tetraedro} \cite{article:tetra}, que sin ser el más preciso,  produce buenos resultados y es rápido, haciendo uso únicamente de cuatro evaluaciones de $\phi$ en la dirección de los vértices de un tetraedro:
@@ -282,11 +277,9 @@ Hemos visto que calcular el vector normal en cualquier punto equivale a calcular
 
 \begin{proof}
   Por la proposición \autoref{p:gradient_perp}, basta comprobar que $\hat{N}$ es colineal a $\nabla \phi(p)$.
-
   \begin{align*}
     \hat{N} & = \sum_{i=0}^3 k_i\cdot f(p + hk_i) = \sum_{i=0}^3 k_i\cdot f(p + hk_i) - k_i\cdot f(p) = \sum_{i=0}^3 k_i\cdot \left[ f(p+hk_i) - f(p)\right]\\ &= h\sum_{i=0}^3 k_i \nabla_{k_i}f(x)
-    = h\sum_{i=0}^3 k_i \cdot \left( k_i \cdot \nabla f(p)\right) = h\sum_{i=0}^3 (k_i\cdot k_i) \nabla f(p) = h\sum_{i=0}^3 \nabla f(p) = 4h\nabla f(p)
+    = h\sum_{i=0}^3 k_i \cdot \left( k_i \cdot \nabla f(p)\right) = h\sum_{i=0}^3 (k_i\cdot k_i) \nabla f(p) = h\sum_{i=0}^3 \nabla f(p) = 4h\nabla f(p).
   \end{align*}
-
-  donde hemos usado que $\sum_{i=0}^3 k_i = (0,0,0)$, $\sum_{i=0}^3 k_i\cdot k_i = (1,1,1)$ y que el producto escalar es un operador lineal.
+  Hemos usado que $\sum_{i=0}^3 k_i = (0,0,0)$, $\sum_{i=0}^3 k_i\cdot k_i = (1,1,1)$ y que el producto escalar es un operador lineal.
 \end{proof}
