@@ -1,4 +1,4 @@
-Una vez definida la escena a partir de un SDF necesitamos una forma para visualizarla, para lo que utilizaremos la API de OpenGL \cite{opengl} y aplicaremos la técnica de \textit{raymarcing}. 
+Una vez definida la escena a partir de una SDF necesitamos una forma para visualizarla, para lo que utilizaremos la API de OpenGL \cite{opengl} y aplicaremos la técnica de \textit{raymarcing}. 
 
 \subsection{Creación del lienzo}
 Si bien se puede hacer \textit{raymarching} directamente sobre una escena 3D, nuestra escena constará únicamente de un plano formado por cuatro vértices y dos triángulos, que usaremos como lienzo  (o \textit{canvas}) para dibujar sobre él. Para ello, necesitaremos trabajar sobre diferentes espacios de coordenadas que nos proporciona OpenGL, los cuales pasamos a enumerar.
@@ -142,7 +142,7 @@ Hemos denotado a las coordenadas obtenidas como \texttt{uv}, haciendo referencia
 Veamos  cómo usar estas coordenadas para dibujar nuestra superficie sobre el lienzo.
 
 \subsection{Raymarching y spheretracing}\label{sec:tracing}
-A partir de ahora, pensamos en que nuestra escena no es la de OpenGL, sino aquella que queremos dibujar usando \textit{raymarching} dado un SDF $\phi$. Podemos pensar en esta escena como $\R^3$ con su base usual $B_u = \{e_x,e_y,e_z\} = \{(1,0,0),(0,1,0),(0,0,1)\}$, donde colocamos los siguientes elementos.
+A partir de ahora, pensamos en que nuestra escena no es la de OpenGL, sino aquella que queremos dibujar usando \textit{raymarching} dado una SDF $\phi$. Podemos pensar en esta escena como $\R^3$ con su base usual $B_u = \{e_x,e_y,e_z\} = \{(1,0,0),(0,1,0),(0,0,1)\}$, donde colocamos los siguientes elementos.
 \begin{itemize}
     \item La \textbf{isosuperficie} $S_{\phi}$.
     \item \textbf{Plano de visión:} rejilla perpendicular al eje óptico de la cámara, donde cada uno de sus cuadrados corresponde a un píxel del lienzo.
@@ -194,7 +194,7 @@ Solo queda transformar el vector $r_d = (u,v,-1)$ a la base que acabamos de obte
     \label{fig:raydir}
 \end{figure}
 
-Ahora que ya tenemos toda la información del rayo, falta comprobar si este interseca con $S_{\phi}$. Para esto se utiliza un método iterativo: a partir de $c_o$, en cada iteración avanzamos en la dirección del rayo una distancia fija $\delta$. Evaluamos entonces nuestro SDF en la posición actual, de forma que si obtenemos un valor muy cercano a $0$ significará que hemos llegado a la isosuperficie. De lo contrario, repetimos el proceso hasta encontrar una intersección o superar un número máximo de iteraciones, en cuyo caso concluiremos que no hay intersección. La \autoref{a:raymarching} ilustra este procedimiento, donde \texttt{DibujarSuperficie()} y \texttt{DibujarFondo()} devuelven ternas RGBA que serán asignadas al píxel actual dependiendo de si hay intersección o no.\newline
+Ahora que ya tenemos toda la información del rayo, falta comprobar si este interseca con $S_{\phi}$. Para esto se utiliza un método iterativo: a partir de $c_o$, en cada iteración avanzamos en la dirección del rayo una distancia fija $\delta$. Evaluamos entonces nuestra SDF en la posición actual, de forma que si obtenemos un valor muy cercano a $0$ significará que hemos llegado a la isosuperficie. De lo contrario, repetimos el proceso hasta encontrar una intersección o superar un número máximo de iteraciones, en cuyo caso concluiremos que no hay intersección. La \autoref{a:raymarching} ilustra este procedimiento, donde \texttt{DibujarSuperficie()} y \texttt{DibujarFondo()} devuelven ternas RGBA que serán asignadas al píxel actual dependiendo de si hay intersección o no.\newline
 
 \begin{figure}[ht!]
     \centering

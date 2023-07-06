@@ -1,36 +1,35 @@
-Empezábamos el capítulo diciendo que una de las representaciones más comunes de una superficie es a través de implícitas, pero hasta ahora nos hemos centrado en estudiar un subconjunto de esta familia. Si intentásemos aplicar el algoritmo de \textit{raymarching} a una función implícita cualquiera podríamos observar que el resultado presenta defectos, tales como deformaciones o grietas, o que incluso no se visualiza. Veamos qué podemos hacer para, dada una función implícita $\phi$ cualquiera, obtener información aproximada de $S_\phi$ \cite{article:aprox}. Esto nos será útil cuando no conozcamos o no podamos calcular explícitamente la función distancia con signo de una superficie, pero sí su ecuación implícita.
+Empezábamos el capítulo diciendo que una de las representaciones más comunes de una superficie es a través de ecuaciones implícitas, pero hasta ahora nos hemos centrado en estudiar un subconjunto de esta familia. Si intentásemos aplicar el algoritmo de \textit{raymarching} a una función implícita cualquiera podríamos observar que el resultado presenta defectos, tales como deformaciones o grietas, o que incluso no se visualiza. Veamos qué podemos hacer para, dada una función $\phi$ cualquiera, obtener información aproximada de $S_\phi$ \cite{article:aprox}. Esto nos será útil cuando no conozcamos o no podamos calcular explícitamente la función distancia con signo de una superficie, pero sí su ecuación implícita.
 
 \begin{proposicion}
-    Sea $\phi\colon \R^3\to\R$ una función implícita cualquiera. Entonces
+    Sea $\phi\colon \R^3\to\R$ una función infinitamente diferenciable. Entonces
     \begin{equation*}    
-        \vert \sdf_{S_\phi}(p)\vert \le \frac{\vert \phi(p)\vert}{\Vert \nabla\phi(p)\Vert}.
+        \vert \sdf_{S_\phi}(p)\vert \ge \frac{\vert \phi(p)\vert}{\Vert \nabla\phi(p)\Vert}.
     \end{equation*}
 \end{proposicion}
 \begin{proof}
-    Fijamos el punto $p$ del cual queremos aproximar la distancia a $S_{\phi}$. Sea $q$ el punto de $S_\phi$ más cercano a $p$ y $v=\vec{pq}$. Queremos calcular la distancia de $p$ a $S_\phi$, que será justamente $\Vert v\Vert$. Asumiendo que $\phi$ es diferenciable en $p$, podemos realizar el desarrollo de Taylor de $\phi$ centrado en $p$:
+    Fijamos el punto $p$ del cual queremos aproximar la distancia a $S_{\phi}$. Sea $q$ el punto de $S_\phi$ más cercano a $p$ y $v=\vec{pq}$. Queremos calcular la distancia de $p$ a $S_\phi$, que será justamente $\Vert v\Vert$. Como $\phi$ es infinitamente diferenciable, podemos realizar el desarrollo de Taylor de $\phi$ centrado en $p$ y evaluado en $q=p+v$:
     \begin{equation*}
-        \phi(p) = \phi(p) + \nabla(p)\cdot (p+v -p) + \mathcal{O}(\vert p+v-p)\vert^2) = \phi(p) + \nabla(p)\cdot v + \mathcal{O}(\vert v\vert^2).
+        \phi(p+v) = \phi(p) + \nabla\phi(p)\cdot (p+v -p) + \mathcal{O}(\vert p+v-p)\vert^2) = \phi(p) + \nabla\phi(p)\cdot v + \mathcal{O}(\vert v\vert^2).
     \end{equation*}
-
-    Suponemos ahora que $p$ está cerca de $S_\phi$, luego existe un $\varepsilon>0$ tal que  $\vert v\vert < \varepsilon$, y podemos obviar el residuo y $\phi(p)\approx \phi(q) = \phi(p+v)$. Como $\phi(q)=0$, tenemos que
+    Suponemos ahora que $p$ está cerca de $S_\phi$, de forma que existe un $\varepsilon>0$ tal que  $\Vert v\Vert < \varepsilon$, y podemos obviar el residuo. Como $\phi(q)=0$, tenemos que
     \begin{equation*}
-        0 = \vert \phi(p+v)\vert \le \vert \phi(p) + \nabla(p)\cdot v \vert \le \vert \phi(p)\vert - \vert \nabla(p)\cdot v \vert         \le \vert \phi(p)\vert - \Vert \nabla(p)\Vert\cdot \Vert v \Vert,
+        0 = \vert \phi(p+v)\vert \approx \vert \phi(p) + \nabla\phi(p)\cdot v \vert \ge \vert \phi(p)\vert - \vert \nabla\phi(p)\cdot v \vert         \ge \vert \phi(p)\vert - \Vert \nabla\phi(p)\Vert\cdot \Vert v \Vert,
     \end{equation*}
     donde hemos usado la desigualdad triangular y la linealidad del producto escalar. De esta expresión, finalmente deducimos que
     \begin{equation*}
-        \Vert v\Vert \le \frac{\vert \phi(p)\vert}{\Vert \nabla(p)\Vert}.\qedhere
+        \Vert v\Vert \ge \frac{\vert \phi(p)\vert}{\Vert \nabla\phi(p)\Vert}.\qedhere
     \end{equation*}
 \end{proof}
 \begin{corolario}
     Sea $\phi\colon \R^3\to \R$ lipschitziana con constante $L$. Entonces
-    \begin{equation*}    
-        \vert \sdf_{S_\phi}(p)\vert \le \frac{\vert \phi(p)\vert}{\vert L\vert}.
+    \begin{equation*} 
+        \vert \sdf_{S_\phi}(p)\vert \ge \frac{\vert \phi(p)\vert}{\vert L\vert}.
     \end{equation*}
 \end{corolario}
 
-Este resultado solo nos proporciona una cota superior de la función distancia (sin signo). En nuestro caso esto es suficiente, pues esta nos sigue permitiendo representar la frontera de $S_{\phi}$. En su artículo \cite{art:impSdf}, Pierre-Alain Fayolle describe un método para obtener un SDF asociado a una superficie implícita que representa de manera exacta su frontera. Para ello descompone el SDF como 
+Este resultado solo nos proporciona una cota inferior de la función distancia (sin signo). En nuestro caso esto es suficiente, pues esta nos sigue permitiendo representar la frontera de $S_{\phi}$, ya que proporciona una estimación conservadora de la distancia a ella. En su artículo \cite{art:impSdf}, Pierre-Alain Fayolle describe un método para obtener una función distancia con signo asociada a una superficie implícita que representa de manera exacta su frontera. Para ello, la descompone 
 \begin{equation*}
-    sdf_{S_{\phi}}(p;\theta) = \phi(p)g(p;\theta)\quad \text{ o }\quad sdf_{S_{\phi}}(p;\theta) = sign(\phi(p))g(p;\theta),
+    \sdf_{S_{\phi}}(p;\theta) = \phi(p)g(p;\theta)\quad \text{ o }\quad \sdf_{S_{\phi}}(p;\theta) = \sign(\phi(p))g(p;\theta),
 \end{equation*}
 
-donde $g$ es una función paramétrica de parámetros $\theta$ y $sign$ es una versión suavizada de la función signo, por ejemplo $sign(x) = \tanh{(kx)}$ con $k\in\R$. Para obtener la expresión de $g$ introduce la función implícita $\phi$ en la capa final de una red neuronal entrenada para  minimizar una función pérdida asociada al SDF, y para ajustar $\theta$ expresa $sdf_{S_{\phi}}(p;\theta)$ como la solución de un problema variacional. No obstante, esta técnica está fuera del ámbito de este trabajo, de forma que nos limitaremos a obtener la cota de la función distancia.
+donde $g$ es una función paramétrica de parámetros $\theta$ y $\sign$ es una versión suavizada de la función signo, por ejemplo $\sign(x) = \tanh{(kx)}$ con $k\in\R$. Para obtener la expresión de $g$ introduce la función $\phi$ en la capa final de una red neuronal entrenada para  minimizar una función pérdida asociada a la función distancia con signo, y para ajustar $\theta$ expresa $\sdf_{S_{\phi}}(p;\theta)$ como la solución de un problema variacional. No obstante, esta técnica está fuera del ámbito de este trabajo, de forma que nos limitaremos a obtener la cota de la función distancia.

@@ -30,7 +30,7 @@ Es natural pensar que la radiancia percibida en un punto $p\in \R^3$ será la su
 \begin{equation*}
     L(p,v) = L_A + L_E + \sum_{i=1}^n L_R(p,l_i).
 \end{equation*}
-Como $L_A$ y $L_E$ son constantes sólo nos falta estudiar cómo obtener la \textbf{radiancia reflejada} para cada fuente de luz. Para ello fijamos un índice $m\in \{1,\dots,n\}$ y suponemos a partir de ahora que $p\in S_{\phi}$, pues de lo contrario
+Como $L_A$ y $L_E$ son constantes solo nos falta estudiar cómo obtener la \textbf{radiancia reflejada} para cada fuente de luz. Para ello fijamos un índice $m\in \{1,\dots,n\}$ y suponemos a partir de ahora que $p\in S_{\phi}$, pues de lo contrario
 
 \begin{equation*}
     L(p,v) = L_A,\ p\in \R^3\setminus S_{\phi},
@@ -237,10 +237,10 @@ Ya podemos darle forma a las funciones \texttt{DibujarSuperficie} y \texttt{Dibu
         \caption{Implementación de las funciones \texttt{DibujarSuperficie} y \texttt{DibujarFondo}}
 \end{figure}
 
-Sólo queda un asunto por tratar. A la vista de la expresión de $f_r$ \eqref{eq:fr} y del código anterior, somos capaces de calcular todos los valores a excepción de uno, el del vector normal. En la siguiente sección veremos presentamos una técnica para calcularlo de forma aproximada. 
+Solo queda un asunto por tratar. A la vista de la expresión de $f_r$ \eqref{eq:fr} y del código anterior, somos capaces de calcular todos los valores a excepción de uno, el del vector normal. En la siguiente sección veremos presentamos una técnica para calcularlo de forma aproximada. 
 
 \subsubsection{Cálculo del vector normal}
-En cualquier modelo de iluminación el acceso al vector normal es indispensable. Cuando se trabaja con mallas de polígonos el vector normal viene dado para cada vértice, pero este no es nuestro caso. En su lugar nosotros usaremos el gradiente del SDF para obtenerlo \cite{harvard}.
+En cualquier modelo de iluminación el acceso al vector normal es indispensable. Cuando se trabaja con mallas de polígonos el vector normal viene dado para cada vértice, pero este no es nuestro caso. En su lugar nosotros usaremos el gradiente de la función distancia con signo para obtenerlo \cite{harvard}.
 \begin{proposicion}\label{p:gradient_perp}
   Sea $\phi\colon \R^3\to \R$ diferenciable. Entonces $\nabla\phi$ es perpendicular a $S_\phi$.
 \end{proposicion}

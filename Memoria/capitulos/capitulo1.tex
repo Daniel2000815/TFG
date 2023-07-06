@@ -38,10 +38,10 @@ Como solución a esto, T. Sederberg y A.Zundel \cite{Sederberg1989ScanLD} presen
   Sin pérdida de generalidad podemos suponer $k=0$, pues de no ser el caso, tomamos la función $\phi'(x,y,z)=\phi(x,y,z)-k$ y tenemos que $S_{\phi',0} = S_{\phi,k}$. Por tanto, la denotaremos como $S_\phi$.
 \end{definicion}
 
-Nuestra intención es construir una escena definida como la isosuperficie generada por un SDF. A partir de ahora, tomaremos $p=(x,y,z)\in\R^3$.
+Nuestra intención es construir una escena definida como la isosuperficie generada por una SDF. A partir de ahora, tomaremos $p=(x,y,z)\in\R^3$.
 
 \begin{ejemplo}\label{ej:sdf}
-    Ejemplos simples de SDF $\phi$ en $p$ para diferentes conjuntos $\Omega$ son:
+    Ejemplos simples de SDFs $\phi$ en $p$ para diferentes conjuntos $\Omega$ son:
     \begin{itemize}
         \item \textbf{Esfera de radio $\boldsymbol{r}$ centrada en el origen.}
         \begin{equation*}
@@ -63,7 +63,7 @@ Nuestra intención es construir una escena definida como la isosuperficie genera
 \input{Plantilla-TFG-master/capitulos/Diferenciabilidad}
 
 \section{Funciones cota de distancia}
-Hemos visto que las funciones distancia con signo nos proporcionan la distancia signada exacta en cada punto al más cercano de un conjunto $\Omega\subset \R^3$, pero lo cierto es que para representar las isosuperficies que generan no se necesita tanta precisión, ya que mientras dos funciones tengan los mismos ceros generarán la misma isosuperficie. Sin embargo, para representar la superficie en las siguientes secciones usaremos el método del \textit{spheretracing} (\autoref{sec:tracing}), que sí utiliza la información de la distancia en puntos diferentes a la frontera de $\Omega$. Introducimos un concepto que nos permitirá seguir usando este método pero no es tan restrictivo como el de función distancia con signo \cite{hart}.
+Hemos visto que las funciones distancia con signo nos proporcionan la distancia signada exacta en cada punto al más cercano de un conjunto $\Omega\subset \R^3$, pero lo cierto es que para representar las isosuperficies que generan no se necesita tanta precisión, ya que mientras dos funciones tengan los mismos ceros generarán la misma isosuperficie. Sin embargo, para representar la superficie en las siguientes secciones usaremos el método de \textit{spheretracing} (\autoref{sec:tracing}), que sí utiliza la información de la distancia en puntos diferentes a la frontera de $\Omega$. Introducimos un concepto que nos permitirá seguir usando este método pero no es tan restrictivo como el de función distancia con signo \cite{hart}.
 
 \begin{definicion}
     Sea $\Omega\subset \R^3$ y $\phi$ su SDF. Una \textbf{cota de la distancia con signo} asociada a $\Omega$ es un campo escalar $\gamma\colon \R^3\to \R$ cumpliendo
@@ -96,11 +96,15 @@ Veamos algunos ejemplos de funciones distancia aproximadas.
 \section{Operaciones sobre SDF}\label{sec:operaciones}
 \input{Plantilla-TFG-master/capitulos/Operaciones}
 
-\section{Obtención a partir de ecuación implícita}
+\section{Obtención de una SDF a partir de ecuaciones implícitas}
 \input{Plantilla-TFG-master/capitulos/AproxImp}
 
-\section{Obtención a partir de ecuaciones paramétricas}
+\section{Implicitación de parametrizaciones racionales con bases de Groebner}
 \input{Plantilla-TFG-master/capitulos/Param}
+
+\section{Implicitación de parametrizaciones racionales con resultantes}
+\input{Plantilla-TFG-master/capitulos/ParamRes}
+
 
 
 

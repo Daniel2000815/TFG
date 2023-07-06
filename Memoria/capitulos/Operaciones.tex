@@ -5,7 +5,7 @@ Si bien estas primitivas son fáciles de generar, también son muy simples y nos
 Esto cambió en 1999 con el artículo de B. Wyvill y otros \cite{blobtree}, en el que sugieren usar una estructura de árbol para definir modelos como combinación de otros a través de operaciones básicas. La gran ventaja de este método es que es muy extensible, y además permite ver de forma muy clara la estructura del modelo. En esta sección estudiaremos los principales tipos de estas operaciones. En el \autoref{ap:operacionesSDF} podemos verlas en acción sobre diferentes primitivas.
 
 \subsection{Operaciones booleanas}
-Una de las técnicas más útiles para generar nuevas formas a partir de primitivas es la geometría de sólidos constructiva. Por la naturaleza de los SDF, estas operaciones se implementan fácilmente usando las funciones máximo y mínimo.
+Una de las técnicas más útiles para generar nuevas formas a partir de primitivas es la geometría de sólidos constructiva. Por la naturaleza de las SDFs, estas operaciones se implementan fácilmente usando las funciones máximo y mínimo.
 
 \begin{definicion}[Operaciones Booleanas]\label{p:boolean}
     Sean $A$ y $B$ isosuperficies generadas por $\phi$ y $\gamma$ respectivamente. La función $\mu$ define la isosuperficie para las siguientes operaciones.
@@ -16,7 +16,7 @@ Una de las técnicas más útiles para generar nuevas formas a partir de primiti
     \end{itemize}
 \end{definicion}
 
-Solo en el caso de la unión se obtiene un SDF exacto, ya que al aplicar $\Max$ en el interior de la superficie (donde $\phi(p) < 0$) el resultado puede ser solo una cota inferior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies así que podemos obviar este problema, con la salvedad de que el algoritmo de \textit{raymarching} requiera de más iteraciones.
+Solo en el caso de la unión se obtiene una SDF exacta, ya que al aplicar la función máximo en el interior de la superficie (donde $\phi(p) < 0$) el resultado puede ser solo una cota inferior de la distancia. En nuestro caso solo estamos interesados en visualizar la frontera de las superficies así que podemos obviar este problema, con la salvedad de que el algoritmo de \textit{spheretracing} requiera de más iteraciones.
 
 Un problema de usar estas transformaciones es que produce discontinuidades en la derivada de la función resultante. Trataremos de evitar esta situación, además de por motivos analíticos, por motivos visuales, ya que esto produce bordes muy acusados en la intersección de ambas superficies. Existen muchas formas de combinar funciones distancia de forma más natural. Usaremos una de las más extendidas, usada por programas de modelado 3D como Blender \cite{repo:blender} o videojuegos como Dreams \cite{game:dreams}, y que ha sido estudiada por Íñigo Quílez en su web \cite{article:smooth}.
 
@@ -30,13 +30,13 @@ Explicaremos la técnica poniendo como ejemplo la unión, y al final veremos com
       p &\mapsto \Min(\phi(p),\gamma(p)).
 \end{align*}
 
-Llamaremos a la mencionada corrección $\omega_k\colon \R^3\to\R$, donde $k\in \R_0^+$ es un coeficiente que controlará la intensidad del suavizado. Por tanto, la versión suavizada de la función $\Min$ original será
+Llamaremos a la mencionada corrección $\omega_k\colon \R^3\to\R$, donde $k\in \R_0^+$ es un coeficiente que controlará la intensidad del suavizado. Por tanto, la versión suavizada de la función mínimo original será
 \begin{align*}
       \smin_{\phi,\gamma}\colon \R^3 &\to \R,\\
       p &\mapsto \Min_{\phi,\gamma}(p) - \omega_k(p).
 \end{align*}
 
-Como no queremos que este cambio afecte al algoritmo de \textit{raymarching}, debemos asegurar que se cumpla $\Min_{\phi,\gamma}(p)\ge \smin_{\phi,\gamma}(p)$, esto es,
+Como no queremos que este cambio afecte al algoritmo de \textit{spheretracing}, debemos asegurar que se cumpla $\Min_{\phi,\gamma}(p)\ge \smin_{\phi,\gamma}(p)$, esto es,
 \begin{equation*}
 \omega_k(p)\ge 0,\ \text{para todo } p\in \R^3,\ \text{para todo } k\in \R^+_0.
 \end{equation*}
@@ -192,11 +192,11 @@ Con estos resultados, para que la transición de una superficie a otra en la \au
     La constante $k\in \R^+_0$ controla la influencia del suavizado.        
 \end{definicion}
 
-Observamos que los operadores definidos en la \autoref{p:boolean} no son más que un caso particular de estos últimos cuando $k$ tiende a cero. Este método para obtener una versión suavizada de las funciones $\Min$ y $\Max$ no es el único. Hemos elegido debido a que las funciones obtenidas tienen asociado un coste computacional. Además, su deducción es bastante natural y el efecto que tiene el valor $k$ sobre el resultado final es intuitivo para el usuario. En el artículo que hemos mencionado al inicio de la sección, Íñigo Quílez \cite{article:smooth} presenta otras tres alternativas a esta versión, a la cual él se refiere como \qq{mínimo suavizado polinomial}, y que también son compatibles con \textit{raymarching}.
+Observamos que los operadores definidos en la \autoref{p:boolean} no son más que un caso particular de estos últimos cuando $k$ tiende a cero. Este método para obtener una versión suavizada de las funciones mínimo y máximo no es el único. Hemos elegido debido a que las funciones obtenidas tienen asociado un coste computacional. Además, su deducción es bastante natural y el efecto que tiene el valor $k$ sobre el resultado final es intuitivo para el usuario. En el artículo que hemos mencionado al inicio de la sección, Íñigo Quílez \cite{article:smooth} presenta otras tres alternativas a esta versión, a la cual él se refiere como \qq{mínimo suavizado polinomial}, y que también son compatibles con \textit{raymarching}.
 \begin{itemize}
     \item \textbf{Mínimo suavizado exponencial:} $\smin_{\phi,\gamma}(p) = \frac{-\log_2\left( 2^{-k\phi(p)} + 2^{-k\gamma(p)} ) \right)}{k}$.
-    \item \textbf{Mínimo suavizado potencial:} $\smin{\phi,\gamma}(p) = \left(\frac{\phi(p)^k \cdot \gamma(p)^k}{\phi(p)^k + \gamma(p)^k}\right)^{1/k}$.
-    \item \textbf{Mínimo suavizado por raíz:} $\smin{\phi,\gamma}(p) = \frac{\phi(p) + \gamma(p) - \sqrt{(\phi(p)-\gamma(p))^2+k}}{2}$.
+    \item \textbf{Mínimo suavizado potencial:} $\smin_{\phi,\gamma}(p) = \left(\frac{\phi(p)^k \cdot \gamma(p)^k}{\phi(p)^k + \gamma(p)^k}\right)^{1/k}$.
+    \item \textbf{Mínimo suavizado por raíz:} $\smin_{\phi,\gamma}(p) = \frac{\phi(p) + \gamma(p) - \sqrt{(\phi(p)-\gamma(p))^2+k}}{2}$.
 \end{itemize}
 
 La principal ventaja de la versión polinomial respecto a estas es que es la más rápida al ser sus cálculos computacionalmente más baratos. Por otro lado tanto la exponencial como la potencial permiten ser adaptadas fácilmente para calcular el mínimo de un conjunto arbitrario de puntos, útil cuando se trabaja con patrones de voronoi o nubes de puntos. Además, la versión exponencial produce siempre el mismo resultado independientemente del orden en el que se aplique. Es decir,
@@ -230,7 +230,7 @@ En la \autoref{fig:smoothVS} podemos ver un ejemplo de uso de estas versiones, e
 \end{figure}
 
 \subsection{Operaciones afines}
-Pasamos ahora a estudiar otro tipo de operaciones que nos permitirán aplicar movimientos rígidos y cambios de escala a las primitivas en la escena. A diferencia de los operadores booleanos, que eran binarios, estas operaciones se aplican a una única primitiva. Su funcionamiento se basará en aplicar una transformación $t:\R^3\to \R^3$ a cada punto de la isosuperficie $S_{\phi}$ para obtener la transformada $S_{\gamma}$. Si queremos saber si un punto $q\in\R^3$ está en $S_{\gamma}$, tenemos que comprobar si su preimagen por la transformación pertenece a $S_{\phi}$. Por tanto, bastará evaluar el SDF original en $t^{-1}(p)$:
+Pasamos ahora a estudiar otro tipo de operaciones que nos permitirán aplicar movimientos rígidos y cambios de escala a las primitivas en la escena. A diferencia de los operadores booleanos, que eran binarios, estas operaciones se aplican a una única primitiva. Su funcionamiento se basará en aplicar una transformación $t:\R^3\to \R^3$ a cada punto de la isosuperficie $S_{\phi}$ para obtener la transformada $S_{\gamma}$. Si queremos saber si un punto $q\in\R^3$ está en $S_{\gamma}$, tenemos que comprobar si su preimagen por la transformación pertenece a $S_{\phi}$. Por tanto, bastará evaluar la SDF original en $t^{-1}(p)$:
 \begin{equation*}
     \gamma(p) = \phi(t^{-1}(p)).
 \end{equation*}
@@ -242,7 +242,7 @@ Este razonamiento funciona bien para transformaciones como las traslaciones o ro
 Como las distancias se escalan, deberemos hacer lo propio con la función que genere la nueva isosuperficie, aplicándole el mismo factor de escalado $s$ como muestra la \autoref{d:afines}.
 
 \begin{definicion}[Operaciones afines]\label{d:afines}
-    Sea $A$ una isosuperficie. Definimos los SDF para las siguientes operaciones.
+    Sea $A$ una isosuperficie. Definimos las SDFs para las siguientes operaciones.
     \begin{itemize}
         \item \textbf{Traslación de vector $\boldsymbol{v}$: } $\sdf_{traslacion}(p) = \sdf_{A}(p - v)$.
         \item \textbf{Escalado uniforme de dimensiones $\boldsymbol{s}$: } $\sdf_{escalado}(p) = \sdf_{A}(p/s)\cdot s$.

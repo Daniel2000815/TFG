@@ -1,4 +1,4 @@
-Antes de seguir avanzando vamos a realizar un estudio de la diferenciabilidad de los SDF, pues nos será de utilidad en las siguientes secciones. Empezamos recordando varios conceptos de análisis diferencial \cite{diff} fijadas las variables $\{x_1,x_2,x_3\}$ y la base usual $$B=\{e_1,e_2,e_3\} = \{(1,0,0),(0,1,0),(0,0,1)\}.$$
+Antes de seguir avanzando vamos a realizar un estudio de la diferenciabilidad de las funciones distancia con signo, pues nos será de utilidad en las siguientes secciones. Empezamos recordando varios conceptos de análisis diferencial \cite{diff} fijadas las variables $\{x_1,x_2,x_3\}$ y la base usual $$B=\{e_1,e_2,e_3\} = \{(1,0,0),(0,1,0),(0,0,1)\}.$$
 
 Cuando sea conveniente identificaremos
 \begin{equation*}
@@ -45,7 +45,7 @@ Cuando sea conveniente identificaremos
 
 
 
-Ahora mismo, dado un SDF arbitrario no tenemos información alguna sobre su diferenciabilidad, ya que su expresión puede ser de lo más variada y compleja. Veamos una propiedad que cumplen todos los SDF y que nos permitirá obtener algo de información al respecto \cite{lips,derivWiki}.
+Ahora mismo, dado una función distancia con signo arbitraria no tenemos información alguna sobre su diferenciabilidad, ya que su expresión puede ser de lo más variada y compleja. Veamos una propiedad que cumplen todos las funciones distancia con signo y que nos permitirá obtener algo de información al respecto \cite{lips,derivWiki}.
 
 \begin{definicion}
     Una campo escalar $\phi\colon \R^3 \to \R$ se dice \textbf{lipschitziano} si existe una constante $L>0$ tal que
@@ -87,7 +87,7 @@ Ahora mismo, dado un SDF arbitrario no tenemos información alguna sobre su dife
 
 Tenemos por tanto asegurado que $\phi_{\Omega}$ será diferenciable en casi todo punto de $\R^3$. No obstante, podemos concretar aún más dónde están los puntos de conflicto cuando $\Omega$ sea lo suficientemente regular \cite{dif1,dif2}. Para ello necesitaremos introducir el concepto de esqueleto de una superficie \cite{derivWiki}.
 \begin{definicion}
-    Sea $\phi_{\Omega} \colon \R^3\to \R$ un SDF. Llamamos \textbf{esqueleto} de $\Omega$ al conjunto de puntos de $\R^3$ cuya distancia a la superficie puede obtenerse como la distancia a dos o más puntos distintos de $\delta \Omega$:
+    Sea $\phi_{\Omega} \colon \R^3\to \R$ una función distancia con signo. Llamamos \textbf{esqueleto} de $\Omega$ al conjunto de puntos de $\R^3$ cuya distancia a la superficie puede obtenerse como la distancia a dos o más puntos distintos de $\delta \Omega$:
     \begin{equation}
         \epsilon(\Omega) = \{p\in \R^3 : \phi_{\Omega}(p) = \Vert p-q\Vert = \Vert p-r\Vert,\ q,r\in \delta\Omega ,\ q\neq r \}.
     \end{equation}
@@ -110,7 +110,7 @@ El siguiente teorema, cuya demostración podemos consultar en \cite{dif1}, nos p
     Sea $\Omega \subseteq \R^3$ cuya frontera es regular y $\phi_{\Omega} \colon \R^3\to \R$ la función distancia con signo asociada a $\Omega$. Entonces $\phi_{\Omega}$ es diferenciable en un entorno tubular $U$ de $\delta \Omega$. Es más, para cada $p\in \R^3$ se cumple una se las siguientes propiedades:
     \begin{enumerate}
         \item $p\in \delta \Omega$ y $\phi_{\Omega}$ es diferenciable en $p$ con $\nabla S_{\phi(p)} = N_p$,
-        \item $p\notin \delta \Omega$ y $\phi_{\Omega}$ es diferenciable en $p$ si y sólo si $p\in \R^3\setminus \epsilon(\Omega)$, en cuyo caso
+        \item $p\notin \delta \Omega$ y $\phi_{\Omega}$ es diferenciable en $p$ si y solo si $p\in \R^3\setminus \epsilon(\Omega)$, en cuyo caso
         \begin{equation*}
             \nabla \phi_{\Omega}(p) = \frac{q-p}{\phi_{\Omega}(p)},
         \end{equation*}
@@ -119,7 +119,7 @@ El siguiente teorema, cuya demostración podemos consultar en \cite{dif1}, nos p
 \end{teorema}
 
 \begin{corolario}
-    Todo SDF $\phi\colon \R^3\to \R$ satisface la ecuación de la eikonal 
+    Toda función distancia con signo $\phi\colon \R^3\to \R$ satisface la ecuación de la eikonal 
     \begin{equation*}
         \Vert \nabla \phi(p)\Vert = 1
     \end{equation*}

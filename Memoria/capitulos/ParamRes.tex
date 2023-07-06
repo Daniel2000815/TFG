@@ -1,0 +1,225 @@
+\subsection{Conceptos básicos y caso de una variable}
+En la sección anterior para resolver el problema de implicitación hemos tratado de resolver un sistema de ecuaciones similar al de la ecuación \eqref{eq:paramEq} buscando los puntos que cumplen cada una de las ecuaciones, pero existen vías alternativas. En esta sección veremos cómo usar resultantes para la implicitación de superficies paramétricas racionales. Para ello, empezaremos introduciendo el concepto de resultante y estudiando sus versiones más sencillas \cite{ideals_varieties}, para posteriormente abordar el problema de implicitación en un ambiente mucho más general basándonos en el trabajo de Eng-Wee Chionh y Ronald N. oldman \cite{res1}.\newline
+
+Una de las primeras ideas que se pueden ocurrir para resolver el sistema de forma alternativa es que si todos sus polinomios tienen algún factor común $h\in A[X]$ no trivial, esto es, cumpliendo $\deg(h)>1$, entonces
+$$h(x_1,\dots, x_n) = 0 \text{ implica } g_i(x_1,\dots, x_n)=0 \text{ para cada } i\in\{1,\dots, n\}.$$
+En concreto, las raíces que coinciden son las del polinomio $h$, luego si $h = \gcd(g_1,\dots, g_n)$ la implicación anterior se convierte en una equivalencia. Este idea motiva la siguiente definición \cite{res3}.
+\begin{definicion}\label{def:resultant}
+    Sean $f_1,\dots , f_r \in A[x_1,\dots, x_n]$. Definimos el \textbf{resultante} de $f_1,\dots, f_r$ como el polinomio $\res_{f_1,\dots, f_r} \in A[x_1,\dots, x_n]$ tal que
+    \begin{equation*}
+        \res_{f_1,\dots, f_r}(x_1,\dots, x_n) = 0 \text{ si y solo si } f_1(x_1,\dots, x_n) = \cdots =  f_r(x_1,\dots, x_n) = 0.
+    \end{equation*}
+    Cuando no haya lugar a confusión omitiremos el subíndice.
+\end{definicion}
+
+Hemos visto que la forma más directa y eficaz de obtener un factor común $h$ es a través del máximo común divisor, pero eso conllevaría realizar varias divisiones, que ya hemos visto que son caras computacionalmente. El cálculo del resultante en varias variables no es en general nada simple, pero bajo ciertas condiciones puede llegar a serlo, como muestra el siguiente resultado en el caso de que se tenga el mismo número de variables que de polinomios.
+\begin{teorema}[Teorema fundamental de eliminación]\label{t:elimRes}
+    Dados $f_1,\dots, f_n \in A[x_1,\dots, x_n]$ lineales, esto es, de la forma 
+    $$f_i(x_1,\dots, x_n) = a_1^{(i)}x_1 + \cdots + a_n^{(i)}x_n + b,\ \text{ para cada } i\in \{1,\dots, n\},$$
+    entonces su resultante es
+    $$\res(x_1,\dots, x_n) = \det\begin{pmatrix}
+        a_1^{(1)} & a_2^{(1)} & \cdots & a_n^{(1)} \\
+        \vdots    & \vdots & &\vdots\\
+        a_1^{(n)} & a_2^{(n)} & \cdots & a_n^{(n)}
+    \end{pmatrix}.$$
+\end{teorema}
+
+A continuación estudiamos en detalle un método para obtener el resultante en el caso más sencillo posible, el de una única variable y dos polinomios \cite{ideals_varieties}. En este entorno el método más común es a través de la matriz de Sylvester, la cual deduciremos a partir de la búsqueda de un divisor común de estos polinomios.
+\begin{lema}\label{l:gcd}
+    Sean $f,g\in A[x]$ polinomios tal que $\deg(f) = l$ y $\deg(g) = m$, con $l,m \in \N\setminus \{0\}$. Entonces $f$ y $g$ tienen un factor común no trivial si y solo si existen otros polinomios $A,B \in A[x]$ tal que
+    \begin{enumerate}
+        \item $A$ y $B$ son no nulos,
+        \item $\deg(A)\le m-1$ y $\deg(B)\le l-1$,
+        \item $Af+Bg = 0$.
+    \end{enumerate}
+\end{lema}
+La cuestión a resolver ahora es la de la existencia de los polinomios $A$ y $B$. Para ello escribimos
+\begin{align}\label{eq:gcd1}
+    &A = \sum_{i=0}^{m-1} u_{m-i-1} x^i,   \ &B &= \sum_{j=0}^{l-1} v_{l-j-1} x^j,\\
+    &f = \sum_{k=0}^l c_{l-k} x^k,         \ &g &= \sum_{h=0}^m d_{m-h} x^h,\ \text{ con } c_l, d_h,\neq 0,
+\end{align}
+donde trataremos a los coeficientes $u_i$ y $v_j$ en $A$ como incógnitas para $i\in\{0,\dots m-1\}$ y $j\in \{0,\dots, l-1\}$. Para encontrarlos impondremos que se cumpla la tercera condición del \autoref{l:gcd}:
+\begin{equation}\label{eq:gcd}
+Af + Bg = 0.    
+\end{equation}
+Sustituyendo las expresiones de \eqref{eq:gcd1} en la igualdad \eqref{eq:gcd} y comparando los coeficientes de cada potencia de $x$, obtenemos el siguiente sistema de incógnitas $u_i,v_j$ y coeficientes $c_k,d_h$:
+\begin{align*}
+    c_0u_0  &              &+ d_0v_0       &                        &= 0,\\
+    c_1u_0  &+ c_0u_1&+ d_1v_0       &+ d_0v_1               &= 0,\\
+            &\ddots        &               & \ddots                &\vdots,\\
+            &              &c_lu_{m-1}     &+          d_mv_{l-1}  &=0.
+\end{align*}
+Como tenemos $l+m$ incógnitas y ecuaciones, sabemos por álgebra lineal que el sistema tendrá alguna solución no nula si y solo si la matriz de coeficientes asociada tiene determinante igual a cero.
+\begin{definicion}
+    Dados dos polinomios $f,g \in A[x]$ no nulos de la forma
+    $$f = \sum_{k=0}^l c_{l-k} x^k,\ g = \sum_{h=0}^m d_{m-h} x^h,\ \text{ con } c_l, d_h,\neq 0 \text{ y } l,m>0,$$
+    definimos la \textbf{matriz de Sylvester} de $f$ y $g$ respecto a $x$ como
+    \begin{equation*}
+        \syl(f,g,x) = \begin{pmatrix}
+            c_0     &           &           & d_0\\
+            \vdots  & \ddots    &           & \vdots &\ddots  &\\
+            c_l     &           & c_0       & d_m    &       & d_0\\
+                    & \ddots    & \vdots    &        & \ddots      &\vdots\\
+                    &           & c_l       &        &              &d_m   
+        \end{pmatrix},
+    \end{equation*}
+    donde el resto de posiciones son cero.
+\end{definicion}
+
+\begin{proposicion}
+    En el contexto de la definición anterior, se tiene que 
+    \begin{equation*}
+        \res_{f,g}(x) = \det(\syl(f,g,x)).
+    \end{equation*}
+    % Cuando $f$ o $g$ no tienen grado positivo, se toma
+    % \begin{itemize}
+    %     \item $\res(c_0,g,x) = c_0^m$ cuando $c_0\in A\setminus \{0\}$ y $m>0$,
+    %     \item $\res(f,d_0,x) = $ cuando $d_0\in A\setminus \{0\}$ y $l>0$,
+    %     \item $\res(c_0,d_0,x) =$  cuando $c_0,d_0\in A\setminus \{0\}$.
+    % \end{itemize}
+\end{proposicion}
+Podemos concluir por tanto que siempre podemos encontrar los polinomios $A$ y $B$ en las condiciones del \autoref{l:gcd}, donde además se cumple el siguiente hecho.
+\begin{proposicion}
+    Dados $f,g\in A[x]$ no nulos, existen polinomios $A,B\in A[x]$ tal que  
+    $$Af+Bg = \res_{f,g}(x).$$
+    De hecho, si $\deg(f)>0$ o $\deg(g)>0$, entonces $A,B$ son polinomios con coeficientes enteros en los coeficientes de $f$ y $g$.
+\end{proposicion}
+La demostración de este resultado se puede consultar en \cite{ideals_varieties}, y de ella se puede obtener también la siguiente propiedad interesante.
+\begin{proposicion}
+    Dados $f,g\in A[x]$ no nulos, existen polinomios $\tilde{A}, \tilde{B} \in A[x]$ de la forma
+    \begin{equation*}
+        \tilde{A} = \frac{A}{\res(f,g,x)}\quad \text{ y }\quad \tilde{B} = \frac{B}{\res_{f,g}(x)}
+    \end{equation*}
+    que cumplen
+    \begin{equation*}
+        \tilde{A}f + \tilde{B}g = 1.
+    \end{equation*}
+\end{proposicion}
+
+
+% Para extender el concepto de resultante a polinomios de varias variables $f,g\in A[x_1,\dots, x_n]$, podemos verlos de la siguiente forma:
+% \begin{equation*}
+%     f = \sum_{k=0}^l c_{l-k} x_1^k,\ g = \sum_{h=0}^m d_{m-h} x_1^h,\ \text{ con } c_l, d_h,\neq 0 \text{ y } l,m>0,
+% \end{equation*}
+% donde ahora $c_k,d_h \in A[x_2,\dots, x_n]$
+
+\subsection{Resultante auxiliar}
+Ahora que tenemos una idea básica de como trabajar con resultantes, veamos como podemos usarlos para realizar la implicitación de una superficie parametrizada racionalmente \cite{res1}. Sabemos ya por el \autoref{t:implicit} que todo parametrización racional satisface un conjunto de ecuaciones implícitas. Sin embargo, a diferencia de los resultados enunciados en este teorema, en el que trabajábamos con un número arbitrario de variables, en esta ocasión vamos a ceñirnos al caso de tres variables. Hacemos esto debido a que este será el ambiente en el que trabajaremos en la práctica y, como ya hemos mencionado, a medida que se incrementa el número de variables y ecuaciones, trabajar con resultantes es cada vez más complicado. Así, supondremos que tenemos una parametrización de la forma
+\begin{equation}\label{eq:param}
+    x = \frac{\xi(r,s,t)}{\omega(r,s,t)},\quad y= \frac{\eta(r,s,t)}{\omega(r,s,t)},\quad  z= \frac{\zeta(r,s,t)}{\omega(r,s,t)},
+\end{equation}
+donde $\omega(r,s,t)\neq 0$ y supondremos además que el máximo común divisor de estos polinomios es constante, de forma que trabajamos con una \textbf{parametrización propia}. Normalmente las superficies en $\R^3$ vienen parametrizadas por los parámetros $s$ y $t$, pero vamos a realizar un paso previo en el que homogeneizamos cada polinomio, es decir, hacemos que todos los monomios de cada polinomio tengan el mismo grado. Esto es sencillo, ya que para todo polinomio $f\in A[x_1,\dots, x_n]$ siempre puede obtenerse su homogeneizado $\prescript{h}{}{f}$ añadiendo una variable adicional $x_0$ \cite{wiki-homog} de la forma
+\begin{equation*}
+    \prescript{h}{}{f}(x_0,x_1,\dots, x_n) = x_0^{\deg(f)}f\left(\frac{x_1}{x_0},\dots, \frac{x_n}{x_0}  \right).
+\end{equation*}
+Este es el motivo de que aparezca la variable adicional $r$. Una vez homogeneizados los polinomios de la parametrización, podemos obtener el \textbf{sistema de ecuaciones auxiliar}
+\begin{equation}\label{eq:aux}
+    \begin{cases}
+        \xi(r,s,t)-x\omega(r,s,t) &= 0,\\
+         \eta(r,s,t)-y\omega(r,s,t) &= 0,\\
+          \zeta(r,s,t)-z\omega(r,s,t) &= 0,
+    \end{cases}
+\end{equation}
+cuya existencia del resultante asociado tenemos asegurada por el \autoref{t:elimRes}.
+\begin{definicion}
+    Llamamos \textbf{resultante auxiliar} al resultante asociado a los polinomios de la ecuación \eqref{eq:aux}, y lo denotaremos $\resa(x,y,z)$.
+\end{definicion}
+\begin{proposicion}
+    El resultante auxiliar es o bien un polinomio no nulo o bien idénticamente cero. Es decir, $\resa(x,y,z) \neq k,\ k\in \R\setminus \{0\}$.
+\end{proposicion}
+Los siguientes resultados muestran la relación que tiene el resultante auxiliar con el problema de implicitación.
+\begin{proposicion}\label{prop:sub}
+    Toda parametrización racional está contenida en una única superficie dada por un único polinomio irreducible.
+\end{proposicion}
+\begin{proposicion}\label{prop:same}
+    Si el resultante auxiliar  no es idénticamente nulo, entonces la superficie generada por la ecuación $\resa(x,y,z)=0$ y la dada por la parametrización \eqref{eq:param} representan el mismo conjunto de puntos.
+\end{proposicion}
+\begin{teorema}\label{t:potencia}
+    Si $\resa(x,y,z)$ no es idénticamente nulo, entonces
+    \begin{equation*}
+        \resa(x,y,z) = f^l(x,y,z),\text{ para algún } f\in A[x,y,z] \text{ y } l\in \N\setminus\{0\}.
+    \end{equation*}
+\end{teorema}
+\begin{proof}
+    Tomamos $A=\C$. Dado que $\C[x,y,z]$ es un dominio de factorización única, debe darse
+    \begin{equation*}
+        \resa(x,y,z) = f_1^{l_1}(x,y,z)\cdots f_r^{l_r}(x,y,z),
+    \end{equation*}
+    donde todo $f_i$ es irreducible y distinto al resto para cada $i\in \{1,\dots, r\}$. Sea $f$ el polinomio dado por la \autoref{prop:sub} que genera la superficie racional que contiene a la dada por la parametrización. Por la \autoref{prop:same}, sabemos entonces que 
+    \begin{equation*}
+        \{(a,b,c) :  f_1^{l_1}(a,b,c)\cdots f_r^{l_r}(a,b,c) = 0\} \subseteq \{(a,b,c) : f(a,b,c) = 0\}.
+    \end{equation*}
+    Dado que $f$ es irreducible, debe darse que $r=1$ y $f=f_1$, concluyendo la demostración.
+\end{proof}
+Al igual que ocurría al usar bases de Groebner solo hemos obtenido una potencia de la ecuación implícita, lo cual nos es suficiente. Sin embargo, en este caso es mucho más fácil obtener de forma precisa la ecuación implícita de la superficie dada por la parametrización racional.
+\begin{teorema}\label{t:resDef}
+    Si $\resa(x,y,z)$ no es idénticamente nulo, entonces la ecuación implícita asociada a la parametrización racional es
+    \begin{equation*}
+        f(x,y,z) = \frac{\resa(x,y,z)}{\gcd\left( \resa(x,y,z)\cdot \frac{\partial \resa}{\partial u}(x,y,z)  \right)},
+    \end{equation*}
+    donde $u$ es cualquiera de las variables $x,y,z$ que aparezcan en $\resa$.  
+\end{teorema}
+\begin{proof}
+    Usando el \autoref{t:potencia} sabemos que $\resa = f^l$, de donde
+    \begin{equation*}
+         \frac{\partial \resa}{\partial u}(x,y,z) = lf^{l-1} \frac{\partial f}{\partial u}(x,y,z).
+    \end{equation*}
+    Dado que $f$ es irreducible y de grado mayor que $ \frac{\partial f}{\partial u}(x,y,z)$, estos no tienen ningún factor común, y por consiguiente
+    \begin{equation*}
+        \gcd\left( \resa, \frac{\partial \resa}{\partial u}\right) = f^{l-1},
+    \end{equation*}
+    de donde se obtiene el resultado.
+\end{proof}
+
+Terminamos la sección viendo bajo qué circunstancias podemos asegurar que $\resa \neq 0$, de forma que tendremos asegurado que la parametrización es representada por una única ecuación implícita. Para ello necesitamos presentar el concepto de punto base.
+\begin{definicion}
+    Llamamos \textbf{puntos base} de una parametrización racional de la forma \eqref{eq:param} a la intersección de las curvas planas
+    \begin{equation*}
+       \xi(r,s,t) = 0,\quad \eta(r,s,t) = 0,\quad \zeta(r,s,t)=0,\quad \omega(r,s,t)=0.
+    \end{equation*}
+\end{definicion}
+\begin{teorema}
+    El resultante auxiliar es idénticamente nulo si y solo si la parametrización tiene puntos base.
+\end{teorema}
+
+Todos los resultados que hemos presentado tenían como hipótesis la no nulidad del resultante auxiliar, de forma que solo hemos aprendido a trabajar en la ausencia de puntos base. Para el estudio del cálculo de resultantes cuando existan puntos base, se pueden consultar \cite{base1, base2}. No obstante, los resultados vistos siguen siendo potentes, pudiendo llegar a agilizar de forma muy notable los cálculos en función del problema concreto con el que estemos trabajando. En particular, el algoritmo de cálculo y reducción de una base de Groebner va añadiendo sobre la marcha nuevos polinomios con los que realizar operaciones, sin saber exactamente cuándo acabará. Es decir, ese algoritmo se basa en buscar y comprobar lo que requiere un mayor número de operaciones que el algoritmo propuesto por Eng-Wee Chionh y Ronald N. Goldman \cite{res1} conoce de antemano el número de polinomios con los que va a trabajar. Además, en caso de que necesitemos obtener la ecuación implícita exacta, el tener que calcular un radical traerá muchas complicaciones, en caso de que sea posible. Por este motivo el uso de resultantes es el método más común para el problema de implicitación. Acabamos el capítulo con un ejemplo práctico de uso de bases de Groebner y resultantes para un problema de implicitación sencillo.
+\begin{ejemplo}
+    El plano $\Pi = \{(x,y,z) \in \R^3 : -x+y+z=0\}$ tiene la siguiente parametrización racional:
+    \begin{equation*}
+        \begin{cases}
+        x = s+t,\\
+        y = s,\\
+        z = t.
+    \end{cases}
+    \end{equation*}
+    Usando bases de Groebner y aplicando el \autoref{t:implicit}, tenemos que calcular una base del ideal
+    \begin{equation*}
+        I = \langle x-(s+t), y - (s), z-(t) \rangle.
+    \end{equation*}
+    La versión del algoritmo de Buchberger implementada en SageMath realizada ocho reducciones a cero, mientras que la versión presentada en el \autoref{a:buchberger} realiza seis, reduciendo este número a tan solo una si además se usan los criterios del \autoref{t:criterios}. En cualquier caso, obtenemos la base
+    \begin{equation*}
+        B= \{-x + y + z, -s + y, -s - t + x, -t + z\},
+    \end{equation*}
+    de donde el ideal de $1$-eliminación sería
+    \begin{equation*}
+        J = I \cap \Q[x,y,z] = \langle -x + y + z  \rangle,
+    \end{equation*}
+    que en este caso es radical, obteniendo la ecuación implícita exacta del plano.\newline
+    
+    Si por el contrario hacemos uso de resultantes, tras homogeneizar, el sistema auxiliar de la parametrización sería
+    \begin{equation*}
+        \begin{cases}
+            s+t-rx=0,\\
+            s-ry=0,\\
+            t-rz=0,
+        \end{cases}
+    \end{equation*}
+    de forma que el resultante auxiliar sería
+    \begin{equation*}
+        \resa(x,y,z) = \det\begin{pmatrix} -x & 1 & 1\\ -y&1&0\\ -z&0&1 \end{pmatrix} = -x+y+z,
+    \end{equation*}
+    que ya sabemos que es la ecuación exacta. Podemos comprobarlo usando el \autoref{t:resDef}, ya que
+    \begin{equation*}
+        f(x,y,z) = \frac{\resa(x,y,z)}{\gcd\left( \resa(x,y,z)\cdot \frac{\partial \resa}{\partial x}(x,y,z)  \right)} = \frac{-x+y+z}{\gcd\left( -x+y+z, -1  \right)} = \frac{-x+y+z}{1}.
+    \end{equation*}
+\end{ejemplo}
