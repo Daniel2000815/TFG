@@ -85,7 +85,7 @@ Ahora mismo, dado una función distancia con signo arbitraria no tenemos informa
     Sea $U$ un abierto de $\R^3$ y $\phi:U\to \R$ lipschitziana. Entonces $\phi$ es diferenciable en casi todo punto de $U$.
 \end{lema}
 
-Tenemos por tanto asegurado que $\phi_{\Omega}$ será diferenciable en casi todo punto de $\R^3$. No obstante, podemos concretar aún más dónde están los puntos de conflicto cuando $\Omega$ sea lo suficientemente regular \cite{dif1,dif2}. Para ello necesitaremos introducir el concepto de esqueleto de una superficie \cite{derivWiki}.
+Tenemos por tanto asegurado que $\phi_{\Omega}$ será diferenciable en casi todo punto de $\R^3$. No obstante, podemos concretar aún más dónde están los puntos de conflicto cuando $\Omega$ sea lo suficientemente regular \cite{dif1,dif2}. Para ello necesitaremos introducir el concepto de esqueleto de una superficie \cite{derivWiki} y repasar algunas definiciones básicas asociadas a superficies en el espacio \cite{apuntes:curvas}.
 \begin{definicion}
     Sea $\phi_{\Omega} \colon \R^3\to \R$ una función distancia con signo. Llamamos \textbf{esqueleto} de $\Omega$ al conjunto de puntos de $\R^3$ cuya distancia a la superficie puede obtenerse como la distancia a dos o más puntos distintos de $\delta \Omega$:
     \begin{equation}
@@ -94,18 +94,39 @@ Tenemos por tanto asegurado que $\phi_{\Omega}$ será diferenciable en casi todo
 \end{definicion}
 
 \begin{definicion}
-    Sea $\Omega \subset \R^3$ y $p\in \Omega$. Llamamos \textbf{vector normal} en $p$ al vector de norma uno y perpendicular al borde de $\Omega$ en $p$. Lo denotamos $N_p$.
+    Dado $I\subseteq \R$, llamamos \textbf{curva parametrizada} a una aplicación
+    \begin{align*}
+        \alpha: I &\to \R^3,\\
+        t &\mapsto (x(t), y(t), z(t)),
+    \end{align*}
+    donde $x,y,z:I\to \R$ son diferenciables. 
 \end{definicion}
-
 \begin{definicion}
-    Decimos que $\Omega \subseteq \R^3$ es \textbf{regular} si para cada $p\in \Omega$ existen abiertos $U\subseteq \R^2$ y $V\subseteq \R^3$ junto a una aplicación $\psi\colon U \to V\cap \Omega$ tal que:
+    Decimos que $\Omega \subseteq \R^3$ es una \textbf{superficie regular} si para cada $p\in \Omega$ existen abiertos $U\subseteq \R^2$ y $V\subseteq \R^3$ junto a una aplicación $\psi\colon U \to V\cap \Omega$ tal que:
     \begin{enumerate}
         \item $\psi$ es un homeomorfismo, es decir, es continua, biyectiva y con inversa continua,
         \item $\psi$ es diferenciable y su diferencial es inyectiva.
     \end{enumerate}
 \end{definicion}
 
-El siguiente teorema, cuya demostración podemos consultar en \cite{dif1}, nos proporciona una caracterización geométrica de la diferenciabilidad de cualquier distancia con signo bajo $\phi_{\Omega}$ ciertas hipótesis de regularidad para $\Omega$.
+\begin{definicion}
+    Sea $\Omega$ una superficie regular y $p\in \Omega$. Dados $\varepsilon>0$ y una curva parametrizada diferenciable
+    $$\alpha: ]\varepsilon, \varepsilon[ \to \R^3 \text{ tal que } \text{Img($\alpha$)} \subset \Omega \text{ y } \alpha(0)=p,$$
+    diremos que $\alpha'(0)$ es un \textbf{vector tangente} a $\Omega$ en $p$.
+\end{definicion}
+\begin{definicion}
+    Sea $\Omega$ una superficie regular, $p\in \Omega$ y $T_p\Omega$ el plano vectorial conteniendo todos los vectores tangentes a $\Omega$ en $p$. Llamamos \textbf{plano tangente} a $\Omega$ en $p$ al conjunto $p+T_p\Omega$.
+\end{definicion}
+\begin{definicion}
+    Sea $\Omega$ una superficie regular y $p\in \Omega$. El \textbf{vector normal} a $\Omega$ en $p$ es el vector $N_p\in \R^3$ de norma uno perpendicular al plano tangente de $\Omega$ en $p$.
+\end{definicion}
+% \begin{definicion}
+%     Sea $\Omega \subset \R^3$ y $p\in \Omega$. Llamamos \textbf{vector normal} en $p$ al vector de norma uno y perpendicular al borde de $\Omega$ en $p$. Lo denotamos $N_p$.
+% \end{definicion}
+
+
+
+El siguiente teorema, cuya demostración podemos consultar en \cite{dif1}, nos proporciona una caracterización geométrica de la diferenciabilidad de cualquier función distancia con signo $\phi_{\Omega}$ bajo ciertas hipótesis de regularidad para $\Omega$.
 \begin{teorema}\label{teo:diff}
     Sea $\Omega \subseteq \R^3$ cuya frontera es regular y $\phi_{\Omega} \colon \R^3\to \R$ la función distancia con signo asociada a $\Omega$. Entonces $\phi_{\Omega}$ es diferenciable en un entorno tubular $U$ de $\delta \Omega$. Es más, para cada $p\in \R^3$ se cumple una se las siguientes propiedades:
     \begin{enumerate}
