@@ -1,30 +1,28 @@
 \subsection{Conceptos básicos y caso de una variable}
-En la sección anterior, para resolver el problema de implicitación hemos tratado de resolver el sistema de ecuaciones \eqref{eq:paramEq} buscando los puntos que satisfacen cada una de las ecuaciones, pero existen vías alternativas. En esta sección veremos cómo usar resultantes para la implicitación de superficies paramétricas racionales. Para ello, empezaremos introduciendo el concepto de resultante y estudiando sus versiones más sencillas \cite{ideals_varieties}, para posteriormente abordar el problema de implicitación en un ambiente mucho más general basándonos en el trabajo de Eng-Wee Chionh y Ronald N. Oldman \cite{res1}.\newline
-
-Una de las primeras ideas que se pueden ocurrir para resolver el sistema \eqref{eq:paramEq} de forma alternativa es que si todos sus polinomios tienen algún factor común $h\in A[X]$ no trivial, esto es, cumpliendo $\deg(h)>1$, entonces
-$$h(x_1,\dots, x_n) = 0 \text{ implica } g_i(x_1,\dots, x_n)=0 \text{ para cada } i\in\{1,\dots, n\}.$$
+Una de las primeras ideas que se pueden ocurrir para resolver el sistema \eqref{eq:paramEq} de forma alternativa es que si todos sus polinomios tienen algún factor común $h\in A[t_1,\dots, t_r]$ no trivial, esto es, cumpliendo $\deg(h)>1$, entonces
+$$h(t_1,\dots, t_r) = 0 \text{ implica } g_i(t_1,\dots, t_r)=0 \text{ para cada } i\in\{1,\dots, n\}.$$
 En concreto, las raíces que coinciden y se anulan simultáneamente con las de los polinomios del sistema son las del polinomio $h$, luego si $h = \gcd(g_1,\dots, g_n)$ la implicación anterior se convierte en una equivalencia. Este idea motiva la siguiente definición \cite{res3}.
 \begin{definicion}\label{def:resultant}
-    Sean $f_1,\dots , f_r \in A[x_1,\dots, x_n]$. Definimos el \textbf{resultante} de $f_1,\dots, f_r$ como el polinomio $\res_{f_1,\dots, f_r} \in A[x_1,\dots, x_n]$ tal que
+    Sean $f_1,\dots , f_n \in A[t_1,\dots, t_r]$. Definimos el \textbf{resultante} de $f_1,\dots, f_n$ como el polinomio $\res_{f_1,\dots, f_n} \in A[t_1,\dots, t_r]$ tal que
     \begin{equation*}
-        \res_{f_1,\dots, f_r}(x_1,\dots, x_n) = 0 \text{ si y solo si } f_1(x_1,\dots, x_n) = \cdots =  f_r(x_1,\dots, x_n) = 0.
+        \res_{f_1,\dots, f_n}(t_1,\dots, t_r) = 0 \text{ si y solo si } f_1(t_1,\dots, t_r) = \cdots =  f_n(t_1,\dots, t_r) = 0.
     \end{equation*}
     Cuando no haya lugar a confusión omitiremos el subíndice.
 \end{definicion}
 
-Hemos visto que la forma más directa de obtener el resultante de un sistema de ecuaciones es a través del máximo común divisor, pero para más de dos polinomios eso conllevaría realizar un gran número divisiones, que ya hemos visto que son caras computacionalmente. El cálculo del resultante en varias variables no es en general nada simple, pero bajo ciertas condiciones puede llegar a serlo, como muestra el siguiente resultado en el caso de que se tenga el mismo número de variables que de polinomios y estos tengan una determinada forma.
+Hemos visto que la forma más directa de obtener el resultante de un sistema de ecuaciones es a través del máximo común divisor, pero para a medida que el número de polinomios crece, eso conllevaría realizar un gran número divisiones, que ya hemos visto que son caras computacionalmente. El cálculo del resultante en varias variables no es en general nada simple, pero bajo ciertas condiciones puede llegar a serlo, como muestra el siguiente resultado en el caso de que se tenga el mismo número de variables que de polinomios y estos tengan una determinada forma.
 \begin{teorema}[Teorema fundamental de eliminación]\label{t:elimRes}
-    Dados $f_1,\dots, f_n \in A[x_1,\dots, x_n]$ lineales, esto es, de la forma 
-    $$f_i(x_1,\dots, x_n) = a_1^{(i)}x_1 + \cdots + a_n^{(i)}x_n + b,\ \text{ para cada } i\in \{1,\dots, n\},$$
-    entonces su resultante es
-    $$\res(x_1,\dots, x_n) = \det\begin{pmatrix}
-        a_1^{(1)} & a_2^{(1)} & \cdots & a_n^{(1)} \\
+    Sean $f_1,\dots, f_n \in A[t_1,\dots, t_n]$ lineales, esto es, de la forma 
+    $$f_i(t_1,\dots, t_n) = a_1^{(i)}t_1 + \cdots + a_r^{(i)}t_n + b,\ \text{ para cada } i\in \{1,\dots, n\}.$$
+    Entonces su resultante es
+    $$\res(t_1,\dots, t_n) = \det\begin{pmatrix}
+        a_1^{(1)} & a_2^{(1)} & \cdots & a_r^{(1)} \\
         \vdots    & \vdots & &\vdots\\
         a_1^{(n)} & a_2^{(n)} & \cdots & a_n^{(n)}
     \end{pmatrix}.$$
 \end{teorema}
 
-A continuación estudiamos en detalle un método para obtener el resultante en el caso más sencillo posible, el de una única variable y dos polinomios \cite{ideals_varieties}. En este entorno el método más común es el de la matriz de Sylvester, la cual deduciremos a partir de la búsqueda de un divisor común de estos polinomios.
+A continuación estudiamos en detalle un método para obtener el resultante en el caso más sencillo posible, el de una única variable y dos polinomios \cite{ideals_varieties}. En este entorno, el método más común es el de la matriz de Sylvester, la cual deduciremos a partir de la búsqueda de un divisor común de estos polinomios.
 \begin{lema}\label{l:gcd}
     Sean $f,g\in A[x]$ polinomios tal que $\deg(f) = l$ y $\deg(g) = m$, con $l,m \in \N\setminus \{0\}$. Entonces $f$ y $g$ tienen un factor común no trivial si y solo si existen otros polinomios $A,B \in A[x]$ tal que
     \begin{enumerate}
@@ -36,9 +34,9 @@ A continuación estudiamos en detalle un método para obtener el resultante en e
 La cuestión a resolver ahora es la de la existencia de los polinomios $A$ y $B$. Para ello escribimos
 \begin{align}\label{eq:gcd1}
     &A = \sum_{i=0}^{m-1} u_{m-i-1} x^i,   \ &B &= \sum_{j=0}^{l-1} v_{l-j-1} x^j,\\
-    &f = \sum_{k=0}^l c_{l-k} x^k,         \ &g &= \sum_{h=0}^m d_{m-h} x^h,\ \text{ con } c_l, d_h,\neq 0,
+    &f = \sum_{k=0}^l c_{l-k} x^k,         \ &g &= \sum_{h=0}^m d_{m-h} x^h,\ \text{ con } c_l, d_h\neq 0,
 \end{align}
-donde trataremos a los coeficientes $u_i$ y $v_j$ en $A$ como incógnitas para $i\in\{0,\dots m-1\}$ y $j\in \{0,\dots, l-1\}$. Para encontrarlos impondremos que se cumpla la tercera condición del \autoref{l:gcd}:
+donde trataremos a los coeficientes $u_i$ y $v_j$ en $A$ como incógnitas para $i\in\{0,\dots, m-1\}$ y $j\in \{0,\dots, l-1\}$. Para encontrarlos impondremos que se cumpla la tercera condición del \autoref{l:gcd}:
 \begin{equation}\label{eq:gcd}
 Af + Bg = 0.    
 \end{equation}
@@ -46,13 +44,13 @@ Sustituyendo las expresiones de \eqref{eq:gcd1} en la igualdad \eqref{eq:gcd} y 
 \begin{align*}
     c_0u_0  &              &+ d_0v_0       &                        &= 0,\\
     c_1u_0  &+ c_0u_1&+ d_1v_0       &+ d_0v_1               &= 0,\\
-            &\ddots        &               & \ddots                &\vdots,\\
+            &\ddots        &               & \ddots                &\vdots\\
             &              &c_lu_{m-1}     &+          d_mv_{l-1}  &=0.
 \end{align*}
 Como tenemos $l+m$ incógnitas y ecuaciones, sabemos por álgebra lineal que el sistema tendrá alguna solución no nula si y solo si la matriz de coeficientes asociada tiene determinante igual a cero.
 \begin{definicion}
     Dados dos polinomios $f,g \in A[x]$ no nulos de la forma
-    $$f = \sum_{k=0}^l c_{l-k} x^k,\ g = \sum_{h=0}^m d_{m-h} x^h,\ \text{ con } c_l, d_h,\neq 0 \text{ y } l,m>0,$$
+    $$f = \sum_{k=0}^l c_{l-k} x^k,\ g = \sum_{h=0}^m d_{m-h} x^h,\ \text{ con } c_l, d_h\neq 0 \text{ y } l,m>0,$$
     definimos la \textbf{matriz de Sylvester} de $f$ y $g$ respecto a $x$ como
     \begin{equation*}
         \syl(f,g,x) = \begin{pmatrix}
@@ -78,7 +76,7 @@ Como tenemos $l+m$ incógnitas y ecuaciones, sabemos por álgebra lineal que el 
     %     \item $\res(c_0,d_0,x) =$  cuando $c_0,d_0\in A\setminus \{0\}$.
     % \end{itemize}
 \end{proposicion}
-Podemos concluir por tanto que siempre podemos encontrar los polinomios $A$ y $B$ en las condiciones del \autoref{l:gcd}. Además se cumple el siguiente hecho.
+Podemos concluir por tanto que siempre podemos encontrar los polinomios $A$ y $B$ en las condiciones del \autoref{l:gcd}. Además, estos cumplen el siguiente hecho.
 \begin{proposicion}
     Dados $f,g\in A[x]$ no nulos, existen polinomios $A,B\in A[x]$ tal que  
     $$Af+Bg = \res_{f,g}(x).$$
@@ -88,7 +86,7 @@ La demostración de este resultado se puede consultar en \cite{ideals_varieties}
 \begin{proposicion}
     Dados $f,g\in A[x]$ no nulos, existen polinomios $\tilde{A}, \tilde{B} \in A[x]$ de la forma
     \begin{equation*}
-        \tilde{A} = \frac{A}{\res(f,g,x)}\quad \text{ y }\quad \tilde{B} = \frac{B}{\res_{f,g}(x)}
+        \tilde{A} = \frac{A}{\res(f,g,x)}\quad \text{ y }\quad \tilde{B} = \frac{B}{\res_{f,g}(x)},
     \end{equation*}
     que cumplen
     \begin{equation*}
@@ -122,10 +120,10 @@ Este es el motivo de que aparezca la variable adicional $r$. Una vez homogeneiza
 \end{equation}
 cuya existencia del resultante asociado tenemos asegurada por el \autoref{t:elimRes}.
 \begin{definicion}
-    Llamamos \textbf{resultante auxiliar} al resultante asociado a los polinomios de la ecuación \eqref{eq:aux}, y lo denotaremos $\resa(x,y,z)$.
+    Llamamos \textbf{resultante auxiliar} al resultante asociado a los polinomios del sistema \eqref{eq:aux}, y lo denotaremos $\resa(x,y,z)$.
 \end{definicion}
 \begin{proposicion}
-    El resultante auxiliar es o bien un polinomio no nulo o bien idénticamente cero. Es decir, $\resa(x,y,z) \neq k$ para $k\in \R\setminus \{0\}$.
+    El resultante auxiliar es o bien un polinomio no nulo o bien idénticamente cero. 
 \end{proposicion}
 Los siguientes resultados muestran la relación que tiene el resultante auxiliar con el problema de implicitación.
 \begin{proposicion}\label{prop:sub}
@@ -137,7 +135,7 @@ Los siguientes resultados muestran la relación que tiene el resultante auxiliar
 \begin{teorema}\label{t:potencia}
     Si $\resa(x,y,z)$ no es idénticamente nulo, entonces
     \begin{equation*}
-        \resa(x,y,z) = f^l(x,y,z),\text{ para algún } f\in A[x,y,z] \text{ y } l\in \N\setminus\{0\}.
+        \resa(x,y,z) = f^l(x,y,z),\text{ para algún } f\in A[x,y,z] \text{ irreducible y } l\in \N\setminus\{0\}.
     \end{equation*}
 \end{teorema}
 \begin{proof}
@@ -145,13 +143,13 @@ Los siguientes resultados muestran la relación que tiene el resultante auxiliar
     \begin{equation*}
         \resa(x,y,z) = f_1^{l_1}(x,y,z)\cdots f_r^{l_r}(x,y,z),
     \end{equation*}
-    donde todo $f_i$ es irreducible y distinto al resto para cada $i\in \{1,\dots, r\}$. Sea $f$ el polinomio dado por la \autoref{prop:sub} que genera la superficie racional que contiene a la dada por la parametrización. Por la \autoref{prop:same}, sabemos entonces que 
+    donde todo $f_i$ es irreducible y distinto a los demás para cada $i\in \{1,\dots, r\}$. Sea $f$ el polinomio dado por la \autoref{prop:sub} que genera la superficie racional que contiene a la dada por la parametrización. Por la \autoref{prop:same}, sabemos entonces que 
     \begin{equation*}
         \{(a,b,c) :  f_1^{l_1}(a,b,c)\cdots f_r^{l_r}(a,b,c) = 0\} \subseteq \{(a,b,c) : f(a,b,c) = 0\}.
     \end{equation*}
     Dado que $f$ es irreducible, debe darse que $r=1$ y $f=f_1$, concluyendo la demostración.
 \end{proof}
-Al igual que ocurría al usar bases de Gröbner solo hemos obtenido una potencia de la ecuación implícita, lo cual nos es suficiente. Sin embargo, en este caso es mucho más fácil obtener de forma precisa la ecuación implícita de la superficie dada por la parametrización racional.
+Al igual que ocurría al usar bases de Gröbner, solo hemos obtenido una potencia de la ecuación implícita, lo cual nos es suficiente. Sin embargo, en este caso es mucho más fácil obtener de forma precisa la ecuación implícita de la superficie dada por la parametrización racional.
 \begin{teorema}\label{t:resDef}
     Si $\resa(x,y,z)$ no es idénticamente nulo, entonces la ecuación implícita asociada a la parametrización racional es
     \begin{equation*}
@@ -171,7 +169,7 @@ Al igual que ocurría al usar bases de Gröbner solo hemos obtenido una potencia
     de donde se obtiene el resultado.
 \end{proof}
 
-Observamos que aunque tengamos que calcular un máximo común divisor, solo hay dos polinomios involucrados, lo cual simplifica los cálculos notablemente en comparación al caso de tres o más polinomios. Terminamos la sección viendo bajo qué circunstancias podemos asegurar que $\resa \neq 0$, de forma que tendremos asegurado que la parametrización es representada por una única ecuación implícita. Para ello necesitamos presentar el concepto de punto base.
+Observamos que aunque tengamos que calcular un máximo común divisor, solo hay dos polinomios involucrados, lo cual simplifica los cálculos notablemente en comparación al caso más polinomios. Terminamos la sección viendo bajo qué circunstancias podemos asegurar que $\resa \neq 0$, de forma que estaremos seguros de que la parametrización es representada por una única ecuación implícita. Para ello necesitamos presentar el concepto de punto base.
 \begin{definicion}
     Llamamos \textbf{puntos base} de una parametrización racional de la forma \eqref{eq:param} a la intersección de las curvas planas
     \begin{equation*}
@@ -182,8 +180,8 @@ Observamos que aunque tengamos que calcular un máximo común divisor, solo hay 
     El resultante auxiliar es idénticamente nulo si y solo si la parametrización tiene puntos base.
 \end{teorema}
 
-Todos los resultados que hemos presentado tenían como hipótesis la no nulidad del resultante auxiliar, de forma que solo hemos aprendido a trabajar en la ausencia de puntos base. Para el estudio del cálculo de resultantes cuando existan puntos base se pueden consultar \cite{base1, base2}. No obstante, los resultados vistos siguen siendo potentes, pudiendo llegar a agilizar de forma muy notable los cálculos en función del problema concreto con el que estemos trabajando. En particular, el algoritmo de cálculo y reducción de una base de Gröbner va añadiendo sobre la marcha nuevos polinomios con los que realizar operaciones, sin saber exactamente cuándo acabará. Es decir, ese algoritmo se basa en buscar y comprobar, lo que requiere un mayor número de operaciones que el algoritmo propuesto por Eng-Wee Chionh y Ronald N. Goldman \cite{res1}, que conoce de antemano el número de polinomios con los que va a trabajar y produce en general un número de operaciones mucho menor. Además, en caso de que necesitemos obtener la ecuación implícita exacta, el tener que calcular un radical traerá muchas complicaciones, en caso de que sea posible. Es por estos motivos por los cuales el uso de resultantes es el método más común para el problema de implicitación. Acabamos el capítulo con un ejemplo práctico de uso de bases de Gröbner y resultantes para un problema de implicitación sencillo.
-\begin{ejemplo}
+Todos los resultados que hemos presentado tenían como hipótesis la no nulidad del resultante auxiliar, de forma que solo hemos aprendido a trabajar en la ausencia de puntos base. Para el estudio del cálculo de resultantes cuando existan puntos base se pueden consultar \cite{base1, base2}. No obstante, los resultados vistos siguen siendo potentes, pudiendo llegar a agilizar de forma muy notable los cálculos en función del problema concreto con el que estemos trabajando. En particular, el algoritmo de cálculo y reducción de una base de Gröbner va añadiendo sobre la marcha nuevos polinomios con los que realizar operaciones, sin saber exactamente cuándo acabará. Es decir, ese algoritmo se basa en buscar y comprobar, lo que requiere un mayor número de operaciones que el algoritmo propuesto por Eng-Wee Chionh y Ronald N. Goldman \cite{res1}, que conoce de antemano el número de polinomios con los que va a trabajar y produce en general un número de operaciones mucho menor. Además, en caso de que necesitemos obtener la ecuación implícita exacta, el tener que calcular un radical traerá muchas complicaciones, en caso de que sea posible. Por estos motivos el uso de resultantes es la vía más común para la resolución del problema de implicitación. Acabamos el capítulo con un ejemplo práctico de uso de bases de Gröbner y resultantes para un problema de implicitación sencillo.
+\begin{ejemplo}\label{ej:finalGroebner}
     El plano $\Pi = \{(x,y,z) \in \R^3 : -x+y+z=0\}$ tiene la siguiente parametrización racional:
     \begin{equation*}
         \begin{cases}
@@ -194,18 +192,17 @@ Todos los resultados que hemos presentado tenían como hipótesis la no nulidad 
     \end{equation*}
     Usando bases de Gröbner y aplicando el \autoref{t:implicit}, tenemos que calcular una base del ideal
     \begin{equation*}
-        I = \langle x-(s+t), y - (s), z-(t) \rangle.
+        I = \langle x-(s+t), y - (s), z-(t) \rangle \le \Q[s,t,x,y,z].
     \end{equation*}
     La versión más básica del algoritmo de Buchberger de SageMath implementada en el paquete \texttt{sage.rings.polynomial.toy\_buchberger} realiza ocho reducciones a cero, mientras que la versión presentada en el \autoref{a:buchberger} realiza seis, reduciendo este número a tan solo una si además se usan los criterios del \autoref{t:criterios}. En cualquier caso, obtenemos la base
     \begin{equation*}
         B= \{-x + y + z, -s + y, -s - t + x, -t + z\},
     \end{equation*}
-    de donde el ideal de $1$-eliminación sería
+    de donde el ideal de $2$-eliminación de $I$ sería
     \begin{equation*}
         J = I \cap \Q[x,y,z] = \langle -x + y + z  \rangle,
     \end{equation*}
     que en este caso es radical, obteniendo la ecuación implícita exacta del plano.\newline
-    
     Si por el contrario hacemos uso de resultantes, tras homogeneizar, el sistema auxiliar de la parametrización sería
     \begin{equation*}
         \begin{cases}
@@ -214,7 +211,7 @@ Todos los resultados que hemos presentado tenían como hipótesis la no nulidad 
             t-rz=0.
         \end{cases}
     \end{equation*}
-    Aplicando el \autoref{t:elimRes} podemos obtener el resultante auxiliar como el determinante de la matriz formada por los coeficientes en cada variable de las ecuaciones del sistema auxiliar:
+    Aplicando el \autoref{t:elimRes}, podemos obtener el resultante auxiliar como el determinante de la matriz formada por los coeficientes de las variables $r,s,t$ de las ecuaciones del sistema auxiliar:
     \begin{equation*}
         \resa(x,y,z) = \det\begin{pmatrix} -x & 1 & 1\\ -y&1&0\\ -z&0&1 \end{pmatrix} = -x+y+z.
     \end{equation*}
