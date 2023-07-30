@@ -1,6 +1,6 @@
 Una vez definida la escena a partir de una SDF necesitamos una forma para visualizarla, para lo que utilizaremos la API de OpenGL \cite{opengl} y aplicaremos la técnica de \textit{raymarcing}. 
 
-\subsection{Creación del lienzo}
+\subsection{Creación del lienzo}\label{sec:lienzo}
 Si bien se puede hacer \textit{raymarching} directamente sobre una escena 3D, nuestra escena constará únicamente de un plano formado por cuatro vértices y dos triángulos, que usaremos como lienzo  (o \textit{canvas}) para dibujar sobre él. Para ello, necesitaremos trabajar sobre diferentes espacios de coordenadas que nos proporciona OpenGL, los cuales pasamos a enumerar.
 \begin{itemize}
     \item \textbf{Coordenadas locales o de objeto:} distancias relativas al origen del objeto.
@@ -46,16 +46,16 @@ Este lienzo, como toda geometría, tendrá asignado dos \textit{shaders} o proce
 En el \textit{vertex shader} utilizaremos los siguientes atributos.
 \begin{itemize}    
     \item \textbf{\texttt{in vec4 gl\_Vertex}}: contiene las coordenadas locales del vértice actual y es pasado autómaticamente por la aplicación.
-    \item \textbf{\texttt{out vec4 gl\_Position}}: posición transformada del vértice actual. La cuarta componente es la componente homogénea, que es necesaria para realizar el cambio a coordenadas recortadas.
+    \item \textbf{\texttt{out vec4 gl\_Position}}: posición transformada del vértice actual que deberemos calcular. La cuarta componente es la componente homogénea, que es necesaria para realizar el cambio a coordenadas recortadas.
 \end{itemize}
 Por otro lado, en el \textit{fragment shader} usaremos los que siguen.
 \begin{itemize}
     \item \textbf{\texttt{in vec4 gl\_FragCoord}}: coordenadas de dispositivo para el centro del píxel actual en el \textit{fragment shader}. Al ser un atributo de entrada del \textit{fragment shader}, está interpolada en cada vértice. La cuarta componente es la inversa de la componente homogénea de \texttt{gl\_Position}, y se utiliza en el cálculo de la profundidad de los píxeles y en las operaciones de corrección de perspectiva.
-    \item \textbf{\texttt{out vec4 gl\_FragColor}}: terna RGBA para asignar el color del píxel actual en el \textit{fragment shader}.
+    \item \textbf{\texttt{out vec4 gl\_FragColor}}: terna RGBA que asignaremos como color del píxel actual en el \textit{fragment shader}.
 \end{itemize}
 Por último, en caso de que queramos pasar nuestros propios atributos desde otro programa, deberemos hacerlo a través de un \texttt{uniform}.\newline
 
-En primer lugar se ejecuta el \textbf{procesador de vértices o \textit{vertex shader}} para cada vértice de la geometría. Su objetivo principal es el de realizar transformaciones de coordenadas, y adicionalmente pasar atributos al \textit{fragment shader}. Dada la posición del vértice actual, que se nos proporciona a través del atributo \texttt{gl\_Vertex}, para cambiar de un sistema de coordenadas a otro se utilizan matrices de transformación \cite{article:matrices} \cite{article:matrices2}. En particular, haremos uso de las siguientes.
+En primer lugar se ejecuta una instancia del \textbf{procesador de vértices o \textit{vertex shader}} para cada vértice de la geometría. Su objetivo principal es el de realizar transformaciones de coordenadas, y adicionalmente pasar atributos al \textit{fragment shader}. Dada la posición del vértice actual, que se nos proporciona a través del atributo \texttt{gl\_Vertex}, para cambiar de un sistema de coordenadas a otro se utilizan matrices de transformación \cite{article:matrices} \cite{article:matrices2}. En particular, haremos uso de las siguientes.
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/matrices2.png}
@@ -93,7 +93,7 @@ Con esto, ya podemos escribir nuestro \textit{vertex shader}:
 \begin{figure}[ht!]
     \centering
        \begin{algorithm}[H]
-            \caption{Fragment Shader}
+            \caption{Vertex Shader}
             \KwData{matriz de proyección $M_P$, matriz de vista $M_V$, matriz de modelo $M_M$}
             \KwResult{Posición transformada del vértice actual}
                 $gl\_Position \gets M_P \cdot M_V \cdot M_M \cdot gl\_Vertex$
@@ -104,7 +104,7 @@ Con esto, ya podemos escribir nuestro \textit{vertex shader}:
 
 Tras realizar estas transformaciones, las coordenadas de recortado se transforman a coordenadas de dispositivo, que están centradas en la esquina inferior izquierda de la pantalla y toman valor en el rango $[0,r_x]\times [0,r_y]$, donde $r=(r_x,r_y)$ es la resolución de la pantalla.\newline
 
-Ahora le toca el turno al \textbf{procesador de fragmentos o \textit{fragment shader}}. Este se ejecuta para cada píxel de la pantalla, y su objetivo es asignar a la variable \texttt{gl\_FragColor} el color que el píxel tendrá como una terna RGBA. Será aquí donde hagamos todos los cálculos necesarios pare renderizar la superficie con \textit{raymarching}. Para ello, necesitaremos un sistema de coordenadas dentro del propio lienzo, que generaremos haciendo uso de \texttt{gl\_FragCoord} y la resolución del lienzo, atributo que pasaremos nosotros al \textit{shader} a través de un \texttt{uniform}, que llamaremos \texttt{u\_resolution}.\newline
+Ahora le toca el turno al \textbf{procesador de fragmentos o \textit{fragment shader}}. Se ejecuta una instancia suya para cada píxel de la pantalla, y su objetivo es asignar a la variable \texttt{gl\_FragColor} el color que el píxel tendrá como una terna RGBA. Será aquí donde hagamos todos los cálculos necesarios pare renderizar la superficie con \textit{raymarching}. Para ello, necesitaremos un sistema de coordenadas dentro del propio lienzo, que generaremos haciendo uso de \texttt{gl\_FragCoord} y la resolución del lienzo, atributo que pasaremos nosotros al \textit{shader} a través de un \texttt{uniform}, que llamaremos \texttt{u\_resolution}.\newline
 
 Para obtener estas coordenadas, primero desplazamos el origen que nos proporciona \texttt{gl\_FragCoord} al centro de la pantalla, y posteriormente normalizamos respecto a alguno de los ejes. Hacemos esto porque si intentamos normalizar sobre ambos ejes, obtendremos coordenadas en el rango $[-0.5,0.5]^2$, lo que hará que en un lienzo que no sea cuadrado, la imagen se vea estirada en la dirección del eje más largo. Nosotros normalizaremos respecto al eje vertical, ya que en nuestro caso será siempre el menor. Esto nos dará como resultado unas coordenadas con valores en $\left[ -0.5\cdot aspect, 0.5\cdot aspect \right] \times [-0.5, 0.5]$, donde $aspect$ es el ratio de aspecto del lienzo. Finalmente, para que el eje vertical toma valores en $[-1,1]$ multiplicamos por $2$, obteniendo
 \begin{equation*}
@@ -179,7 +179,7 @@ A partir de estos vectores podemos obtener $\{f_1,f_2,f_3\}$ normalizándolos y 
 \end{equation*}
 
 Solo queda transformar el vector $r_d = (u,v,-1)$ a la base que acabamos de obtener. La matriz de cambio de base serán las coordenadas por columnas de $\{f_1,f_2,f_3\}$ escritas en función de $\{e_1,e_2,e_3\}$, que al ser la base usual, coincidirá con escribir por columnas $\{f_1,f_2,f_3\}$, de forma que
-\begin{equation*}
+\begin{equation*}\label{eq:rayo}
     rayo = (u,v,-1)_{B}^t = \big(f_1\ \vert\  f_2\  \vert\  f_3\big) \cdot \begin{pmatrix}
         u\\
         v\\

@@ -421,7 +421,7 @@ El concepto de base de Gröbner es quizá el más importante tratado en este tra
 
 Terminamos la sección obteniendo un algoritmo para calcular la base de Gröbner reducida para un ideal dado un conjunto de generadores $G$ suyo. Aplicar de forma directa la definición de base de Gröbner sería inviable, así que en su lugar introduciremos una caracterización de las bases de Gröbner más abordable desde el punto de vista computacional.
 
-\begin{definicion}
+\begin{definicion}\label{lcm}
     Dados $\alpha,\beta \in \Nn$, definimos los siguiente términos.
     \begin{itemize}
         \item \textbf{Mínimo común múltiplo}: $\lcm(\alpha,\beta) = \{\Max(\alpha_1, \beta_1),\dots, \Max(\alpha_n, \beta_n)\}$.
