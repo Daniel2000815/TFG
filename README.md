@@ -4,7 +4,7 @@
 
 ### Ejecución
 
-- Visitar [GitHub Pages](https://daniel2000815.github.io/SDF-Visualizer/).
+- [Repositorio](https://github.com/Daniel2000815/SDF-Visualizer), [GitHub Pages](https://daniel2000815.github.io/SDF-Visualizer/).
 
 ### Estructura
 
