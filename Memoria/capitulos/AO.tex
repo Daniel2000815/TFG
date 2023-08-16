@@ -14,7 +14,7 @@ Cuando se trabaja con geometría de polígonos, una de las técnicas más comune
         \includegraphics[width=0.98\textwidth]{Plantilla-TFG-master/img/ssr_off.png}
         \caption{\textit{Raytracing}}
      \end{minipage}
-     \caption{Videojuego Ratchet \& Clank: Una dimensión aparte usando SSR y \textit{raytracing} \cite{ratchet}}
+     \caption{Reflejos en el videojuego Ratchet \& Clank: Una dimensión aparte usando SSR y \textit{raytracing} \cite{ratchet}}
      \label{fig:ssrVS}
 \end{figure}
 
@@ -33,9 +33,9 @@ Cuando se trabaja con geometría de polígonos, una de las técnicas más comune
      \label{fig:ssrEsquema}
 \end{figure}
 
-La solución a estos problemas cuando se trabaja con vértices es el uso de técnicas más avanzadas y computacionalmente costosas como el \textit{raytracing}. La buena noticia es que al estar usando SDFs nosotros podremos usar la información real de la geometría de nuestra escena. Obtendremos por tanto información más precisa, y además de forma muy barata, ya que requeriremos de muchas menos evaluaciones de la SDF que el algoritmo de \textit{spheretracing}. La técnica que vamos a usar fue ideada por Alex Evans en 2006 \cite{ao}, y se conoce como \textbf{oclusión ambiental muestreada por la normal}.\newline
+La solución a estos problemas cuando se trabaja con vértices es el uso de técnicas más avanzadas y computacionalmente costosas, como el \textit{raytracing}. La buena noticia es que al estar usando SDFs nosotros podremos usar la información real de la geometría de nuestra escena. Obtendremos por tanto información más precisa, y además de forma muy barata, ya que requeriremos de muchas menos evaluaciones de la SDF que el algoritmo de \textit{spheretracing}. La técnica que vamos a usar fue ideada por Alex Evans en 2006 \cite{ao}, y se conoce como \textbf{oclusión ambiental muestreada por la normal}.\newline
 
-El método se basa en dado un punto $p\in S_{\phi}$ evaluar la SDF en varios puntos del vector normal $N_p$ a distancias $d_i$ de $p$ para obtener la información de la geometría cercana. Si en el entorno de $p$ hay geometría que le esté obstruyendo la llegada de luz, en alguna de estas evaluaciones se obtendrá un valor menor que $d_i$, mientras que de lo contrario uno esperaría que
+El método se basa en dado un punto $p\in S_{\phi}$ evaluar la SDF en varios puntos del vector normal $N_p$ a diferentes distancias $d_i$ de $p$ para obtener la información de la geometría cercana. Si en el entorno de $p$ hay geometría que le esté obstruyendo la llegada de luz, en alguna de estas evaluaciones se obtendrá un valor menor que $d_i$, mientras que de lo contrario uno esperaría que
 \begin{equation*}
     \phi(p + d_i N_p) = d_i,
 \end{equation*}
@@ -65,31 +65,10 @@ Con esto ya podemos obtener la nueva versión del método \texttt{DibujarSuperfi
 
 \begin{figure}
     \centering
-        
-    \begin{algorithm}[H]
-        \caption{DibujarSupercicie}\label{alg:fsFinal}
-            \KwData{punto $p$, dirección del rayo $v$}
-            $L \gets L_A + L_E$ \Comment{Radiancia final}
-            \For{$i \in \{1,\dots, n\}$} {
-    
-                
-                \Comment{ ··· }
-                $N_p \gets CalcularNormal(p)$
-                
-                $sombras \gets CalcularSombras(p, l_i)$
-                
-                $ao \gets CalcularAO(p, N_p)$
-    
-                $L \gets L + S_i\cdot (f_{ra} + f_{rd} + f_{re})\cdot sombras \cdot ao$
-            }
-    
-            \Return{$L$}
-    \end{algorithm}
-    
     \begin{algorithm}[H]
         \caption{CalcularAO}
             \KwData{punto $p$, vector normal $N_p$}
-            \KwResult{$ao \in [0,1]$}
+            \KwResult{factor de oclusión ambiental en el rango $[0,1]$}
             $ao \gets 1$
                     
             $increment \gets \nicefrac{1}{M}$
@@ -107,7 +86,28 @@ Con esto ya podemos obtener la nueva versión del método \texttt{DibujarSuperfi
             \Return{$ao$}
     \end{algorithm}
     
-    \caption{Cálculo de oclusión ambiental}
+    \begin{algorithm}[H]
+        \caption{DibujarSupercicie}\label{alg:fsFinal}
+            \KwData{punto $p$, dirección del rayo $v$}
+            \KwResult{terna RGB con la radiancia percibida en el punto $p$}
+            $L \gets L_A + L_E$ \Comment{Radiancia final}
+            \For{$i \in \{1,\dots, n\}$} {
+    
+                
+                \Comment{ ··· }
+                $N_p \gets CalcularNormal(p)$
+                
+                $sombras \gets CalcularSombras(p, l_i)$
+                
+                $ao \gets CalcularAO(p, N_p)$
+    
+                $L \gets L + S_i\cdot (f_{ra} + f_{rd} + f_{re})\cdot sombras \cdot ao$
+            }
+    
+            \Return{$L$}
+    \end{algorithm}
+    
+    \caption{Cálculo y aplicación de oclusión ambiental}
     \label{fig:dibujarAO}
 \end{figure}
 

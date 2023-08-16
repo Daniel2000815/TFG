@@ -204,7 +204,20 @@
 % INFORMACIÓN DEL TFG Y EL AUTOR
 % --------------------------------------------------------------------
 \usepackage{xspace} % Para problemas de espaciado al definir comandos
+\usepackage{siunitx}
 
+\usepackage{{makecell}}
+\usepackage{tabularx}
+\usepackage{array,collcell}
+\newcommand\AddLabel[1]{%
+  \refstepcounter{equation}% increment equation counter
+  (\theequation)% print equation number
+  \label{#1}% give the equation a \label
+}
+\newcolumntype{M}{>{$\displaystyle}X<{$}} % mathematics column
+\newcolumntype{L}{>{\collectcell\AddLabel}r<{\endcollectcell}}
+
+\newcommand\PV{P_{\text{pv,rated}}}
 \usepackage{caption}
 \usepackage{subcaption}
 \newcommand{\miTitulo}{Visualización de Superficies 3D\xspace}

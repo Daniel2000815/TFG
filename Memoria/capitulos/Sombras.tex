@@ -4,10 +4,10 @@ Los resultados obtenidos en la \autoref{fig:difBlinn} presentan ciertas carencia
 \begin{algorithm}[H]
         \caption{DibujarSupercicie}
             \KwData{punto $p$, dirección del rayo $v$, distancia $\phi(p)$}
+            \KwResult{terna RGB con la radiancia percibida en el punto $p$}
             $L \gets L_A + L_E$ \Comment{Radiancia final}
             \For{$i \in \{1,\dots, n\}$} {
 
-                
                 \Comment{ ··· }
                 $sombras \gets CalcularSombras(p, l_i)$
 
@@ -22,7 +22,7 @@ Los resultados obtenidos en la \autoref{fig:difBlinn} presentan ciertas carencia
    \begin{algorithm}[H]
             \caption{CalcularSombras}
                 \KwData{punto $p_0$, dirección de luz $l_i$}
-                \KwResult{$sombra \in [0,1]$}
+                \KwResult{factor de sombra en $p_0$ en el rango $[0,1]$}
                  $d \gets \delta$ \Comment{distancia actual}
                 
                 \For{i $\in$ MAX\_ITERACIONES} {
@@ -71,7 +71,7 @@ Estudiando los resultados obtenidos vemos que al añadir sombras obtenemos una i
     \end{equation*}
 \end{itemize}
 
-Esta nueva versión de \texttt{CalcularSombras} se encuentra descrita en la \autoref{fig:sombras2}. En ella se ha añadido un parámetro $k\in \R_0^+$ para controlar la intensidad del efecto de suavizado. En realidad este parámetro hace referencia al \textbf{tamaño de la fuente de luz}, en concreto a su inversa. Así, cuanto más pequeño sea este valor más grande será la fuente de luz, produciendo sombras más difusas. Por ejemplo, el Sol tendrá un valor pequeño para $k$, mientras que una bombilla lo tendría grande. A partir de ahora en nuestra escena de ejemplo fijamos $k=  1.5$ para la fuente de luz que apunta más hacia la cámara, que actuará como el Sol, y $k = 10$ para la otra, que actuará como una linterna.
+Esta nueva versión de \texttt{CalcularSombras} se encuentra descrita en la \autoref{fig:sombras2}. En ella se ha añadido un parámetro $k\in \R_0^+$ para controlar la intensidad del efecto de suavizado. En realidad este parámetro hace referencia al \textbf{tamaño de la fuente de luz}, en concreto a su inversa. Así, cuanto más pequeño sea este valor más grande será la fuente de luz, produciendo sombras más difusas. Por ejemplo, el Sol tendrá un valor pequeño para $k$, mientras que una bombilla lo tendría grande. A partir de ahora en nuestra escena de ejemplo fijamos $k=  1.5$ para la fuente de luz que apunta más hacia la cámara, que actuará como el Sol, y $k = 10$ para la otra, que actuará como una linterna.\newline
 
 \begin{figure}[ht!]
     \centering
@@ -79,7 +79,7 @@ Esta nueva versión de \texttt{CalcularSombras} se encuentra descrita en la \aut
        \begin{algorithm}[H]
             \caption{CalcularSombras}
                 \KwData{punto $p_0$, dirección de luz $l_i$, tamaño de luz $k$}
-                \KwResult{$sombra \in [0,1]$}
+                \KwResult{factor de sombra en $p_0$ en el rango $[0,1]$}
                 $sombra \gets 1$
                 
                 $d \gets \delta$ \Comment{distancia actual}
@@ -135,7 +135,7 @@ La diferencia con nuestro método actual radica en que se permite que el rayo pe
    \begin{algorithm}[H]
         \caption{CalcularSombras}
             \KwData{punto $p_0$, dirección de luz $l_i$, tamaño de luz $k$}
-            \KwResult{Valor entre $0$ y $1$ representando la cantidad de sombra recibida en $p$}
+            \KwResult{valor en el rango $[0,1]$ representando la cantidad de sombra recibida en $p_0$}
             $sombra \gets 1$
             
             $d \gets \delta$ \Comment{distancia actual}
@@ -149,12 +149,12 @@ La diferencia con nuestro método actual radica en que se permite que el rayo pe
 
                 $d \gets d + \vert sdf\vert$
                 
-                \If{sombra<-1 || d > MAX\_DISTANCIA}{
+                \If{$sombra < -1 $ \textbf{OR} $d > MAX\_DISTANCIA$}{
                    \textbf{break}
                 } 
             }
 
-            \Return{smoothstep(-1,1,sombra)}
+            \Return{$smoothstep(-1,1,sombra)$}
     \end{algorithm}
 
     \caption{Cálculo de sombras suavizadas mejorado}

@@ -206,13 +206,14 @@ Ya podemos darle forma a las funciones \texttt{DibujarSuperficie} y \texttt{Dibu
        \begin{algorithm}[H]
             \caption{DibujarSupercicie}
                 \KwData{punto $p$, dirección del rayo $v$, distancia $\phi(p)$}
+                \KwResult{terna RGB con la radiancia percibida en el punto $p$}
                 $L \gets L_A$ \Comment{Radiancia final}
                 \For{$i \in \{1,\dots, n\}$} {
 
                     
                     $h \gets normalizar(L_i - v)$ \Comment{Observador en dirección opuesta a la del rayo}
                     
-                    $N_p \gets CalcularNormal(p)$
+                    $N_p \gets$ CalcularNormal$(p)$
                     
                     $NLi \gets \Max(0,\ N_p\cdot l_i)$
                     
@@ -231,6 +232,7 @@ Ya podemos darle forma a las funciones \texttt{DibujarSuperficie} y \texttt{Dibu
         \end{algorithm}
     \begin{algorithm}[H]
             \caption{DibujarFondo}
+                \KwResult{terna RGB con el color de fondo de la escena}
                 \Return{$L_A$}
         \end{algorithm}
 
