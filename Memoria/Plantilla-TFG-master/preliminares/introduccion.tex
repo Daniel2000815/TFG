@@ -1,0 +1,35 @@
+% !TeX root = ../libro.tex
+% !TeX encoding = utf8
+%
+%*******************************************************
+% Introducción
+%*******************************************************
+
+% \manualmark
+% \markboth{\textsc{Introducción}}{\textsc{Introducción}} 
+
+\chapter{Introducción}\label{cap:intro}
+En el campo de los gráficos generados por computador, el método más asentado para describir objetos tridimensionales es mediante mallas de polígonos. Cuando se trata de superficies, la representación implícita es también bastante usada debido a la facilidad que aporta a la hora de realizar geometría de sólidos constructiva o representar objetos sólidos. Sin embargo, esta representación no es apta para ser usada en tiempo real, y es aquí donde en los últimos años ha surgido un enfoque alternativo que muestra un gran potencial: la utilización de funciones distancia con signo (SDF). Estas permiten representar objetos geométricos realmente complejos a través de una única función escalar que asigna a cada punto del espacio su distancia signada respecto a la frontera del objeto  en tiempo real. Esta técnica está cada vez más presente en los programas de modelado y visualización actuales, como explica en el siguiente capítulo, principalmente porque esta representación es especialmente útil para la generación de imágenes y el renderizado en tiempo real, ofreciendo ventajas significativas en términos de eficiencia y precisión respecto otros métodos tradicionales.\newline
+
+El propósito principal de este Trabajo de Fin de Grado es la creación de una aplicación web interactiva que facilite la creación e interacción con superficies generadas a través de SDFs usando una estructura en forma de árbol de forma intuitiva para el usuario sin que este necesite conocimientos al respecto. No obstante, dado que en el ámbito matemático la representación de superficies suele ser a través de ecuaciones implícitas o paramétricas, estudiaremos también como obtener una SDF que represente la misma información que estas ecuaciones, siendo de especial interés este último caso. Para lograr este objetivo, llevaremos a cabo el desarrollo de la aplicación aprovechando las tecnologías web y \textit{frameworks} modernos así como desarrollando nuestras propias herramientas, evaluando la eficiencia y el rendimiento de la aplicación en términos de tiempos de respuesta y calidad visual. Así, los objetivos que nos proponemos alcanzar con nuestra aplicación son los siguientes.
+\begin{itemize}
+    \item Comprensión profunda de las \textbf{funciones distancia con signo}, sus propiedades y aplicaciones tanto en el ámbito matemático como en el de la informática gráfica (IG).
+    \item Análisis de la teoría de polinomios en varias variables y soluciones al problema de implicitación, principalmente usando \textbf{bases de Gröbner} y enfocando su uso al \textbf{problema de implicitación} para obtener la SDF asociada a una superficie paramétrica.
+    \item Desarrollo de una aplicación web para la representación y manipulación de SDFs a través de un modelo de operaciones con estructura de árbol.
+\end{itemize}
+
+\section*{Estructura del documento}
+Los temas que acabamos de introducir se desarrollan con detalle a lo largo del trabajo como sigue:
+\begin{itemize}
+    \item En el \autoref{chapter1} exploraremos los fundamentos teóricos y matemáticos de las SDFs que nos servirán de motivación y serán necesarios en el resto de capítulos, estudiando con especial interés su diferenciabilidad (\autoref{sec:dif}). Comprenderemos la capacidad de las SDFs para describir superficies y volúmenes de manera precisa y compacta, así como las posibilidades para su manipulación (\autoref{sec:operaciones}), como las operaciones booleanas o las deformaciones. Acabaremos explicando como podemos obtener un SDF a partir de una ecuación implícita (\autoref{sec:aprox}) y resolviendo el problema de implicitación con bases de Gröbner (\autoref{sec:grobner} y resultantes (\autoref{sec:radical}) para así poder sacar provecho de las ventajas que nos aporta el uso de las SDFs también a superficies definidas mediante ecuaciones implícitas o paramétricas. 
+    
+    \item En el \autoref{cap:2} analizaremos las diferencias y similitudes de los dos principales métodos de renderizado actuales: la rasterización y el \textit{raytracing}. Veremos paso a paso como combinar ambas técnicas para conseguir representar cualquier superficie dada por una SDF mediante \textit{spheretracing} (\autoref{sec:render}). Para ello empezaremos definiendo la geometría necesaria con un \textit{vertex shader} asociado en la \autoref{sec:lienzo}, habiéndonos familiarizado previamente con los diferentes sistemas de coordenadas comúnmente usados en IG. Posteriormente veremos cómo colorear la geometría definida anteriormente para representar la superficie sobre ella a través de un \textit{fragment shader}. Finalmente, incluiremos el modelo de iluminación de Blinn-Phong (\autoref{sec:ilum}), al cual añadiremos realismo usando algoritmos avanzados de cálculo de sombras (\autoref{sec:sombras}) y oclusión ambiental (\autoref{sec:ao}), y usaremos \textit{antialiasing} para obtener una imagen lo más libre de imperfecciones posible, todo esto usando un \textit{hardware} accesible a todo tipo de usuario.
+    
+    \item En el \autoref{chapter3} explicaremos el proceso de desarrollo de la aplicación en React, incluyendo el funcionamiento del editor de nodos en árbol con el que crear nuevas superficies (\autoref{sec:editorNodos}) a partir de las ya existentes, el funcionamiento interno de nuestra librería de polinomios en varias variables (\autoref{sec:libreria}), y cómo trasladar la teoría que vimos en el \autoref{sec:render} sobre \textit{spheretracing} a la práctica usando WebGL y GLSL (\autoref{sec:lienzoImplem}).
+    
+    \item En el \autoref{chapter4} analizaremos el proceso de validación que se ha seguido a lo largo del desarrollo de la aplicación y la librería, y como estas se comportan en escenarios de estrés.
+    
+    \item Finalmente, en el \autoref{chapter5} haremos una reflexión sobre lo que aporta este trabajo al panorama actual y como este puede ser continuado en el futuro.
+\end{itemize}
+
+\endinput
