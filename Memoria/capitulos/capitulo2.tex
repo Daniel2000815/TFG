@@ -1,0 +1,81 @@
+\chapter{Algoritmos de visualización de SDFs}\label{cap:2}
+Una vez estudiadas las técnicas a través de las cuales podemos crear y manipular primitivas, podemos usar estas para formar la escena que queremos representar. Podemos optar por dos enfoques. El primero de ellos es hacer \textit{spheretracing} una vez por cada primitiva que conforme la escena, lo cual permitiría tener un control más preciso sobre las propiedades de cada objeto de la escena de forma individual, como por ejemplo su apariencia (material) o distancia de dibujado. El otro enfoque consiste en combinar todas las primitivas de la escena en una sola mediante el operador booleano de unión. La principal ventaja en este caso sería el tener toda la escena definida a partir de una única SDF, de forma que tenemos la información más condensada y el renderizado es más sencillo al no tener que combinar el resultado de varias ejecuciones del algoritmo de \textit{spheretracing}. El precio a pagar por esta simplicidad es que perdemos el control más granular que sí teníamos antes. No obstante, optaremos por este último enfoque, tanto por simplicidad como porque nuestro objetivo final es crear nuevas superficies, y lo que más sentido tiene es que usemos una única SDF para representarlas.\newline
+
+Ahora que tenemos definida la escena a partir de una función distancia con signo, necesitamos una forma de visualizarla. En IG se utilizan diferentes técnicas y algoritmos que transforman datos geométricos en otros que nuestras pantallas puedan representar. Dos de los métodos más utilizados son la rasterización y el trazado de rayos o \textit{raytracing}. En general, la rasterización es el método más usado para aplicaciones interactivas, ya que las GPUs fueron originalmente diseñadas para realizar rasterización de forma eficiente. Por otro lado, el \textit{raytracing} ofrece resultados más realistas, sobretodo en los aspectos relacionados con la iluminación, a precio de ser más lento. En los últimos años son cada vez más comunes las GPUs con soporte hardware para \textit{raytracing}, haciendo que se extienda su uso a aplicaciones interactivas, como los videojuegos.\newline
+
+A la hora de trabajar con estos algoritmos es importante la forma en la que se representa la información de la geometría. La más común en rasterización y \textit{raytracing} es a través de mallas de polígonos, un conjunto de puntos de un espacio afín que forman caras planas. En ambos algoritmos necesitamos hacer uso del concepto de primitiva como los elementos más pequeños que pueden ser visualizados, y típicamente se trata de triángulos cuando se trabaja con mallas de polígonos. En nuestro caso no usamos mallas de polígonos, y tenemos una representación no discreta de la geometría de la superficie. Si bien la rasterización se puede adaptar para trabajar con objetos diferentes a mallas de polígonos, esto no es lo común, y el \textit{raytracing} es mucho más adaptable en estos casos, pues permite trabajar con cualquier tipo de objeto con el que se pueda calcular la intersección con un rayo, como ocurre con las SDFs.\newline
+
+La \textbf{rasterización} recorre cada primitiva $P$ del modelo, comprobando para cada una qué conjunto $S$ de pixels de la pantalla la cubren. Una vez obtenidos los pixels, se ejecutará un programa escrito por el programador (\textit{fragment shader}) para cada uno de ellos, que calculará el color final del píxel. El funcionamiento del \textbf{\textit{raytracing}} es similar al de la rasterización, pero intercambiando los dos bucles. El procedimiento consiste por tanto en recorrer los pixels de la pantalla y comprobar qué primitivas del modelo cubren cada uno. Para ello se traza un rayo por el centro de cada píxel y se calcula la intersección con el objeto, razón del nombre \qq{trazado de rayos}. En la \autoref{fig:algVis} y la \autoref{fig:colorPixels} podemos apreciar las diferencias en el procedimiento de ambos algoritmos. Ambos métodos tienen complejidad algorítmica $\mathcal{O}(pn)$, siendo $n$ el número de primitivas y $p$ el de pixels, aunque en el caso del \textit{raytracing} esta se puede mejorar usando indexación espacial para la obtención del conjunto de primitivas que cubren cada píxel.\newline
+
+\begin{figure}[ht!]
+    \centering
+    \begin{minipage}{0.47\textwidth}
+        \begin{algorithm}[H]
+            \caption{Rasterización}
+            inicializar color de todos los pixels
+            
+            \For{cada primitiva $P$ en el modelo}{
+                $S\gets $ pixels cubiertos por $P$
+
+                \For{cada píxel $q$ en $S$}{
+                    calcular color de $P$ en $q$
+
+                    actualizar color de $q$
+                }
+            }
+        \end{algorithm}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.47\textwidth}
+        \begin{algorithm}[H]
+            \caption{\textit{Raytracing}}
+            inicializar color de todos los pixels
+            
+            \For{cada píxel $q$ de la pantalla}{
+                $T\gets $ primitivas que cubren $q$
+
+                \For{cada primitiva $P$ en $T$}{
+                    calcular color de $P$ en $q$
+
+                    actualizar color de $q$
+                }
+            }
+        \end{algorithm}
+    \end{minipage}%
+    \caption{Algoritmos de visualización}
+    \label{fig:algVis}
+\end{figure}
+
+\begin{figure}[!ht]
+     \begin{minipage}[c]{0.98\linewidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{Plantilla-TFG-master/img/rasterizacion.png}
+        \caption{Rasterización}
+     \end{minipage}
+     \begin{minipage}[c]{0.98\linewidth}
+        \centering
+        \includegraphics[width=0.9\textwidth]{Plantilla-TFG-master/img/raytracing.png}
+        \caption{\textit{Raytracing}}
+     \end{minipage}
+     \caption{Funcionamiento de los métodos de rasterización y \textit{raytracing}}
+     \label{fig:colorPixels}
+\end{figure}
+
+Teniendo en cuenta las consideraciones anteriores, para representar superficies generadas por funciones distancia con signo  utilizaremos \textit{spheretracing}, un método basado en \textit{raytracing}. No obstante, para ello haremos uso de las APIs de rasterización en GPU, lo cual puede parecer contradictorio, pues como hemos visto ambos algoritmos tienen una estructura opuesta. El motivo fundamental de esta aparente contradicción es que las APIs de \textit{raytracing} solo están disponibles en GPUs modernas y avanzadas, y nosotros queremos poder realizar esta tarea en el mayor número de dispositivos posible. Podríamos conseguir esto realizando los cálculos en la CPU recorriendo secuencialmente los pixels, pero incluso paralelizándolos en varias hebras asignando a cada una un conjunto de pixels no podríamos conseguir el grado de interactividad que buscamos. La única solución es por tanto usar la GPU para realizar los cálculos de la intersección rayo-escena, pues son mucho más rápidas en este tipo de cálculos. Además, hoy en día prácticamente todos los dispositivos cuentan con GPUs, incluso los dispositivos móviles, y las APIs de rasterización son muy portables y conocidas. \newline
+
+Para lograr nuestro objetivo de trazar rayos usando las APIs de rasterización usaremos que, como hemos visto, estas permiten ejecutar para cada píxel donde se proyecte una primitiva un código definido por el programador llamado \textit{fragment shader} y que produce el color del píxel. Así, en lugar de hacer \textit{raytracing} sobre una escena 3D, visualizaremos por rasterización un plano formado por dos triángulos cubriendo toda la imagen, lo que provocará la ejecución de una instancia del \textit{fragment shader} en cada píxel de la imagen, y será en él donde se implemente el algoritmo de intersección rayo-escena. A este plano lo llamaremos \textbf{lienzo} o \textit{canvas}, pues efectivamente estaremos pintando la escena encima suya píxel a píxel a través del \textit{fragment shader}.
+
+\section{Renderizado por \textit{raytracing} en GPU usando un \textit{fragment shader}}\label{sec:render}
+En esta sección estudiaremos en detalle el proceso de creación del lienzo usando una API cualquiera de rasterización y el desarrollo de los cálculos necesarios para ello , incluyendo la intersección del rayo con la escena, simulación avanzada de iluminación y técnicas de suavizado de la imagen.
+\input{Plantilla-TFG-master/capitulos/Renderizado}
+
+\section{Modelos de iluminación y sombras}\label{sec:ilum}
+Ya sabemos qué pixels pertenecen a la superficie, pero no de qué color deben dibujarse. En esta sección estudiaremos diversas técnicas que en conjunto nos permitirán simular de forma plausible qué ocurre cuando se añaden a la escena una o varias fuentes de luz.
+
+
+\input{Plantilla-TFG-master/capitulos/BlinnPhong}
+\input{Plantilla-TFG-master/capitulos/Sombras}
+\input{Plantilla-TFG-master/capitulos/AO}
+
+\section{\textit{Antialiasing}}\label{sec:aa}
+\input{Plantilla-TFG-master/capitulos/AA}
