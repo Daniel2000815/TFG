@@ -61,17 +61,18 @@ Realizamos las siguientes apreciaciones respecto al método \texttt{CalcularSomb
 
 Estudiando los resultados obtenidos vemos que al añadir sombras obtenemos una imagen mucho más realista y cohesiva, otorgando a la esfera mayor presencia en la escena. Sin embargo también podremos apreciar que las sombras que genera este método son muy planas y duras. Realmente ahora mismo no tenemos control alguno sobre esto, ya que según nuestra implementación un punto o está totalmente en sombra o totalmente iluminado. Esto no siempre es así en el mundo real, donde podemos encontrar que no toda la región sombreada sea igual de oscura o el borde esté más o menos difuminado en función de las propiedades de la fuente. Podemos simular estos fenómenos de forma muy sencilla usando información de la que ya que disponemos en el algoritmo de \textit{spheretracing} tomando como origen del rayo el punto del que queremos evaluar la sombra y como dirección la de la fuente de luz. Representaremos la proporción de luz que alcanza el punto $p_0$ como el valor $sombra \in [0,1]$, donde $0$ significa que el punto no recibe nada de luz, y por tanto aparecerá totalmente oscuro, y $1$ que ningún obstáculo hace sombra sobre el punto y está totalmente iluminado por la fuente de luz. El caso de que el punto esté totalmente en sombra ya lo hemos visto en la versión anterior del algoritmo. Ahora estudiamos que ocurre cuando el punto no haya sido alcanzado por el rayo pero haya estado muy cerca de serlo. En este caso, dejaremos que reciba algo de luz, formando una región de penumbra. Calcularemos esta cantidad en base a las siguientes dos condiciones.
 \begin{enumerate}
-    \item Cuanto más cerca se encuentre el punto del obstáculo que le hace sombra menos luz recibirá. La distancia al obstáculo es la distancia recorrida a lo largo del rayo, luego
-    % Podemos conseguir esto haciendo que $sombra$ sea proporcional a la evaluación de la SDF en el punto actual del rayo:
-    \begin{equation*}
-        sombra \propto \frac{1}{d}.
-    \end{equation*}
+    
     \item La cantidad de luz que permitiremos que reciba será menor cuanto más haya faltado para que se produzca la intersección. Si casi se produce la intersección entonces significa que hay un obstáculo muy cerca de la trayectoria del rayo, y por tanto la evaluación de la SDF en ese punto tendrá un valor muy pequeño, y lo contrario ocurre si la intersección estuvo lejos de ocurrir:
     % El valor de la distancia actual recorrida en el rayo $d$ contiene esta información en el 
     
     % La cantidad de luz que permitiremos que reciba será inversamente proporcional a la distancia del obstáculo que se interpone directamente entre la luz y el punto, pues tiene sentido que cuanto más cerca se encuentre el obstáculo del punto menos luz le deje recibir. Dado que el origen del rayo es  Esta cantidad deberá ser mayor cuanto menos haya faltado para perder la intersección, creando un difuminado en el borde:
     \begin{equation*}
         sombra \propto sdf.
+    \end{equation*}
+    \item Tiene sentido que la distancia al obstáculo también influya en la medida en la que este ocluye al punto. Esta distancia es también accesible a través del valor $d$ del algoritmo, y heurísticamente se ha comprobado la utilidad de la expresión
+    % Podemos conseguir esto haciendo que $sombra$ sea proporcional a la evaluación de la SDF en el punto actual del rayo:
+    \begin{equation*}
+        sombra \propto \frac{1}{d}.
     \end{equation*}
 \end{enumerate}
 
