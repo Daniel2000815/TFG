@@ -143,11 +143,11 @@ Una vez asociado un material a $S_{\phi}$ podemos escribir la expresión final p
         \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/ks1kd1a0.png}
         \caption{$\Vert R_E\Vert =\Vert R_D\Vert$ y $\alpha$ pequeño}
      \end{subfigure}
-     % \begin{minipage}[c]{0.45\linewidth}
+     % \begin{subfigure}[b]{0.45\linewidth}
      %    \centering
      %    \includegraphics[width=0.95\textwidth]{Plantilla-TFG-master/img/ks1kd1a0.png}
      %    \caption{$k_s = 1$ y $k_d = 0$}
-     % \end{minipage}
+     % \end{subfigure}
      \caption{Ejemplo de distintos valores para $R_E,R_D$ y $\alpha$}
      \label{fig:parametrosEspecular}
 \end{figure}
@@ -175,34 +175,34 @@ En 1977 James F. Blinn \cite{blinn1977models} introdujo una variante a este mode
 \end{equation*}
 Ahora, en lugar de usar el valor $r_m\cdot v$ hacemos que el brillo sea proporcional al coseno del ángulo entre $h_m$ y $N_p$, de forma que no depende del punto $p$ y solo necesita ser calculado una vez. En la \autoref{fig:phong} podemos ver el comportamiento de $h_m$ para distintas configuraciones de $l_m$ y $v$.\newline
 \begin{figure}[!h]
-     \begin{minipage}[c]{0.32\linewidth}
+     \begin{subfigure}[b]{0.32\linewidth}
         \centering
         \includegraphics[width=0.95\textwidth, align=b]{Plantilla-TFG-master/img/phong1.png}
-     \end{minipage}
-     \begin{minipage}[c]{0.32\linewidth}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.32\linewidth}
         \centering
         \includegraphics[width=0.95\textwidth, align=b]{Plantilla-TFG-master/img/phong2.png}
-     \end{minipage}
-     \begin{minipage}[c]{0.32\linewidth}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.32\linewidth}
         \centering
         \includegraphics[width=0.95\textwidth, align=b]{Plantilla-TFG-master/img/phong3.png}
-     \end{minipage}
+     \end{subfigure}
      \caption{Comportamiento de  $h_m$ con $\Vert R_S\Vert =\Vert R_D\Vert$}
      \label{fig:phong}
 \end{figure}
 
 Aunque esta nueva versión se trate de una simplificación del modelo de Phong, lo cierto es que produce resultados más convincentes que este. En particular, mientras que el modelo de Blinn siempre produce brillos redondos en superficies planas, el de Blinn-Phong los genera con una forma más elíptica cuando se observa la superficie desde un ángulo acusado, como se observa en la \autoref{fig:difBlinn}. 
 \begin{figure}[!h]
-     \begin{minipage}[c]{0.49\linewidth}
+     \begin{subfigure}[b]{0.49\linewidth}
         \centering
         \includegraphics[width=0.9\textwidth]{Plantilla-TFG-master/img/compB.png}
         \caption{Phong}
-     \end{minipage}
-     \begin{minipage}[c]{0.49\linewidth}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.49\linewidth}
         \centering
         \includegraphics[width=0.9\textwidth]{Plantilla-TFG-master/img/compBP.png}
         \caption{Blinn-Phong}
-     \end{minipage}
+     \end{subfigure}
      \caption{Zonas brillantes en modelos de Phong y Blinn-Phong}
      \label{fig:difBlinn}
 \end{figure}

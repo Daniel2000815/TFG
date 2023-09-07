@@ -13,9 +13,11 @@
 \vspace{0.7cm}
 \noindent{\textbf{Resumen}}\\
 
-Buscar maneras de representar información de forma más eficiente o que nos permitan aplicar nuevas técnicas es una constante tanto en el ámbito de la informática como en el de las matemáticas. En este trabajo estudiaremos las funciones distancia con signo, que miden la distancia de cada punto a un conjunto según este se encuentre a un \qq{lado} u otro del conjunto, y veremos como usarlas para representar superficies en tiempo real a través de \textit{raytracing} y manipularlas usando el modelo en forma de árbol \textit{BlobTree}. Lejos de quedarnos ahí, veremos como obtener una función distancia con signo aproximada a partir de superficies definidas a través de ecuaciones implícitas o paramétricas, habiendo explorado previamente el problema de implicitación y su solución con bases de Gröbner para estas últimas.\newline
+La búsqueda constante de métodos para representar información de manera más eficiente y facilitar la aplicación de nuevas técnicas es una característica tanto en el ámbito de la informática como en el de las matemáticas. En este trabajo, nos enfocaremos en el estudio de las funciones de distancia con signo, las cuales miden la distancia de cada punto a un conjunto en función de si se encuentra en un \qq{lado} u otro del conjunto. Exploraremos cómo utilizar estas funciones para representar superficies en tiempo real mediante el uso de \textit{raytracing} y cómo manipularlas mediante el modelo \textit{BlobTree} en forma de árbol.\newline
 
-El objetivo de este trabajo es mostrar la utilidad de esta forma de representar geometría, implementando una aplicación web que lleve a la práctica de manera eficiente todos los conceptos y técnicas asociados a las funciones distancia con signo y bases de Gröbner que veremos a lo largo del trabajo. En particular, la aplicación usará la API de rasterización para permitir que el algoritmo de \textit{raytracing} pueda ejecutarse en la mayor parte de dispositivos actuales. También se desarrollará una librería de código abierto propia que será usada por la aplicación para trabajar con polinomios en varias variables y resolver el problema de implicitación.
+No obstante, no nos detendremos ahí. También investigaremos cómo obtener una función de distancia con signo aproximada a partir de superficies definidas mediante ecuaciones implícitas o paramétricas, habiendo explorado previamente el problema de la implicitación y su solución mediante bases de Gröbner para estas últimas.\newline
+
+El objetivo fundamental de este trabajo es demostrar la utilidad de esta forma de representar la geometría a través de una aplicación web que implemente eficazmente todos los conceptos y técnicas relacionados con las funciones de distancia con signo y las bases de Gröbner que exploraremos a lo largo del trabajo. Esta aplicación aprovechará la API de rasterización para permitir que el algoritmo de \textit{raytracing} se ejecute en la mayoría de los dispositivos actuales. Además, desarrollaremos nuestra propia librería de código abierto que la aplicación utilizará para trabajar con polinomios de múltiples variables y resolver el problema de la implicitación.
 \cleardoublepage
 
 
@@ -30,12 +32,17 @@ El objetivo de este trabajo es mostrar la utilidad de esta forma de representar 
 \end{center}
 
 %\vspace{0.7cm}
-\noindent{\textbf{Keywords}: Keyword1, Keyword2, Keyword3, ....}\\
+\noindent{\textbf{Keywords}: signed distance function, raytracing, spheretracing, \textit{BlobTree} model, multivariate polynomials, Gröbner basis, implicitation}\\
 
 \vspace{0.7cm}
 \noindent{\textbf{Abstract}}\\
 
-Write here the abstract in English.
+The constant quest for ways to represent information more efficiently and enable the application of new techniques is a common thread in both the fields of computer science and mathematics. In this work, we will focus on the study of signed distance functions, which measure the distance from each point to a set based on whether it lies on one \qq{side} or the other of the set. We will explore how to use these functions to represent surfaces in real-time through raytracing and manipulate them using the \textit{BlobTree} model in a tree-like structure.\newline
+
+However, we won't stop there. We will also investigate how to obtain an approximate signed distance function from surfaces defined by implicit or parametric equations having previously explored the problem of implicitization and its solution using Gröbner bases for the latter.\newline
+
+The primary goal of this work is to showcase the utility of this way of representing geometry through a web application that effectively puts into practice all the concepts and techniques associated with signed distance functions and Gröbner bases that we will explore throughout the work. In particular, this application will use the rasterization API to enable the raytracing algorithm to run on most current devices. Additionally, we will develop our own open-source library that the application will use to work with multivariable polynomials and solve the implicitization problem.
+
 
 \thispagestyle{empty}
 \cleardoublepage

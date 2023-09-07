@@ -220,8 +220,14 @@
 \newcommand\PV{P_{\text{pv,rated}}}
 \usepackage{caption}
 \usepackage{subcaption}
-\newcommand{\miTitulo}{Visualización de superficies definidas por funciones distancia con signo mediante \textit{raytracing} y conversión de superficies implícitas y paramétricas usando bases de Gröbner \xspace}
+
+\newcommand{\miTitulo}{Visualización de superficies en 3D\xspace}
+\newcommand{\miSubtitulo}{Representación por \textit{raytracing} de superficies definidas por funciones distancia con signo y conversión de superficies implícitas y paramétricas usando bases de Gröbner \xspace}
+\newcommand{\miTitle}{Visualization of 3D surfaces}
+\newcommand{\miSubtitle}{\textit{Raytracing} representation of surfaces defined by signed distance functions and conversion of implicit and parametric surfaces using Gröbner bases }
+
 \newcommand{\miNombre}{Daniel Zufrí Quesada\xspace}
+
 \newcommand{\miGrado}{Doble Grado en Ing. Informática y Matemáticas}
 \newcommand{\miFacultad}{ETSIIT, Facultad de Ciencias}
 \newcommand{\miUniversidad}{Universidad de Granada}
@@ -251,15 +257,18 @@
 
 \input{preliminares/portada}
 \input{preliminares/titulo}
+\input{Plantilla-TFG-master/preliminares/abstract}
+\input{Plantilla-TFG-master/preliminares/originalidad}
 \input{Plantilla-TFG-master/preliminares/biblioteca}
-\input{Plantilla-TFG-master/preliminares/tutor}
+% \input{preliminares/agradecimientos}            % Opcional
+
+% \input{Plantilla-TFG-master/preliminares/tutor}
 \input{preliminares/dedicatoria}                % Opcional
 \input{preliminares/tablacontenidos}
-% \input{preliminares/agradecimientos}            % Opcional
 
 % \pagestyle{scrheadings} % A partir de ahora sí imprime cabeceras
 
-\input{preliminares/summary}
+% \input{preliminares/summary}
 \input{preliminares/introduccion}
 \input{Plantilla-TFG-master/preliminares/estadoArte}
 
@@ -273,7 +282,6 @@
 \input{capitulos/capitulo3}
 \input{capitulos/capitulo4}
 \input{capitulos/capitulo5}
-
 % --------------------------------------------------------------------
 % APPENDIX: Opcional
 % --------------------------------------------------------------------
@@ -296,6 +304,7 @@
 % -------------------------------------------------------------------
 
 \backmatter % Desactiva la numeración de los capítulos
+
 \pdfbookmark[-1]{Referencias e Índices}{BM-Referencias}
 
 % BIBLIOGRAFÍA

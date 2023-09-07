@@ -81,7 +81,7 @@ Para trasladar esto a nuestro \textit{fragment shader} tan solo habrá que reali
 
 \begin{figure}[ht!]
     \centering
-    \begin{minipage}{0.69\textwidth}
+    \begin{subfigure}[b]{0.69\textwidth}
       \begin{algorithm}[H]
             \caption{Fragment Shader}
             \KwData{coordenadas de dispositivo $v_{frag}$ del píxel actual}
@@ -108,11 +108,11 @@ Para trasladar esto a nuestro \textit{fragment shader} tan solo habrá que reali
             
             $v_{col} \gets (color_x, color_y, color_z, 1)$
         \end{algorithm}
-    \end{minipage}%
+    \end{subfigure}%
     \hfill
-    \begin{minipage}{0.31\textwidth}
+    \begin{subfigure}[b]{0.31\textwidth}
         \includegraphics[width=\textwidth]{buclePixels.png}
-    \end{minipage}
+    \end{subfigure}
     \caption{Cuerpo del método \texttt{main} del \textit{fragment shader}}
     \label{fig:divPixel}
 \end{figure}

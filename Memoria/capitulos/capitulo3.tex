@@ -367,7 +367,7 @@ Para conseguir esto empezamos enviando los datos que usaremos de la CPU a la GPU
 \end{itemize}
 \begin{figure}[ht!]
     \centering
-    \begin{minipage}{0.50\textwidth}
+    \begin{subfigure}[b]{0.50\textwidth}
         \begin{lstlisting}[language=JavaScript]
 function setGeometry(gl) {
   gl.bufferData(
@@ -382,11 +382,11 @@ function setGeometry(gl) {
     gl.STATIC_DRAW);
 }
 \end{lstlisting}
-    \end{minipage}%
+    \end{subfigure}%
     \hfill
-    \begin{minipage}{0.40\textwidth}
+    \begin{subfigure}[b]{0.40\textwidth}
         \includegraphics[width=\textwidth]{canvas.png}
-    \end{minipage}
+    \end{subfigure}
     \caption{Declaración de vértices del lienzo}
     \label{figvert}
 \end{figure}

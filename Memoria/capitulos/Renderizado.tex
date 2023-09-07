@@ -29,11 +29,11 @@ Cuando introdujimos el método de rasterización dijimos que este suele ser usad
 %     glVertex3f(2.0f, -1.0f, 0.0f);
 % glEnd();
 % \end{lstlisting}
-%     \end{minipage}%
+%     \end{subfigure}%
 %     \hfill
 %     \begin{minipage}{0.40\textwidth}
 %         \includegraphics[width=\textwidth]{canvas.png}
-%     \end{minipage}
+%     \end{subfigure}
     
     
 %     \caption{Construcción del lienzo}
@@ -131,25 +131,25 @@ Hemos denotado a las coordenadas obtenidas como $uv$, haciendo referencia a la s
 
 \begin{figure}[htbp]
     \centering
-    \begin{minipage}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/normX.png}
         \caption{Eje X}
-    \end{minipage}
+    \end{subfigure}
     \hfill
-    \begin{minipage}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/normY.png}
         \caption{Eje Y}
-    \end{minipage}
+    \end{subfigure}
     
     \medskip
     
-    \begin{minipage}[b]{0.45\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/normXY.png}
         \caption{Ejes X e Y}
-    \end{minipage}
+    \end{subfigure}
     
     \caption{Normalización de coordenadas sobre distintos ejes}
     \label{fig:uv}
@@ -220,7 +220,7 @@ El \textbf{\textit{raymarching}} es un método iterativo: a partir de $c_o$, en 
 \SetKwComment{Comment}{// }{}
 \begin{figure}[ht!]
     \centering
-    \begin{minipage}{0.58\textwidth}
+    \begin{subfigure}[b]{0.58\textwidth}
         \begin{algorithm}[H]
             \caption{Raymarching}
                 \KwData{origen del rayo $c_o$, dirección del rayo $v$}
@@ -244,11 +244,11 @@ El \textbf{\textit{raymarching}} es un método iterativo: a partir de $c_o$, en 
                     }
                 }
         \end{algorithm}
-    \end{minipage}%
+    \end{subfigure}%
     \hfill
-    \begin{minipage}{0.4\textwidth}
+    \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{raymarching.png}
-    \end{minipage}
+    \end{subfigure}
     \caption{Algoritmo de \textit{raymarching}}
     \label{a:raymarching}
 \end{figure}
@@ -262,7 +262,7 @@ Con esto al fin podemos describir la forma que tendrá nuestro \textit{fragment 
 
 \begin{figure}[ht!]
     \centering
-    \begin{minipage}{0.58\textwidth}
+    \begin{subfigure}[b]{0.58\textwidth}
        \begin{algorithm}[H]
             \caption{Spheretracing}
                 \KwData{origen del rayo $c_o$, dirección del rayo $v$}
@@ -285,11 +285,11 @@ Con esto al fin podemos describir la forma que tendrá nuestro \textit{fragment 
                     }
                 }
         \end{algorithm}
-    \end{minipage}%
+    \end{subfigure}%
     \hfill
-    \begin{minipage}{0.4\textwidth}
+    \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{spheremarching.png}
-    \end{minipage}
+    \end{subfigure}
     \caption{Algoritmo de \textit{spheretracing}}
     \label{a:spheretracing}
 \end{figure}

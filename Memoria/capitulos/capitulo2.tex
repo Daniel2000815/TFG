@@ -9,7 +9,7 @@ La \textbf{rasterización} recorre cada primitiva $P$ del modelo, comprobando pa
 
 \begin{figure}[ht!]
     \centering
-    \begin{minipage}{0.47\textwidth}
+    \begin{subfigure}[b]{0.47\textwidth}
         \begin{algorithm}[H]
             \caption{Rasterización}
             inicializar color de todos los pixels
@@ -24,9 +24,9 @@ La \textbf{rasterización} recorre cada primitiva $P$ del modelo, comprobando pa
                 }
             }
         \end{algorithm}
-    \end{minipage}%
+    \end{subfigure}%
     \hfill
-    \begin{minipage}{0.47\textwidth}
+    \begin{subfigure}[b]{0.47\textwidth}
         \begin{algorithm}[H]
             \caption{\textit{Raytracing}}
             inicializar color de todos los pixels
@@ -41,22 +41,22 @@ La \textbf{rasterización} recorre cada primitiva $P$ del modelo, comprobando pa
                 }
             }
         \end{algorithm}
-    \end{minipage}%
+    \end{subfigure}%
     \caption{Algoritmos de visualización}
     \label{fig:algVis}
 \end{figure}
 
 \begin{figure}[!ht]
-     \begin{minipage}[c]{0.98\linewidth}
+     \begin{subfigure}[b]{0.98\linewidth}
         \centering
         \includegraphics[width=0.9\textwidth]{Plantilla-TFG-master/img/rasterizacion.png}
         \caption{Rasterización}
-     \end{minipage}
-     \begin{minipage}[c]{0.98\linewidth}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.98\linewidth}
         \centering
         \includegraphics[width=0.9\textwidth]{Plantilla-TFG-master/img/raytracing.png}
         \caption{\textit{Raytracing}}
-     \end{minipage}
+     \end{subfigure}
      \caption{Funcionamiento de los métodos de rasterización y \textit{raytracing}}
      \label{fig:colorPixels}
 \end{figure}

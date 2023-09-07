@@ -1,4 +1,4 @@
-\chapter{Estado del arte}
+\chapter{Estado del arte}\label{sec:arte}
 La introducción original de la idea de modelar usando superficies implícitas fue hecha por Jim Blinn en 1982, en un artículo \cite{blinn1982generalization} donde presenta un método para representar superficies dadas por ecuaciones de orden mayor a dos usando funciones de densidad Gaussianas. Este modelo tenía la ventaja de permitir la combinación suave de primitivas, y en los siguientes años surgirían modelos similares tratando de conseguir esto mismo bajo la denominación de \textit{Blobby Molecules}, debido a la capacidad que tienen estos de combinar primitivas. Entre ellos destaca el de A. Pasko en 1995 \cite{pasko1995function}, que era más completo que el de Blinn al incluir la posibilidad de aplicar operadores de deformación y booleanos. Llegado 1999, Brian Wyvill, Eric Galin y Andrew Guy presentan en su artículo \textit{The BlobTree: Warping, Blending and Boolean Operations in an Implicit Surface Modeling System} \cite{blobtree} el modelo \textit{BlobTree}, que permite realizar las mismas funciones que los modelos anteriores de forma más estructurada, y motiva el desarrollo de este trabajo.\newline
 
 Las ventajas que aporta el uso de funciones distancia con signo hace que podamos ver su uso en multitud de productos actuales, entre los que destacamos los siguientes.
@@ -43,4 +43,30 @@ No podemos dejar de mencionar la contribución del español Íñigo Quílez. Su 
     \hfill
      \caption{Ejemplos de obras creadas en Shadertoy usando únicamente SDFs}
      \label{fig:shadertoy}
+\end{figure}
+
+Comentamos por último las soluciones \textit{software} existentes más en línea con lo que pretendemos realizar nosotros. En cuanto a definición de SDFs, la librería \texttt{hg\_sdf} \cite{hgsdf} permite definir primitivas y combinarlas usando operadores booleanos. No obstante, para poder dibujar una escena como la mostrada en la \autoref{fig:hd_sdf} el usuario tiene que implementar su propio algoritmo de \textit{raytracing}, que junto a que la definición y combinación de primitivas se tenga que realizar a través de código, supone una gran barrera de entrada para un usuario promedio. Si hablamos de recursos para trabajar con superficies definidas implícitamente, las únicas opciones son visualizadores como el desarrollado por el usuario \texttt{matkcy} llamado Implicit3D \cite{implicit3d}, que permite visualizar superficies implícitas (también curvas parametrizadas), pero no manipularlas de ninguna forma que no sea modificar la propia ecuación. Lo mismo ocurre para las superficies paramétricas, solo encontramos visualizadores, como el de GeoGebra \cite{geogebra_param}.\newline
+\begin{figure}[!h]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/hg_sdf.png}
+        \caption{\texttt{hg\_sdf}}
+    \end{subfigure}
+    \hspace{15pt}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/implicit3D.png}
+        \caption{Implicit3D}
+    \end{subfigure}
+    \hfill
+     \caption{Aplicaciones de visualización de superficies}
+     \label{fig:hd_sdf}
+\end{figure}
+
+Respecto a aplicaciones que implementen un editor en forma de árbol \cite{prevwork}, encontramos la mayoría de ejemplos en el ámbito de la composición de \textit{shaders} o sistemas de progrmación basados en nodos, como ocurre en el caso de los ya mencionados Unity3D, Unreal Engine o Blender. No obstante, encontramos ejemplos interesantes de editores de nodos para SDFs, como Material Maker \cite{materialmaker}, que a pesar de ser principalmente un editor de materiales, permite también representar primitivas predefinidas y aplicarles operaciones, SDFPerf \cite{sdfperf}, cuyo uso requiere de compilación previa del código fuente y aún está en desarrollo, o SDF-UI \cite{sdfui}, que ofrece bastantes posibilidades pero cuya curva de aprendizaje inicial es bastante pronunciada y todavía no se encuentra en versión estable.
+\begin{figure}[!h]
+    \centering
+        \includegraphics[width=\textwidth]{Plantilla-TFG-master/img/sdfperf.png}
+     \caption{Aplicación SDFPerf}
 \end{figure}

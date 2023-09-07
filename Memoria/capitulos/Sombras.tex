@@ -18,7 +18,7 @@ Los resultados obtenidos en la \autoref{fig:difBlinn} presentan ciertas carencia
     \end{algorithm}
 \begin{figure}[ht!]
     \centering
-    \begin{minipage}{0.50\textwidth}
+    \begin{subfigure}[b]{0.50\textwidth}
    \begin{algorithm}[H]
             \caption{CalcularSombras}
                 \KwData{punto $p_0$, dirección de luz $l_i$}
@@ -43,11 +43,11 @@ Los resultados obtenidos en la \autoref{fig:difBlinn} presentan ciertas carencia
 
                 \Return{1}
         \end{algorithm}
-    \end{minipage}%
+    \end{subfigure}%
     \hfill
-    \begin{minipage}{0.48\textwidth}
+    \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{shadowSimple.png}
-    \end{minipage}
+    \end{subfigure}
     \caption{Cálculo básico de sombras}
     \label{fig:sombras1}
 \end{figure}
@@ -80,7 +80,7 @@ Esta nueva versión de \texttt{CalcularSombras} se encuentra descrita en la \aut
 
 \begin{figure}[ht!]
     \centering
-    \begin{minipage}{0.50\textwidth}
+    \begin{subfigure}[b]{0.50\textwidth}
        \begin{algorithm}[H]
             \caption{CalcularSombras}
                 \KwData{punto $p_0$, dirección de luz $l_i$, tamaño de luz $k$}
@@ -108,11 +108,11 @@ Esta nueva versión de \texttt{CalcularSombras} se encuentra descrita en la \aut
 
                 \Return{sombra}
         \end{algorithm}
-    \end{minipage}%
+    \end{subfigure}%
     \hfill
-    \begin{minipage}{0.48\textwidth}
+    \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{shadowSoftArtifact.png}
-    \end{minipage}
+    \end{subfigure}
     \caption{Cálculo de sombras suavizadas}
     \label{fig:sombras2}
 \end{figure}

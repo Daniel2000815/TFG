@@ -70,38 +70,38 @@ El \textbf{\textit{frametime}} es el tiempo en milisegundos que se tarda en rend
 
 Las herramientas de desarrollador de Google Chrome permiten también medir el \textit{frametime} de nuestra aplicación. Para valores de $AA$ menores a dos obtenemos una gráfica totalmente plana, indicando que el \textit{frametime} es muy estable, y en consecuencia el movimiento de la cámara del lienzo se percibe fluido. En cambio, a partir del valor $AA=3$ empezamos a obtener una gráfica con muchos picos, a pesar de que estemos obteniendo un gran número de fotogramas por segundo, como muestra la \autoref{fig:frametime}. Podemos afirmar por tanto que el valor de $AA=2$ es la mejor elección en general, pues nos proporciona una imagen mucho más nítida a la que obtendríamos sin \textit{antialiasing} sin sacrificar la fluidez que espera el usuario.\newline
 \begin{figure}[!h]
-     \begin{minipage}[c]{0.4\linewidth}
+     \begin{subfigure}[c]{0.4\linewidth}
         \centering
         \includegraphics[width=0.98\textwidth]{Plantilla-TFG-master/img/graficas/frametimeG.png}
         \caption{$AA=2$}
-     \end{minipage}
+     \end{subfigure}
      \hfill
-     \begin{minipage}[c]{0.4\linewidth}
+     \begin{subfigure}[c]{0.4\linewidth}
         \centering
         \includegraphics[width=0.98\textwidth]{Plantilla-TFG-master/img/graficas/frametimeB.png}
         \caption{$AA=3$}
-     \end{minipage}
+     \end{subfigure}
      \caption{Gráficas de \textit{frametime} según el valor de $AA$}
      \label{fig:frametime}
 \end{figure}
 
 En el ordenador portátil (\autoref{fig:laptop}) medimos un comportamiento similar al del equipo de sobremesa, con la diferencia de que las medidas obtenidas decrecen proporcionalmente al peor \textit{hardware}. En particular, ahora la pantalla ahora tiene una tasa de refresco y resolución menores. Con resolución alta (que en realidad es tan solo un poco mayor que la resolución baja del ordenador de sobremesa) obtenemos buenos resultados con hasta $AA=2$, pero si seguimos aumentando el factor de escalado obtenemos FPS muy bajos, que aún sin tener en cuenta la inestabilidad del \textit{frametime}, harían la aplicación inutilizable. Con resolución baja obtenemos resultados mucho mejores, y se ve claramente la limitación en el refresco de la pantalla a 60 Hz, pues obtenemos 60 FPS tanto con $AA=1$ como $AA=2$ con sombras y oclusión ambiental. Con $AA=3$ obtenemos también buen rendimiento, pero el problema del \textit{frametime} persiste, luego sigue siendo recomendable quedarnos con $AA=2$.\newline
 \begin{figure}[!ht]
-     \begin{minipage}[c]{\linewidth}
+     \begin{subfigure}[c]{\linewidth}
         \centering
         \includegraphics[width=0.98\textwidth]{Plantilla-TFG-master/img/graficas/LaptopHR.png}
         \caption{Resolución alta}
-     \end{minipage}
-     \begin{minipage}[c]{\linewidth}
+     \end{subfigure}
+     \begin{subfigure}[c]{\linewidth}
         \centering
         \includegraphics[width=0.98\textwidth]{Plantilla-TFG-master/img/graficas/LaptopLR.png}
         \caption{Resolución baja}
-     \end{minipage}
+     \end{subfigure}
      \caption{Rendimiento en ordenador portátil}
      \label{fig:laptop}
 \end{figure}
 
-A la vista de los resultados presentados, podemos concluir que la configuración más óptima para proporcionar una buena experiencia al usuario, tanto en rendimiento como en calidad visual, es tomar $AA=2$ y activar la oclusión ambiental. En lo que respecta a las sombras, puede ser necesario tener que desactivarlas si se trabaja en un equipo con prestaciones muy bajas, pero en general son una opción viable y añaden mucha riqueza a la escena. Esta es precisamente la configuración de los lienzos que aparecen en cada nodo del editor de nodos. Uno podría pensar que en un caso de uso complejo del editor como fue el mostrado en la \autoref{fig:ejemploCSG}, el rendimiento se vería afectado al contar con tantas instancias del lienzo. Sin embargo, nada más lejos de la realidad, ya que se obtiene un rendimiento estable al mayor número de FPS que la pantalla permite en ambos equipos. ¿Cómo es esto posible? Principalmente por dos motivos.
+A la vista de los resultados presentados, podemos concluir que la configuración más óptima para proporcionar una buena experiencia al usuario, tanto en rendimiento como en calidad visual, es tomar $AA=2$ y activar la oclusión ambiental. En lo que respecta a las sombras, puede ser necesario tener que desactivarlas si se trabaja en un equipo con prestaciones muy bajas, pero en general son una opción viable y añaden mucha riqueza a la escena. Esta es precisamente la configuración de los lienzos que aparecen en cada nodo del editor de nodos. Uno podría pensar que en un caso de uso complejo del editor como fue el mostrado en la \autoref{fig:ejemploCsgExplicado}, el rendimiento se vería afectado al contar con tantas instancias del lienzo. Sin embargo, nada más lejos de la realidad, ya que se obtiene un rendimiento estable al mayor número de FPS que la pantalla permite en ambos equipos. ¿Cómo es esto posible? Principalmente por dos motivos.
 \begin{enumerate}
     \item Los lienzos presentes en los nodos tienen una resolución típica mucho menor a la usada en las pruebas.
     \item El lienzo no calcula nuevos fotogramas a no ser que sea necesario. Es por este motivo que en el lienzo de prueba la cámara se movía continuamente, pero en el caso del editor la cámara está fija a no ser que el usuario interactúe con ella mediante el ratón. Esto hace que en cada momento como mucho habrá un solo lienzo que se esté actualizando continuamente, mientras que el resto estarán en un estado de reposo.
@@ -190,7 +190,7 @@ Pasando al rendimiento, podemos ver el tiempo empleado para cada parametrizació
 
 Acabamos el capítulo mostrando una comparativa de tiempos entre nuestra librería y Sage, a sabiendas de que obtendremos resultados bastante peores por dos motivos principales.
 \begin{enumerate}
-    \item Sage es de los \textit{software} de código abierto más completos y optimizados. En concreto, para el cálculo de bases de Gröbner usa Singular, la librería de código abierto más potente en cuanto al cálculo de bases de Gröbner a fecha de realización de este trabajo.
+    \item Sage es de los \textit{software} de código abierto más completos y optimizados. En concreto, para el cálculo de bases de Gröbner usa Singular \cite{singular}, la librería de código abierto más potente en cuanto al cálculo de bases de Gröbner a fecha de realización de este trabajo. Al estar escrita en C++, un lenguaje compilado y fuertemente tipado, no es de extrañar esta diferencia con nuestra implementación en TypeScript, que no deja estar basado en JavaScript, el cual es interpretado. 
     \item JavaScript no está pensado para optimizar este tipo de cálculos, sino que está diseñado para ejecutarse en navegadores web y brindar interactividad a las páginas web. Además, si bien nuestra versión del algoritmo implementa importantes optimizaciones, esta podría admitir otras que no se han abordado en este trabajo.
 \end{enumerate}
 El principal objetivo de esta comparación es por tanto ver cómo de cerca hemos conseguido quedarnos respecto a SageMath. En la \autoref{fig:sageVs} vemos que usando \texttt{groebner\_basis}, Sage consigue realizar cada una de las implicitaciones en torno a los 2 ms, siendo estas parametrizaciones en tan solo dos variables muy sencillas para esta versión del algoritmo. Usando  el método \texttt{buchberger}, aún siendo este una versión básica del algoritmo de Buchberger, consigue ser más rápido que nuestra implementación por los motivos mencionados anteriormente, a excepción del caso de la esfera, donde obtiene tiempos similares a nuestra versión.
